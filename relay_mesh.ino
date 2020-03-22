@@ -1,6 +1,6 @@
 #include "painlessMesh.h"
 
-#define   MESH_PREFIX     "brac"
+#define   MESH_PREFIX     "mesh"
 #define   MESH_PASSWORD   "password"
 #define   MESH_PORT       5555
 
@@ -26,7 +26,7 @@ int pin1=D4;
 
 
 
-// Needed for painless library
+// Send message to mesh
 void sendMessage() {
   //message format: #(id),(type),(status)$ 
   //send to certain amount of time for registering into database 
@@ -40,6 +40,7 @@ void sendMessage() {
   }
 }
 
+//Receive message from mesh
 void receivedCallback( uint32_t from, String &msg ) {
   //message format: @(status)%
   Serial.printf("startHere: Received from %u msg=%s\n", from, msg.c_str());

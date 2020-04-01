@@ -4,9 +4,6 @@
 #define   MESH_PASSWORD   "password"
 #define   MESH_PORT       5555
 
-
-
-
 Scheduler userScheduler; // to control your personal task
 painlessMesh  mesh;
 
@@ -15,50 +12,62 @@ void sendMessage() ; // Prototype so PlatformIO doesn't complain
 
 Task taskSendMessage( TASK_SECOND * 1 , TASK_FOREVER, &sendMessage );
 
-String msg = "";
-int devtype=1;
+String devtype="r3"; //r=type relay, 3= 3 relay
 int devstatus=0;
-
+//long id=ESP.getChipId();
+//long id=mesh.getNodeId();
 
 char charBuf[50];
 
 int pin1=D4;
+int pin2=D5;
+int pin3=D6;
 
+int temp;
 
+//String a=temp.toString();\
 
-// Send message to mesh
+// Needed for painless library
 void sendMessage() {
-  //message format: #(id),(type),(status)$ 
-  //send to certain amount of time for registering into database 
   if(millis()<100000){
     String id = "";
     id += mesh.getNodeId();
     String a= '#' + (String)id + ',' + devtype + ',' + devstatus + '$';
     mesh.sendBroadcast(a);
     taskSendMessage.setInterval(random( TASK_SECOND * 1, TASK_SECOND * 10));
-  // a="";
   }
 }
 
-//Receive message from mesh
 void receivedCallback( uint32_t from, String &msg ) {
-  //message format: @(status)%
   Serial.printf("startHere: Received from %u msg=%s\n", from, msg.c_str());
   msg.trim();
   msg.toCharArray(charBuf, 13);
-  
-  //To convert msg into proper String
   String msg1=(String)msg;
-
   if(msg1.indexOf('@')>-1){
-    Serial.println(msg1[1]);
-    if(msg[1]=='1'){
-      digitalWrite(pin1,LOW);
+    Serial.println(msg1[1]); 
+    if(msg[2]=='1'){
+       temp=LOW;
     }
     else{
-      digitalWrite(pin1,HIGH);
+      temp=HIGH;
     }
-  } 
+
+    if(msg[1]=='1'){
+      digitalWrite(pin1,temp);
+      Serial.print(F("Relay 1 status :"));
+      Serial.println(temp); 
+    }
+    else if(msg[1]=='2'){
+      digitalWrite(pin2,temp);
+      Serial.print(F("Relay 2 status :"));
+      Serial.println(temp); 
+    }
+    else if(msg[1]=='3'){
+      digitalWrite(pin3,temp);
+      Serial.print(F("Relay 3 status :"));
+      Serial.println(temp); 
+    }
+  }
 }
 
 
@@ -92,6 +101,8 @@ void setup() {
   taskSendMessage.enable();
 
   pinMode(pin1,OUTPUT);
+  pinMode(pin2,OUTPUT);
+  pinMode(pin3,OUTPUT);
   
 }
 

@@ -27,7 +27,7 @@ c.execute("create database IF NOT EXISTS test")
 def create_table():
     c.execute('CREATE TABLE IF NOT EXISTS devices ( id varchar(20) not null, type varchar(20) not null,name varchar(20) not null, status int, unique (id))')
     c.execute('CREATE TABLE IF NOT EXISTS stat_timeline (id varchar(20) not null, status int, TimeStamp TIMESTAMP)')
-    c.execute('CREATE TABLE IF NOT EXISTS links (id varchar(30) not null, link_id varchar(20) , link int)')
+    c.execute('CREATE TABLE IF NOT EXISTS links (id varchar(20) not null, link_id varchar(20) , link int)')
 
 
 # data entry

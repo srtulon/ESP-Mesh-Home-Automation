@@ -22,25 +22,37 @@ c.execute("SET sql_notes = 0; ")
 # create db here....
 c.execute("create database IF NOT EXISTS test")
 
+
 # create table
 def create_table():
-    c.execute('CREATE TABLE IF NOT EXISTS devices ( id bigint not null, type varchar(20) not null,name varchar(20) not null, status int, unique (id))')
-    c.execute('CREATE TABLE IF NOT EXISTS stat_timeline (id bigint not null, status int, TimeStamp TIMESTAMP)')
-    c.execute('CREATE TABLE IF NOT EXISTS links (id bigint not null, link_id bigint , link int)')
+    c.execute('CREATE TABLE IF NOT EXISTS devices ( id varchar(20) not null, type varchar(20) not null,name varchar(20) not null, status int, unique (id))')
+    c.execute('CREATE TABLE IF NOT EXISTS stat_timeline (id varchar(20) not null, status int, TimeStamp TIMESTAMP)')
+    c.execute('CREATE TABLE IF NOT EXISTS links (id varchar(30) not null, link_id varchar(20) , link int)')
 
 
-#data entry
+# data entry
 def data_entry():
     print("Starting data entry")
 
-    #insert new data in devices
-    try:
-        c.execute("INSERT IGNORE devices (id,type,name,status) VALUES (%s,%s,%s,%s);", (did, dtype, did, dstatus))
-        conn.commit()
-        print("Data entry completed")
+    # insert new data in devices
+    if dtype[0] == 'r':
+        range1 = int(dtype[1]) + 1
+        for i in range(range1):
+            new_id = did + '.' + str(i)
+            print(new_id)
+            try:
+                c.execute("INSERT IGNORE devices (id,type,name,status) VALUES (%s,%s,%s,%s);",(new_id, dtype, new_id, dstatus))
+            except mariadb.Error as error:
+                print("Error: {}".format(error))
+    else:
+        try:
+            c.execute("INSERT IGNORE devices (id,type,name,status) VALUES (%s,%s,%s,%s);", (did, dtype, did, dstatus))
+        except mariadb.Error as error:
+            print("Error: {}".format(error))
 
-    except mariadb.Error as error:
-        print("Error: {}".format(error))
+    conn.commit()
+    print("Data entry completed")
+
 
     # insert new data in stat_timeline if device status is changed
     try:
@@ -63,7 +75,6 @@ def data_entry():
                 c.execute('INSERT INTO stat_timeline (id,status) VALUES (%s,%s);', (did, dstatus))
                 c.execute('UPDATE devices SET status = ' + dstatus + ' WHERE id =' + did)
                 link()
-                send_update()
             except mariadb.Error as error:
                 print("Error: {}".format(error))
 
@@ -79,21 +90,24 @@ def link():
     except mariadb.Error as error:
         print("Error: {}".format(error))
     for row in data:
-        #update status change in stat_timeline and devices
+        # update status change in stat_timeline and devices
         try:
             print(row[0])
             # update status change in stat_timeline and devices
             c.execute('INSERT INTO stat_timeline (id,status) VALUES (%s,%s);', (row[0], dstatus))
             c.execute('UPDATE devices SET status = ' + dstatus + ' WHERE id =' + f"{row[0]}")
-            #send linked device status via MQTT [Format : @(status)%)]
-            send_message(f"{row[0]}", '@' + dstatus + '%')
+            # send linked device status via MQTT [Format : @(status)%)]
+            temp=row[0].split('.')
+            ori_id=temp[0]
+            relay_num=temp[1]
+            send_message(ori_id, '@' + relay_num + dstatus + '%')
+            #send_message(f"{row[0]}", '@' + dstatus + '%')
         except mariadb.Error as error:
             print("Error: {}".format(error))
 
 
-
-
 conn.commit()
+
 
 # read database
 def read_db():
@@ -104,6 +118,7 @@ def read_db():
         print(row)
         # print(row[1])
 
+
 # initialization
 def initialization():
     print("Start initialization")
@@ -113,12 +128,14 @@ def initialization():
 create_table()
 initialization()
 
+
 ########################## MQTT PART ###########################################
 
 # mqtt connection
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
     client.subscribe("device/from/#")
+
 
 # new message
 def on_message(client, userdata, msg):
@@ -142,26 +159,26 @@ def on_message(client, userdata, msg):
             dstatus = s[2]
             # print(len(did))
             # print(did)
-            # print(dtype)
+            #print(dtype)
             print(dstatus)
             # data_entry(did,dtype,did,dstatus)
 
             # for ignoring garbage data
-            if (len(did) == 9 or len(did) == 10):
+            if len(did) == 9 or len(did) == 10 or len(did) == 11:
                 data_entry()
+
 
 # send message
 def send_message(dev, msg):
     # trimming
     msg.strip()
-    msg.rstrip()
-    msg.lstrip()
 
-    #sending to "device/to/(target device)
+    # sending to "device/to/(target device)
     dev = "device/to/" + dev
     # print(dev)
     client.publish(dev, msg)
     # print("send check")
+
 
 
 client = mqtt.Client()

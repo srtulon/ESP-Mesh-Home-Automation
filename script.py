@@ -88,40 +88,41 @@ def link():
     except mariadb.Error as error:
         print("Error: {}".format(error))
     for row in data:
+        print(row[0])
         # update status change in stat_timeline and devices
         # if any sensor is high then the device status is set to high
         if (dstatus=='1'):
             try:
-                print(row[0])
                 # update status change in stat_timeline and devices
                 set_status(device_id=row[0], status='1')
             except mariadb.Error as error:
                 print("Error: {}".format(error))
-                
+
         elif (dstatus=='0'):
             try:
-                print(row[0])
-                c.execute('SELECT d.* FROM devices d INNER JOIN links l ON d.id = l.id WHERE l.link_id=%s AND  d.status=1;',(row[0]))
+                c.execute('SELECT d.* FROM devices d INNER JOIN links l ON d.id = l.id WHERE l.link_id=+'+row[0]+' AND  d.status=1;')
                 data = c.fetchall()
-                print(data)
 
-                if not data==None:
-                    # update status change in stat_timeline and devices
-                    set_status(device_id=row[0], status='1')
-                else:
+                if len(data) == 0:
                     # update status change in stat_timeline and devices
                     set_status(device_id=row[0], status='0')
+                else:
+                    # update status change in stat_timeline and devices
+                    set_status(device_id=row[0], status='1')
             except mariadb.Error as error:
                 print("Error: {}".format(error))
 
 def set_status(device_id,status):
-    c.execute('INSERT INTO stat_timeline (id,status) VALUES (%s,%s);', (device_id, status))
-    c.execute('UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id}")
-    # send linked device status via MQTT [Format : @(relay number)(status)%)]
-    temp = device_id.split('.')
-    ori_id = temp[0]
-    relay_num = temp[1]
-    send_message(ori_id, '@' + relay_num + status + '%')
+    try:
+        c.execute('INSERT INTO stat_timeline (id,status) VALUES (%s,%s);', (device_id, status))
+        c.execute('UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id}")
+        # send linked device status via MQTT [Format : @(relay number)(status)%)]
+        temp = device_id.split('.')
+        ori_id = temp[0]
+        relay_num = temp[1]
+        send_message(ori_id, '@' + relay_num + status + '%')
+    except mariadb.Error as error:
+        print("Error: {}".format(error))
 
 conn.commit()
 
@@ -129,11 +130,9 @@ conn.commit()
 # read database
 def read_db():
     c.execute('SELECT * FROM devices')
-    # data=c.fetchall()
-    # print(data)
     for row in c.fetchall():
         print(row)
-        # print(row[1])
+
 
 
 # initialization
@@ -166,7 +165,7 @@ def on_message(client, userdata, msg):
         # message format: #(id),(type),(status)$
         if txt[0] == '#' and txt.find('$') > 0:
             txt = txt.replace("#", "")
-            t = txt.split("$") # to discard garbage values after '$'   
+            t = txt.split("$") # to discard garbage values after '$'
             # print(t[0])
             s = t[0].split(",")
             did = s[0]

@@ -92,11 +92,8 @@ def link():
         # update status change in stat_timeline and devices
         # if any sensor is high then the device status is set to high
         if (dstatus=='1'):
-            try:
-                # update status change in stat_timeline and devices
-                set_status(device_id=row[0], status='1')
-            except mariadb.Error as error:
-                print("Error: {}".format(error))
+            # update status change in stat_timeline and devices
+            set_status(device_id=row[0], status='1',send=True)
 
         elif (dstatus=='0'):
             try:

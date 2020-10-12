@@ -30,7 +30,7 @@ int temp;
 // Send message to mesh
 void sendMessage() {
   //message format: #(id),(type),(status)$ 
-  //send to certain amount of time for registering into database
+  //send for certain amount of time for registering into database
   if(millis()<100000){
     String id = "";
     id += mesh.getNodeId();

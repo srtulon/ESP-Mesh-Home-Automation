@@ -13,7 +13,7 @@ void sendMessage() ; // Prototype so PlatformIO doesn't complain
 Task taskSendMessage( TASK_SECOND * 1 , TASK_FOREVER, &sendMessage );
 
 String devtype="r3"; //r=type relay, 3= 3 relay
-int devstatus=0;
+int devstatus=0; //0= Off , 1= On
 //long id=ESP.getChipId();
 //long id=mesh.getNodeId();
 

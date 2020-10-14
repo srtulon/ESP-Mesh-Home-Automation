@@ -9,4 +9,4 @@ Libraries & Services used :
   - Paho MQTT client for python (pip3 install paho-mqtt)
   - Mosquitto MQTT server
   - Mysql-connector for python (pip3 install mysql-connector-python)
-  - MariaDB server
+  - MariaDB server (sudo apt-get install mariadb-server)

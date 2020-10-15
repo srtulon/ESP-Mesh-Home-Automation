@@ -7,6 +7,6 @@ Libraries & Services used :
   - [painlessMesh](https://github.com/gmag11/painlessMesh)
   - [pubsubclient](https://github.com/knolleary/pubsubclient)
   - Paho MQTT client for python (pip3 install paho-mqtt)
-  - Mosquitto MQTT server
+  - Mosquitto MQTT server (sudo apt install mosquitto-clients)
   - Mysql-connector for python (pip3 install mysql-connector-python)
   - MariaDB server (sudo apt-get install mariadb-server)

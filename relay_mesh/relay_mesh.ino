@@ -80,6 +80,11 @@ void receivedCallback( uint32_t from, String &msg ) {
       Serial.println(temp); 
     }
   }
+  else if(msg1.indexOf('&')>-1){
+    if(msg[2]=='1'){
+       ack=1;
+    }
+  }
 }
 
 

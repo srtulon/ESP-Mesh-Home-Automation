@@ -51,6 +51,7 @@ def data_entry():
 
     conn.commit()
     print("Data entry completed")
+    ack(did)
 
 
     # insert new data in stat_timeline if device status is changed
@@ -173,7 +174,7 @@ def on_message(client, userdata, msg):
             did = s[0]
             dtype = s[1]
             dstatus = s[2]
-            ack(did)
+
             # print(len(did))
             # print(did)
             # print(dtype)
@@ -192,6 +193,7 @@ def send_message(dev, msg):
     dev = "device/to/" + dev
     # print(dev)
     client.publish(dev, msg)
+
     # print("send check")
 
 
@@ -202,7 +204,7 @@ def ack(dev):
     print("sending acknowledgement  ")
     dev = "device/to/" + dev
     # print(dev)
-    client.publish(dev, '1')
+    client.publish(dev, '&1*')
     # print("send check")
 
 client = mqtt.Client()

@@ -42,8 +42,18 @@ void sendMessage() {
 
 //Receive message from mesh
 void receivedCallback( uint32_t from, String &msg ) {
+   //message format: @(relay number)(status)%
   Serial.printf("startHere: Received from %u msg=%s\n", from, msg.c_str());
-
+  
+  //To convert msg into proper String
+  msg.trim();
+  msg.toCharArray(charBuf, 13);
+  String msg1=(String)msg;
+  if(msg1.indexOf('&')>-1){
+    if(msg[2]=='1'){
+       ack=1;
+    }
+  }
 }
 
 void newConnectionCallback(uint32_t nodeId) {

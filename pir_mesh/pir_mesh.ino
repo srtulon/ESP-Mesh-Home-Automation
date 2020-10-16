@@ -7,8 +7,8 @@
 Scheduler userScheduler; // to control your personal task
 painlessMesh  mesh;
 
-const int MOTION_PIN = D1; 
-const int LED_PIN = D4;
+//const int MOTION_PIN = D1; 
+const int LED_PIN = 1;
 
 
 
@@ -57,7 +57,7 @@ void setup() {
   Serial.begin(115200);
   Serial.println("Start");
   delay(1000);
-  pinMode(MOTION_PIN,INPUT);
+  //pinMode(MOTION_PIN,INPUT);
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN,LOW);
 
@@ -77,6 +77,8 @@ void setup() {
 void loop() {
   // it will run the user scheduler as well
   mesh.update();
+  test();
+  /*
   int proximity = digitalRead(MOTION_PIN);  
   if (proximity == LOW ){ // If the sensor's output goes low, motion is detected
     digitalWrite(LED_PIN, LOW);
@@ -87,7 +89,7 @@ void loop() {
     digitalWrite(LED_PIN, HIGH);
     //Serial.println(F("No motion detected!"));
     devstatus=0;
-  } 
+  } */
 }
 
 
@@ -95,9 +97,9 @@ void loop() {
 
 //This part is for testing whole system without PIR
 
-/*
+
 unsigned long previousMillis = 0;
-const long interval = 20000;
+const long interval = 2000;
 
 void test(){
   if(millis() - previousMillis >= interval){
@@ -115,5 +117,3 @@ void stateChange(){
     digitalWrite(LED_PIN, HIGH);
   }
 }
-
-*/

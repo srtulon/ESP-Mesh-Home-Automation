@@ -11,7 +11,7 @@ dstatus = 0  # devie status
 ########################## DATABASE PART ###########################################
 
 # Database connection
-conn = mariadb.connect(host='localhost', database='test', password='abc123', user='root')
+conn = mariadb.connect(host='raspberrypi.local', database='test', password='abc123', user='root')
 c = conn.cursor()
 
 # For creating create db
@@ -26,6 +26,7 @@ def create_table():
     c.execute('CREATE TABLE IF NOT EXISTS devices ( id varchar(20) not null, type varchar(20) not null,name varchar(20) not null, status int, PRIMARY KEY (id))')
     c.execute('CREATE TABLE IF NOT EXISTS stat_timeline (id varchar(20) not null, status int, TimeStamp TIMESTAMP, FOREIGN KEY (id) REFERENCES devices(id))')
     c.execute('CREATE TABLE IF NOT EXISTS links (id varchar(20) not null, link_id varchar(20) , link int, FOREIGN KEY (id) REFERENCES devices(id))')
+    #c.execute('CREATE TABLE IF NOT EXISTS ircode (id varchar(20) not null, link_id varchar(20) , link int, FOREIGN KEY (id) REFERENCES devices(id))')
 
 
 # data entry
@@ -186,7 +187,6 @@ def on_message(client, userdata, msg):
 def send_message(dev, msg):
     # trimming
     msg.strip()
-
     # sending to "device/to/(target device)
     dev = "device/to/" + dev
     # print(dev)
@@ -197,5 +197,5 @@ def send_message(dev, msg):
 client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
-client.connect("MQTT.com", 1883, 60)  # change the address to MQTT broker server
+client.connect("raspberrypi.local", 1883, 60)  # change the address to MQTT broker server
 client.loop_forever()

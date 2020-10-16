@@ -12,10 +12,11 @@ const int LED_PIN = 1;
 
 
 
-String a="";
-int devtype=2;
-int devstatus=0;
-
+String a=""; 
+int devtype='p'; //p=type pir sensor
+int devstatus=0; // 0 =Off , 1= On
+int prevstatus=0; // Previous status
+int ack=1;
 
 // User stub
 void sendMessage() ; // Prototype so PlatformIO doesn't complain
@@ -26,12 +27,17 @@ Task taskSendMessage( TASK_SECOND * 1 , TASK_FOREVER, &sendMessage );
 // Send message to mesh
 void sendMessage() {
   //message format: #(id),(type),(status)$
-  String id = "";
-  id += mesh.getNodeId();
-  a= '#' + id + ',' + devtype + ',' + devstatus + '$'; 
-  mesh.sendBroadcast(a);
-  Serial.println(a);
-  taskSendMessage.setInterval(random( TASK_SECOND * 2, TASK_SECOND * 5));
+  //if status changes, send message
+  if(devstatus!=prevstatus || ack=0){
+    String id = "";
+    id += mesh.getNodeId();
+    a= '#' + id + ',' + devtype + ',' + devstatus + '$'; 
+    mesh.sendBroadcast(a);
+    Serial.println(a);
+    taskSendMessage.setInterval(random( TASK_SECOND * 1, TASK_SECOND * 3));
+    prevstatus=devstatus;
+    ack=1;
+  }
 }
 
 //Receive message from mesh
@@ -99,7 +105,7 @@ void loop() {
 
 
 unsigned long previousMillis = 0;
-const long interval = 2000;
+const long interval = 20000;
 
 void test(){
   if(millis() - previousMillis >= interval){
@@ -111,9 +117,11 @@ void stateChange(){
   if (devstatus==0){
     devstatus=1;
     digitalWrite(LED_PIN, LOW);
+    ack=0;
   }
   else if(devstatus==1){
     devstatus=0;
     digitalWrite(LED_PIN, HIGH);
+    ack=0;
   }
 }

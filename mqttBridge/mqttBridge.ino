@@ -17,8 +17,8 @@
 #define   MESH_PASSWORD   "password"
 #define   MESH_PORT       5555
 
-#define   STATION_SSID     "ssid"
-#define   STATION_PASSWORD "ssidpassword"
+#define   STATION_SSID     "xaneon"
+#define   STATION_PASSWORD "bmwm3gtr"
 
 #define HOSTNAME "MQTT_Bridge"
 
@@ -29,7 +29,7 @@ void mqttCallback(char* topic, byte* payload, unsigned int length);
 IPAddress getlocalIP();
 
 IPAddress myIP(0,0,0,0);
-IPAddress mqttBroker(192, 168, 0, 1);
+IPAddress mqttBroker(192, 168, 0, 181);
 
 
 painlessMesh  mesh;
@@ -40,7 +40,7 @@ PubSubClient mqttClient(mqttBroker, 1883, mqttCallback, wifiClient);
 
 void setup() {
   Serial.begin(115200);
-  
+  ESP.wdtDisable();
   mesh.setDebugMsgTypes( ERROR | STARTUP | CONNECTION );  // set before init() so that you can see startup messages
 
   // Channel set to 6. Make sure to use the same channel for your mesh and for you other
@@ -62,7 +62,6 @@ void setup() {
 
 void loop() {
   mesh.update();
-  
   mqttClient.loop();
 
   if(myIP != getlocalIP()){

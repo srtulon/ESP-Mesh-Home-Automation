@@ -173,6 +173,7 @@ def on_message(client, userdata, msg):
             did = s[0]
             dtype = s[1]
             dstatus = s[2]
+            ack(did)
             # print(len(did))
             # print(did)
             # print(dtype)
@@ -194,8 +195,18 @@ def send_message(dev, msg):
     # print("send check")
 
 
+# send acknowledgement
+def ack(dev):
+    # trimming
+    # sending to "device/to/(target device)
+    print("sending acknowledgement  ")
+    dev = "device/to/" + dev
+    # print(dev)
+    client.publish(dev, '1')
+    # print("send check")
+
 client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
-client.connect("raspberrypi.local", 1883, 60)  # change the address to MQTT broker server
+client.connect("192.168.0.181", 1883, 60)  # change the address to MQTT broker server
 client.loop_forever()

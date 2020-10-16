@@ -9,4 +9,4 @@ Libraries & Services used :
   - Paho MQTT client for python (pip3 install paho-mqtt)
   - [Mosquitto MQTT server](https://randomnerdtutorials.com/how-to-install-mosquitto-broker-on-raspberry-pi/)
   - Mysql-connector for python (pip3 install mysql-connector-python)
-  - MariaDB server (sudo apt-get install mariadb-server)
+  - [MariaDB server](https://medium.com/better-programming/how-to-install-mysql-on-a-raspberry-pi-ad3f69b4a094)

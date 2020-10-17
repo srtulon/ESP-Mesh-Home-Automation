@@ -16,7 +16,8 @@ c = conn.cursor()
 
 # For creating create db
 # Below line  is hide your warning
-c.execute("SET sql_notes = 0; ")
+sql_notes="SET sql_notes = 0; "
+c.execute(sql_notes , multi=True)
 # create db here....
 c.execute("create database IF NOT EXISTS test")
 
@@ -40,14 +41,14 @@ def data_entry():
             new_id = did + '.' + str(i)
             print(new_id)
             try:
-                c.execute("INSERT IGNORE devices (id,type,name,status) VALUES (%s,%s,%s,%s);",(new_id, dtype, new_id, dstatus))
+                c.execute("LOCK TABLES `devices` WRITE;INSERT IGNORE devices (id,type,name,status) VALUES (%s,%s,%s,%s);UNLOCK TABLES;",(new_id, dtype, new_id, dstatus), multi=True)
             except mariadb.Error as error:
-                print("Error: {}".format(error))
+                print("Error1: {}".format(error))
     else:
         try:
-            c.execute("INSERT IGNORE devices (id,type,name,status) VALUES (%s,%s,%s,%s);", (did, dtype, did, dstatus))
+            c.execute("LOCK TABLES `devices` WRITE;INSERT IGNORE devices (id,type,name,status) VALUES (%s,%s,%s,%s);UNLOCK TABLES;", (did, dtype, did, dstatus), multi=True)
         except mariadb.Error as error:
-            print("Error: {}".format(error))
+            print("Error2: {}".format(error))
 
     conn.commit()
     print("Data entry completed")
@@ -58,7 +59,7 @@ def data_entry():
     try:
         c.execute('SELECT status FROM devices WHERE id=' + did)
     except mariadb.Error as error:
-        print("Error: {}".format(error))
+        print("Error3: {}".format(error))
 
     for row in c.fetchall():
         # print(row)
@@ -77,7 +78,7 @@ def data_entry():
                 set_status(device_id=did, status=dstatus, send=False)
                 link()
             except mariadb.Error as error:
-                print("Error: {}".format(error))
+                print("Error4: {}".format(error))
 
 
 # link
@@ -88,7 +89,7 @@ def link():
         data = c.fetchall()
         # print(data)
     except mariadb.Error as error:
-        print("Error: {}".format(error))
+        print("Error5: {}".format(error))
     for row in data:
         print(row[0])
         # update status change in stat_timeline and devices
@@ -109,17 +110,17 @@ def link():
                     # update status change in stat_timeline and devices
                     set_status(device_id=row[0], status='1',send=True)
             except mariadb.Error as error:
-                print("Error: {}".format(error))
+                print("Error6: {}".format(error))
 
 def set_status(device_id,status,send):
     try:
-        c.execute('INSERT INTO stat_timeline (id,status) VALUES (%s,%s);', (device_id, status))
+        c.execute('LOCK TABLES `stat_timeline` WRITE;INSERT INTO stat_timeline (id,status) VALUES (%s,%s);UNLOCK TABLES;', (device_id, status), multi=True)
     except mariadb.Error as error:
-        print("Error: {}".format(error))
+        print("Error7: {}".format(error))
     try:
-        c.execute('UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id}")
+        c.execute('LOCK TABLES `devices` WRITE;UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id};UNLOCK TABLES;", multi=True)
     except mariadb.Error as error:
-        print("Error: {}".format(error))
+        print("Error8: {}".format(error))
     if send:
         # send linked device status via MQTT [Format : @(relay number)(status)%)]
         temp = device_id.split('.')
@@ -141,7 +142,7 @@ def read_db():
 # initialization
 def initialization():
     print("Start initialization")
-    c.execute("INSERT INTO stat_timeline (id,status) SELECT id, status FROM devices;")
+    c.execute("INSERT INTO stat_timeline (id,status) SELECT id, status FROM devices;", multi=True)
 
 
 create_table()

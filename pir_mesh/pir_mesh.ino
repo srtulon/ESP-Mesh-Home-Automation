@@ -12,6 +12,7 @@ const int LED_PIN = 1;
 
 
 
+char charBuf[50];
 String a=""; 
 int devtype='p'; //p=type pir sensor
 int devstatus=0; // 0 =Off , 1= On
@@ -28,7 +29,7 @@ Task taskSendMessage( TASK_SECOND * 1 , TASK_FOREVER, &sendMessage );
 void sendMessage() {
   //message format: #(id),(type),(status)$
   //if status changes, send message
-  if(devstatus!=prevstatus || ack=0){
+  if( (devstatus != prevstatus) || (ack=0)){
     String id = "";
     id += mesh.getNodeId();
     a= '#' + id + ',' + devtype + ',' + devstatus + '$'; 

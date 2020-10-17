@@ -29,7 +29,14 @@ void mqttCallback(char* topic, byte* payload, unsigned int length);
 IPAddress getlocalIP();
 
 IPAddress myIP(0,0,0,0);
-IPAddress mqttBroker(192, 168, 0, 181);
+IPAddress mqttBroker(192, 168, 0, 102);
+int mqttport=1883;
+
+/*const char* mqttBroker = mqttBroker="m24.cloudmqtt.com";
+const char* mqttuser = "vvjqiinu";
+const char* mqttpassword = "jemMAT3tJ8xf";
+
+*/
 
 
 painlessMesh  mesh;
@@ -37,10 +44,10 @@ painlessMesh  mesh;
 
 WiFiClient wifiClient;
 PubSubClient mqttClient(mqttBroker, 1883, mqttCallback, wifiClient);
+//PubSubClient mqttClient(wifiClient);
 
 void setup() {
   Serial.begin(115200);
-  ESP.wdtDisable();
   mesh.setDebugMsgTypes( ERROR | STARTUP | CONNECTION );  // set before init() so that you can see startup messages
 
   // Channel set to 6. Make sure to use the same channel for your mesh and for you other
@@ -55,8 +62,7 @@ void setup() {
   mesh.setRoot(true);
   // This node and all other nodes should ideally know the mesh contains a root, so call this on all nodes
   mesh.setContainsRoot(true);
-
-  mqttClient.setServer(mqttBroker, 1883);
+  mqttClient.setServer(mqttBroker, mqttport);
   mqttClient.setCallback(mqttCallback);
 }
 

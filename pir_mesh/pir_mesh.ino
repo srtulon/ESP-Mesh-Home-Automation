@@ -14,7 +14,7 @@ const int LED_PIN = 1;
 
 char charBuf[50];
 String a=""; 
-int devtype='p'; //p=type pir sensor
+String devtype='p'; //p=type pir sensor
 int devstatus=0; // 0 =Off , 1= On
 int prevstatus=0; // Previous status
 int ack=1;

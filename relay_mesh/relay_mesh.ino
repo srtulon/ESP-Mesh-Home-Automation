@@ -14,6 +14,7 @@ Task taskSendMessage( TASK_SECOND * 1 , TASK_FOREVER, &sendMessage );
 
 String devtype="r3"; //r=type relay, 3= 3 relay
 int devstatus=0; //0= Off , 1= On
+int ack=1;
 //long id=ESP.getChipId();
 //long id=mesh.getNodeId();
 
@@ -31,12 +32,13 @@ int temp;
 void sendMessage() {
   //message format: #(id),(type),(status)$ 
   //send for certain amount of time for registering into database
-  if(millis()<100000){
+  if((millis()<100000) || (ack=0)){
     String id = "";
     id += mesh.getNodeId();
     String a= '#' + (String)id + ',' + devtype + ',' + devstatus + '$';
     mesh.sendBroadcast(a);
     taskSendMessage.setInterval(random( TASK_SECOND * 1, TASK_SECOND * 10));
+    ack=0;
   }
 }
 

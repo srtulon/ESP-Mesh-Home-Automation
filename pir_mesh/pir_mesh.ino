@@ -17,7 +17,7 @@ String a="";
 String devtype='p'; //p=type pir sensor
 int devstatus=0; // 0 =Off , 1= On
 int prevstatus=0; // Previous status
-int ack=1;
+int ack=1; // Acknowledgement 1 = recieved/not needed , 0= pending  
 
 // User stub
 void sendMessage() ; // Prototype so PlatformIO doesn't complain
@@ -29,7 +29,7 @@ Task taskSendMessage( TASK_SECOND * 1 , TASK_FOREVER, &sendMessage );
 void sendMessage() {
   //message format: #(id),(type),(status)$
   //if status changes, send message
-  if( (devstatus != prevstatus) || (ack=0)){
+  if( (devstatus != prevstatus) || (ack=1)){
     String id = "";
     id += mesh.getNodeId();
     a= '#' + id + ',' + devtype + ',' + devstatus + '$'; 
@@ -37,7 +37,7 @@ void sendMessage() {
     Serial.println(a);
     taskSendMessage.setInterval(random( TASK_SECOND * 1, TASK_SECOND * 3));
     prevstatus=devstatus;
-    ack=1;
+    ack=0;
   }
 }
 

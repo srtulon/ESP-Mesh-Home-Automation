@@ -29,7 +29,7 @@ Task taskSendMessage( TASK_SECOND * 1 , TASK_FOREVER, &sendMessage );
 void sendMessage() {
   //message format: #(id),(type),(status)$
   //if status changes, send message
-  if( (devstatus != prevstatus) || (ack=1)){
+  if((devstatus != prevstatus) || (ack=0)){
     String id = "";
     id += mesh.getNodeId();
     a= '#' + id + ',' + devtype + ',' + devstatus + '$'; 

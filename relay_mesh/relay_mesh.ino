@@ -14,7 +14,7 @@ Task taskSendMessage( TASK_SECOND * 1 , TASK_FOREVER, &sendMessage );
 
 String devtype="r3"; //r=type relay, 3= 3 relay
 int devstatus=0; //0= Off , 1= On
-int ack=1;
+int ack=1;  // Acknowledgement 1 = recieved/not needed , 0= pending  
 //long id=ESP.getChipId();
 //long id=mesh.getNodeId();
 
@@ -38,7 +38,7 @@ void sendMessage() {
     String a= '#' + (String)id + ',' + devtype + ',' + devstatus + '$';
     mesh.sendBroadcast(a);
     taskSendMessage.setInterval(random( TASK_SECOND * 1, TASK_SECOND * 10));
-    ack=0;
+    ack=0; 
   }
 }
 

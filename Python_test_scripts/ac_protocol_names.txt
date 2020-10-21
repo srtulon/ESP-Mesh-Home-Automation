@@ -1,445 +1,94 @@
-#if SEND_AIRWELL
-    case AIRWELL:
-    {
-      IRAirwellAc ac(_pin, _inverted, _modulation);
-      airwell(&ac, send.power, send.mode, degC, send.fanspeed);
-      break;
-    }
-#endif  // SEND_AIRWELL
-#if SEND_AMCOR
-    case AMCOR:
-    {
-      IRAmcorAc ac(_pin, _inverted, _modulation);
-      amcor(&ac, send.power, send.mode, degC, send.fanspeed);
-      break;
-    }
-#endif  // SEND_AMCOR
-#if SEND_ARGO
-    case ARGO:
-    {
-      IRArgoAC ac(_pin, _inverted, _modulation);
-      argo(&ac, send.power, send.mode, degC, send.fanspeed, send.swingv,
-           send.turbo, send.sleep);
-      break;
-    }
-#endif  // SEND_ARGO
-#if SEND_CARRIER_AC64
-    case CARRIER_AC64:
-    {
-      IRCarrierAc64 ac(_pin, _inverted, _modulation);
-      carrier64(&ac, send.power, send.mode, degC, send.fanspeed, send.swingv,
-                send.sleep);
-      break;
-    }
-#endif  // SEND_CARRIER_AC64
-#if SEND_COOLIX
-    case COOLIX:
-    {
-      IRCoolixAC ac(_pin, _inverted, _modulation);
-      coolix(&ac, send.power, send.mode, degC, send.fanspeed, send.swingv,
-             send.swingh, send.turbo, send.light, send.clean, send.sleep);
-      break;
-    }
-#endif  // SEND_COOLIX
-#if SEND_CORONA_AC
-    case CORONA_AC:
-    {
-      IRCoronaAc ac(_pin, _inverted, _modulation);
-      corona(&ac, send.power, send.mode, degC, send.fanspeed, send.swingv,
-             send.econo);
-      break;
-    }
-#endif  // SEND_CORONA_AC
-#if SEND_DAIKIN
-    case DAIKIN:
-    {
-      IRDaikinESP ac(_pin, _inverted, _modulation);
-      daikin(&ac, send.power, send.mode, degC, send.fanspeed, send.swingv,
-             send.swingh, send.quiet, send.turbo, send.econo, send.clean);
-      break;
-    }
-#endif  // SEND_DAIKIN
-#if SEND_DAIKIN128
-    case DAIKIN128:
-    {
-      IRDaikin128 ac(_pin, _inverted, _modulation);
-      daikin128(&ac, send.power, send.mode, degC, send.fanspeed, send.swingv,
-                send.quiet, send.turbo, send.light, send.econo, send.sleep,
-                send.clock);
-      break;
-    }
-#endif  // SEND_DAIKIN2
-#if SEND_DAIKIN152
-    case DAIKIN152:
-    {
-      IRDaikin152 ac(_pin, _inverted, _modulation);
-      daikin152(&ac, send.power, send.mode, degC, send.fanspeed, send.swingv,
-                send.quiet, send.turbo, send.econo);
-      break;
-    }
-#endif  // SEND_DAIKIN152
-#if SEND_DAIKIN160
-    case DAIKIN160:
-    {
-      IRDaikin160 ac(_pin, _inverted, _modulation);
-      daikin160(&ac, send.power, send.mode, degC, send.fanspeed, send.swingv);
-      break;
-    }
-#endif  // SEND_DAIKIN160
-#if SEND_DAIKIN176
-    case DAIKIN176:
-    {
-      IRDaikin176 ac(_pin, _inverted, _modulation);
-      daikin176(&ac, send.power, send.mode, degC, send.fanspeed, send.swingh);
-      break;
-    }
-#endif  // SEND_DAIKIN176
-#if SEND_DAIKIN2
-    case DAIKIN2:
-    {
-      IRDaikin2 ac(_pin, _inverted, _modulation);
-      daikin2(&ac, send.power, send.mode, degC, send.fanspeed, send.swingv,
-              send.swingh, send.quiet, send.turbo, send.light, send.econo,
-              send.filter, send.clean, send.beep, send.sleep, send.clock);
-      break;
-    }
-#endif  // SEND_DAIKIN2
-#if SEND_DAIKIN216
-    case DAIKIN216:
-    {
-      IRDaikin216 ac(_pin, _inverted, _modulation);
-      daikin216(&ac, send.power, send.mode, degC, send.fanspeed, send.swingv,
-                send.swingh, send.quiet, send.turbo);
-      break;
-    }
-#endif  // SEND_DAIKIN216
-#if SEND_DAIKIN64
-    case DAIKIN64:
-    {
-      IRDaikin64 ac(_pin, _inverted, _modulation);
-      daikin64(&ac, send.power, send.mode, degC, send.fanspeed, send.swingv,
-               send.quiet, send.turbo, send.sleep, send.clock);
-      break;
-    }
-#endif  // SEND_DAIKIN64
-#if SEND_DELONGHI_AC
-    case DELONGHI_AC:
-    {
-      IRDelonghiAc ac(_pin, _inverted, _modulation);
-      delonghiac(&ac, send.power, send.mode, send.celsius, degC, send.fanspeed,
-                 send.turbo, send.sleep);
-      break;
-    }
-#endif  // SEND_DELONGHI_AC
-#if SEND_ELECTRA_AC
-    case ELECTRA_AC:
-    {
-      IRElectraAc ac(_pin, _inverted, _modulation);
-      electra(&ac, send.power, send.mode, degC, send.fanspeed, send.swingv,
-              send.swingh, send.turbo, send.light, send.clean);
-      break;
-    }
-#endif  // SEND_ELECTRA_AC
-#if SEND_FUJITSU_AC
-    case FUJITSU_AC:
-    {
-      IRFujitsuAC ac(_pin, (fujitsu_ac_remote_model_t)send.model, _inverted,
-                     _modulation);
-      fujitsu(&ac, (fujitsu_ac_remote_model_t)send.model, send.power, send.mode,
-              degC, send.fanspeed, send.swingv, send.swingh, send.quiet,
-              send.turbo, send.econo, send.filter, send.clean);
-      break;
-    }
-#endif  // SEND_FUJITSU_AC
-#if SEND_GOODWEATHER
-    case GOODWEATHER:
-    {
-      IRGoodweatherAc ac(_pin, _inverted, _modulation);
-      goodweather(&ac, send.power, send.mode, degC, send.fanspeed, send.swingv,
-                  send.turbo, send.light, send.sleep);
-      break;
-    }
-#endif  // SEND_GOODWEATHER
-#if SEND_GREE
-    case GREE:
-    {
-      IRGreeAC ac(_pin, (gree_ac_remote_model_t)send.model, _inverted,
-                  _modulation);
-      gree(&ac, (gree_ac_remote_model_t)send.model, send.power, send.mode,
-           send.celsius, send.degrees, send.fanspeed, send.swingv, send.turbo,
-           send.light, send.clean, send.sleep);
-      break;
-    }
-#endif  // SEND_GREE
-#if SEND_HAIER_AC
-    case HAIER_AC:
-    {
-      IRHaierAC ac(_pin, _inverted, _modulation);
-      haier(&ac, send.power, send.mode, degC, send.fanspeed, send.swingv,
-            send.filter, send.sleep, send.clock);
-      break;
-    }
-#endif  // SEND_HAIER_AC
-#if SEND_HAIER_AC_YRW02
-    case HAIER_AC_YRW02:
-    {
-      IRHaierACYRW02 ac(_pin, _inverted, _modulation);
-      haierYrwo2(&ac, send.power, send.mode, degC, send.fanspeed, send.swingv,
-                 send.turbo, send.filter, send.sleep);
-      break;
-    }
-#endif  // SEND_HAIER_AC_YRW02
-#if SEND_HITACHI_AC
-    case HITACHI_AC:
-    {
-      IRHitachiAc ac(_pin, _inverted, _modulation);
-      hitachi(&ac, send.power, send.mode, degC, send.fanspeed, send.swingv,
-              send.swingh);
-      break;
-    }
-#endif  // SEND_HITACHI_AC
-#if SEND_HITACHI_AC1
-    case HITACHI_AC1:
-    {
-      IRHitachiAc1 ac(_pin, _inverted, _modulation);
-      bool power_toggle = false;
-      bool swing_toggle = false;
-      if (prev != NULL) {
-        power_toggle = (send.power != prev->power);
-        swing_toggle = (send.swingv != prev->swingv) ||
-                       (send.swingh != prev->swingh);
-      }
-      hitachi1(&ac, (hitachi_ac1_remote_model_t)send.model, send.power,
-               power_toggle, send.mode, degC, send.fanspeed, send.swingv,
-               send.swingh, swing_toggle, send.sleep);
-      break;
-    }
-#endif  // SEND_HITACHI_AC1
-#if SEND_HITACHI_AC344
-    case HITACHI_AC344:
-    {
-      IRHitachiAc344 ac(_pin, _inverted, _modulation);
-      hitachi344(&ac, send.power, send.mode, degC, send.fanspeed,
-                 send.swingv, send.swingh);
-      break;
-    }
-#endif  // SEND_HITACHI_AC344
-#if SEND_HITACHI_AC424
-    case HITACHI_AC424:
-    {
-      IRHitachiAc424 ac(_pin, _inverted, _modulation);
-      hitachi424(&ac, send.power, send.mode, degC, send.fanspeed, send.swingv);
-      break;
-    }
-#endif  // SEND_HITACHI_AC424
-#if SEND_KELVINATOR
-    case KELVINATOR:
-    {
-      IRKelvinatorAC ac(_pin, _inverted, _modulation);
-      kelvinator(&ac, send.power, send.mode, degC, send.fanspeed, send.swingv,
-                 send.swingh, send.quiet, send.turbo, send.light, send.filter,
-                 send.clean);
-      break;
-    }
-#endif  // SEND_KELVINATOR
-#if SEND_LG
-    case LG:
-    case LG2:
-    {
-      IRLgAc ac(_pin, _inverted, _modulation);
-      lg(&ac, (lg_ac_remote_model_t)send.model, send.power, send.mode,
-         send.degrees, send.fanspeed);
-      break;
-    }
-#endif  // SEND_LG
-#if SEND_MIDEA
-    case MIDEA:
-    {
-      IRMideaAC ac(_pin, _inverted, _modulation);
-      midea(&ac, send.power, send.mode, send.celsius, send.degrees,
-            send.fanspeed, send.swingv, send.econo, send.sleep);
-      break;
-    }
-#endif  // SEND_MIDEA
-#if SEND_MITSUBISHI_AC
-    case MITSUBISHI_AC:
-    {
-      IRMitsubishiAC ac(_pin, _inverted, _modulation);
-      mitsubishi(&ac, send.power, send.mode, degC, send.fanspeed, send.swingv,
-                 send.swingh, send.quiet, send.clock);
-      break;
-    }
-#endif  // SEND_MITSUBISHI_AC
-#if SEND_MITSUBISHI112
-    case MITSUBISHI112:
-    {
-      IRMitsubishi112 ac(_pin, _inverted, _modulation);
-      mitsubishi112(&ac, send.power, send.mode, degC, send.fanspeed,
-                    send.swingv, send.swingh, send.quiet);
-      break;
-    }
-#endif  // SEND_MITSUBISHI112
-#if SEND_MITSUBISHI136
-    case MITSUBISHI136:
-    {
-      IRMitsubishi136 ac(_pin, _inverted, _modulation);
-      mitsubishi136(&ac, send.power, send.mode, degC, send.fanspeed,
-                    send.swingv, send.quiet);
-      break;
-    }
-#endif  // SEND_MITSUBISHI136
-#if SEND_MITSUBISHIHEAVY
-    case MITSUBISHI_HEAVY_88:
-    {
-      IRMitsubishiHeavy88Ac ac(_pin, _inverted, _modulation);
-      mitsubishiHeavy88(&ac, send.power, send.mode, degC, send.fanspeed,
-                        send.swingv, send.swingh, send.turbo, send.econo,
-                        send.clean);
-      break;
-    }
-    case MITSUBISHI_HEAVY_152:
-    {
-      IRMitsubishiHeavy152Ac ac(_pin, _inverted, _modulation);
-      mitsubishiHeavy152(&ac, send.power, send.mode, degC, send.fanspeed,
-                         send.swingv, send.swingh, send.quiet, send.turbo,
-                         send.econo, send.filter, send.clean, send.sleep);
-      break;
-    }
-#endif  // SEND_MITSUBISHIHEAVY
-#if SEND_NEOCLIMA
-    case NEOCLIMA:
-    {
-      IRNeoclimaAc ac(_pin, _inverted, _modulation);
-      neoclima(&ac, send.power, send.mode, send.celsius, send.degrees,
-               send.fanspeed, send.swingv, send.swingh, send.turbo,
-               send.econo, send.light, send.filter, send.sleep);
-      break;
-    }
-#endif  // SEND_NEOCLIMA
-#if SEND_PANASONIC_AC
-    case PANASONIC_AC:
-    {
-      IRPanasonicAc ac(_pin, _inverted, _modulation);
-      panasonic(&ac, (panasonic_ac_remote_model_t)send.model, send.power,
-                send.mode, degC, send.fanspeed, send.swingv, send.swingh,
-                send.quiet, send.turbo, send.clock);
-      break;
-    }
-#endif  // SEND_PANASONIC_AC
-#if SEND_SAMSUNG_AC
-    case SAMSUNG_AC:
-    {
-      IRSamsungAc ac(_pin, _inverted, _modulation);
-      samsung(&ac, send.power, send.mode, degC, send.fanspeed, send.swingv,
-              send.quiet, send.turbo, send.light, send.filter, send.clean,
-              send.beep, prev->power);
-      break;
-    }
-#endif  // SEND_SAMSUNG_AC
-#if SEND_SANYO_AC
-    case SANYO_AC:
-    {
-      IRSanyoAc ac(_pin, _inverted, _modulation);
-      sanyo(&ac, send.power, send.mode, degC, send.fanspeed, send.swingv,
-            send.beep, send.sleep);
-      break;
-    }
-#endif  // SEND_SANYO_AC
-#if SEND_SHARP_AC
-    case SHARP_AC:
-    {
-      IRSharpAc ac(_pin, _inverted, _modulation);
-      bool prev_power = !send.power;
-      if (prev != NULL) prev_power = prev->power;
-      sharp(&ac, send.power, prev_power, send.mode, degC, send.fanspeed,
-            send.swingv, send.turbo, send.filter, send.clean);
-      break;
-    }
-#endif  // SEND_SHARP_AC
-#if SEND_TCL112AC
-    case TCL112AC:
-    {
-      IRTcl112Ac ac(_pin, _inverted, _modulation);
-      tcl112(&ac, send.power, send.mode, degC, send.fanspeed, send.swingv,
-             send.swingh, send.turbo, send.light, send.econo, send.filter);
-      break;
-    }
-#endif  // SEND_TCL112AC
-#if SEND_TECHNIBEL_AC
-    case TECHNIBEL_AC:
-    {
-      IRTechnibelAc ac(_pin, _inverted, _modulation);
-      technibel(&ac, send.power, send.mode, send.celsius, send.degrees,
-                send.fanspeed, send.swingv, send.sleep);
-      break;
-    }
-#endif  // SEND_TECHNIBEL_AC
-#if SEND_TECO
-    case TECO:
-    {
-      IRTecoAc ac(_pin, _inverted, _modulation);
-      teco(&ac, send.power, send.mode, degC, send.fanspeed, send.swingv,
-           send.light, send.sleep);
-      break;
-    }
-#endif  // SEND_TECO
-#if SEND_TOSHIBA_AC
-    case TOSHIBA_AC:
-    {
-      IRToshibaAC ac(_pin, _inverted, _modulation);
-      toshiba(&ac, send.power, send.mode, degC, send.fanspeed, send.swingv,
-              send.turbo, send.econo);
-      break;
-    }
-#endif  // SEND_TOSHIBA_AC
-#if SEND_TROTEC
-    case TROTEC:
-    {
-      IRTrotecESP ac(_pin, _inverted, _modulation);
-      trotec(&ac, send.power, send.mode, degC, send.fanspeed, send.sleep);
-      break;
-    }
-#endif  // SEND_TROTEC
-#if SEND_VESTEL_AC
-    case VESTEL_AC:
-    {
-      IRVestelAc ac(_pin, _inverted, _modulation);
-      vestel(&ac, send.power, send.mode, degC, send.fanspeed, send.swingv,
-             send.turbo, send.filter, send.sleep, send.clock);
-      break;
-    }
-#endif  // SEND_VESTEL_AC
-#if SEND_VOLTAS
-    case VOLTAS:
-    {
-      IRVoltas ac(_pin, _inverted, _modulation);
-      voltas(&ac, (voltas_ac_remote_model_t)send.model, send.power, send.mode,
-             degC, send.fanspeed, send.swingv, send.swingh, send.turbo,
-             send.econo, send.light, send.sleep);
-      break;
-    }
-#endif  // SEND_VOLTAS
-#if SEND_WHIRLPOOL_AC
-    case WHIRLPOOL_AC:
-    {
-      IRWhirlpoolAc ac(_pin, _inverted, _modulation);
-      whirlpool(&ac, (whirlpool_ac_remote_model_t)send.model, send.power,
-                send.mode, degC, send.fanspeed, send.swingv, send.turbo,
-                send.light, send.sleep, send.clock);
-      break;
-    }
-#endif  // SEND_WHIRLPOOL_AC
-#if SEND_TRANSCOLD
-    case TRANSCOLD:
-    {
-      IRTranscoldAc ac(_pin, _inverted, _modulation);
-      transcold(&ac, send.power, send.mode, degC, send.fanspeed, send.swingv,
-                send.swingh);
-      break;
-    }
-#endif  // SEND_TRANSCOLD_AC
-    default:
-      return false;  // Fail, didn't match anything.
-  }
-  return true;  // Success.
-}
+
+    GLOBALCACHE
+    PRONTO
+    RAW
+    SHERWOOD
+    SONY_38K
+    AIRWELL
+    AIWA_RC_T501
+    AMCOR
+    ARGO
+    CARRIER_AC
+    CARRIER_AC40
+    CARRIER_AC64
+    COOLIX
+    CORONA_AC
+    DAIKIN
+    DAIKIN128
+    DAIKIN152
+    DAIKIN160
+    DAIKIN176
+    DAIKIN2
+    DAIKIN216
+    DAIKIN64
+    DELONGHI_AC
+    DENON
+    DISH
+    DOSHISHA
+    ELECTRA_AC
+    EPSON
+    FUJITSU_AC
+    GICABLE
+    GOODWEATHER
+    GREE
+    HAIER_AC
+    HAIER_AC_YRW02
+    HITACHI_AC
+    HITACHI_AC1
+    HITACHI_AC2
+    HITACHI_AC3
+    HITACHI_AC344
+    HITACHI_AC424
+    INAX
+    JVC
+    KELVINATOR
+    LASERTAG
+    LEGOPF
+    LG
+    LG2
+    LUTRON
+    MAGIQUEST
+    METZ
+    MIDEA
+    MIDEA24
+    MITSUBISHI
+    MITSUBISHI112
+    MITSUBISHI136
+    MITSUBISHI2
+    MITSUBISHI_AC
+    MITSUBISHI_HEAVY_152
+    MITSUBISHI_HEAVY_88
+    MULTIBRACKETS
+    MWM
+    NEC
+    NEC_LIKE
+    NEOCLIMA
+    NIKAI
+    PANASONIC
+    PANASONIC_AC
+    PIONEER
+    RC5
+    RC5X
+    RC6
+    RCMM
+    SAMSUNG
+    SAMSUNG36
+    SAMSUNG_AC
+    SANYO
+    SANYO_AC
+    SANYO_LC7461
+    SHARP
+    SHARP_AC
+    SONY
+    SYMPHONY
+    TCL112AC
+    TECHNIBEL_AC
+    TECO
+    TOSHIBA_AC
+    TRANSCOLD
+    TROTEC
+    VESTEL_AC
+    VOLTAS
+    WHIRLPOOL_AC
+    WHYNTER
+    ZEPEAL

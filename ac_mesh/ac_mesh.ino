@@ -63,26 +63,16 @@ void receivedCallback( uint32_t from, String &msg ) {
       temp=HIGH;
     }
     if(msg[1]=='0'){
-      digitalWrite(pin1,temp);
-      digitalWrite(pin2,temp);
-      digitalWrite(pin3,temp);
-      Serial.print(F("All relay status :"));
-      Serial.println(temp); 
+      
     }
     else if(msg[1]=='1'){
-      digitalWrite(pin1,temp);
-      Serial.print(F("Relay 1 status :"));
-      Serial.println(temp); 
+      
     }
     else if(msg[1]=='2'){
-      digitalWrite(pin2,temp);
-      Serial.print(F("Relay 2 status :"));
-      Serial.println(temp); 
+     
     }
     else if(msg[1]=='3'){
-      digitalWrite(pin3,temp);
-      Serial.print(F("Relay 3 status :"));
-      Serial.println(temp); 
+      
     }
   }
 }

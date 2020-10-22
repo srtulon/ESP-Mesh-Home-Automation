@@ -21,7 +21,7 @@ void sendMessage() ; // Prototype so PlatformIO doesn't complain
 Task taskSendMessage( TASK_SECOND * 1 , TASK_FOREVER, &sendMessage );
 
 String devtype="a"; //a=type ac
-int devstatus=0; // 0 =Off , 1= On
+int devstatus=10125; //1=first model, 0= power off(1=power on),1=celsius(0=fahrenheit), 25=temperature
 //long id=ESP.getChipId();
 //long id=mesh.getNodeId();
 
@@ -108,13 +108,15 @@ void setup() {
   userScheduler.addTask( taskSendMessage );
   taskSendMessage.enable();
 
+  
   ac.next.protocol = decode_type_t::DAIKIN;  // Set a protocol to use.
   ac.next.model = 1;  // Some A/Cs have different models. Try just the first.
+  ac.next.power = false;  // Initially start with the unit off.
   ac.next.mode = stdAc::opmode_t::kCool;  // Run in cool mode initially.
   ac.next.celsius = true;  // Use Celsius for temp units. False = Fahrenheit
   ac.next.degrees = 25;  // 25 degrees.
   ac.next.fanspeed = stdAc::fanspeed_t::kMedium;  // Start the fan at medium.
-  ac.next.power = false;  // Initially start with the unit off.
+
 }
 
 void loop() {

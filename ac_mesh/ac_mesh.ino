@@ -1,8 +1,16 @@
+#include <Arduino.h>
+#include <IRremoteESP8266.h>
+#include <IRac.h>
+#include <IRutils.h>
+
 #include "painlessMesh.h"
 
 #define   MESH_PREFIX     "mesh"
 #define   MESH_PASSWORD   "password"
 #define   MESH_PORT       5555
+
+const uint16_t kIrLed = 4;  // The ESP GPIO pin to use that controls the IR LED.
+IRac ac(kIrLed);  // Create a A/C object using GPIO to sending messages with.
 
 Scheduler userScheduler; // to control your personal task
 painlessMesh  mesh;
@@ -19,9 +27,6 @@ int devstatus=0; // 0 =Off , 1= On
 
 char charBuf[50];
 
-int pin1=D4;
-int pin2=D5;
-int pin3=D6;
 
 int temp;
 
@@ -98,6 +103,7 @@ void nodeTimeAdjustedCallback(int32_t offset) {
 
 void setup() {
   Serial.begin(115200);
+  delay(200);
   Serial.println("Start");
 
 //mesh.setDebugMsgTypes( ERROR | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION | GENERAL | MSG_TYPES | REMOTE ); // all types on
@@ -112,10 +118,13 @@ void setup() {
   userScheduler.addTask( taskSendMessage );
   taskSendMessage.enable();
 
-  pinMode(pin1,OUTPUT);
-  pinMode(pin2,OUTPUT);
-  pinMode(pin3,OUTPUT);
-  
+  ac.next.protocol = decode_type_t::DAIKIN;  // Set a protocol to use.
+  ac.next.model = 1;  // Some A/Cs have different models. Try just the first.
+  ac.next.mode = stdAc::opmode_t::kCool;  // Run in cool mode initially.
+  ac.next.celsius = true;  // Use Celsius for temp units. False = Fahrenheit
+  ac.next.degrees = 25;  // 25 degrees.
+  ac.next.fanspeed = stdAc::fanspeed_t::kMedium;  // Start the fan at medium.
+  ac.next.power = false;  // Initially start with the unit off.
 }
 
 void loop() {

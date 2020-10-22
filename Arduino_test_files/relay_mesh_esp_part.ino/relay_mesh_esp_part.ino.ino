@@ -4,6 +4,9 @@
 #define   MESH_PASSWORD   "password"
 #define   MESH_PORT       5555
 
+
+
+
 Scheduler userScheduler; // to control your personal task
 painlessMesh  mesh;
 
@@ -13,8 +16,7 @@ void sendMessage() ; // Prototype so PlatformIO doesn't complain
 Task taskSendMessage( TASK_SECOND * 1 , TASK_FOREVER, &sendMessage );
 
 String devtype="r3"; //r=type relay, 3= 3 relay
-int devstatus=0; //0= Off , 1= On
-int ack=1;  // Acknowledgement 1 = recieved/not needed , 0= pending  
+int devstatus=0;
 //long id=ESP.getChipId();
 //long id=mesh.getNodeId();
 
@@ -31,14 +33,13 @@ int temp;
 // Send message to mesh
 void sendMessage() {
   //message format: #(id),(type),(status)$ 
-  //send for certain amount of time for registering into database
-  if((millis()<100000) || (ack=0)){
+  //send to certain amount of time for registering into database
+  if(millis()<100000){
     String id = "";
     id += mesh.getNodeId();
     String a= '#' + (String)id + ',' + devtype + ',' + devstatus + '$';
     mesh.sendBroadcast(a);
     taskSendMessage.setInterval(random( TASK_SECOND * 1, TASK_SECOND * 10));
-    ack=0; 
   }
 }
 
@@ -59,14 +60,8 @@ void receivedCallback( uint32_t from, String &msg ) {
     else{
       temp=HIGH;
     }
-    if(msg[1]=='0'){
-      digitalWrite(pin1,temp);
-      digitalWrite(pin2,temp);
-      digitalWrite(pin3,temp);
-      Serial.print(F("All relay status :"));
-      Serial.println(temp); 
-    }
-    else if(msg[1]=='1'){
+
+    if(msg[1]=='1'){
       digitalWrite(pin1,temp);
       Serial.print(F("Relay 1 status :"));
       Serial.println(temp); 
@@ -80,11 +75,6 @@ void receivedCallback( uint32_t from, String &msg ) {
       digitalWrite(pin3,temp);
       Serial.print(F("Relay 3 status :"));
       Serial.println(temp); 
-    }
-  }
-  else if(msg1.indexOf('&')>-1){
-    if(msg[2]=='1'){
-       ack=1;
     }
   }
 }

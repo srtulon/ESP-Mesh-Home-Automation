@@ -13,7 +13,7 @@
 #include <PubSubClient.h>
 #include <WiFiClient.h>
 
-#define   MESH_PREFIX     "mesh"
+#define   MESH_PREFIX     "brac"
 #define   MESH_PASSWORD   "password"
 #define   MESH_PORT       5555
 
@@ -29,25 +29,20 @@ void mqttCallback(char* topic, byte* payload, unsigned int length);
 IPAddress getlocalIP();
 
 IPAddress myIP(0,0,0,0);
-IPAddress mqttBroker(192, 168, 0, 102);
-int mqttport=1883;
-
-/*const char* mqttBroker = mqttBroker="m24.cloudmqtt.com";
-const char* mqttuser = "vvjqiinu";
-const char* mqttpassword = "jemMAT3tJ8xf";
-
-*/
-
+//IPAddress mqttBroker(192, 168, 0, 135);
+const char* mqttBroker = "raspberrypi.local";
 
 painlessMesh  mesh;
 
+WiFiClient espClient;
+PubSubClient mqttClient(espClient);
 
-WiFiClient wifiClient;
-PubSubClient mqttClient(mqttBroker, 1883, mqttCallback, wifiClient);
-//PubSubClient mqttClient(wifiClient);
+//WiFiClient wifiClient;
+//PubSubClient mqttClient(mqttBroker, 1883, mqttCallback, wifiClient);
 
 void setup() {
   Serial.begin(115200);
+  
   mesh.setDebugMsgTypes( ERROR | STARTUP | CONNECTION );  // set before init() so that you can see startup messages
 
   // Channel set to 6. Make sure to use the same channel for your mesh and for you other
@@ -62,12 +57,16 @@ void setup() {
   mesh.setRoot(true);
   // This node and all other nodes should ideally know the mesh contains a root, so call this on all nodes
   mesh.setContainsRoot(true);
-  mqttClient.setServer(mqttBroker, mqttport);
+
+  mqttClient.setServer(mqttBroker, 1883);
   mqttClient.setCallback(mqttCallback);
 }
 
 void loop() {
   mesh.update();
+  if (!mqttClient.connected() && myIP == getlocalIP()) {
+    mqttReconnect();
+  }
   mqttClient.loop();
 
   if(myIP != getlocalIP()){
@@ -81,6 +80,17 @@ void loop() {
   }
 }
 
+void mqttReconnect(){
+  if (mqttClient.connect("painlessMeshClient")) {
+      Serial.println("connected");
+      mqttClient.publish("device/from/gateway","Ready!");
+      mqttClient.subscribe("device/to/#");
+    } 
+    else {
+      Serial.print("failed, rc=");
+      Serial.println(mqttClient.state());
+    }
+}
 
 void receivedCallback( const uint32_t &from, const String &msg ) {
   Serial.printf("bridge: Received from %u msg=%s\n", from, msg.c_str());
@@ -121,8 +131,6 @@ void mqttCallback(char* topic, uint8_t* payload, unsigned int length) {
     Serial.printf("Target:");
     Serial.println(target);
     mesh.sendSingle(target, msg);
-
-    //removed client checking because it is not working
     /*
     if(mesh.isConnected(target))
     {

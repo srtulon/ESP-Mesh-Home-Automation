@@ -11,12 +11,13 @@ dstatus = 0  # devie status
 ########################## DATABASE PART ###########################################
 
 # Database connection
-conn = mariadb.connect(host='localhost', database='test', password='abc123', user='root')
+conn = mariadb.connect(host='192.168.1.27', database='test', password='abc123', user='root')
 c = conn.cursor()
 
 # For creating create db
 # Below line  is hide your warning
-c.execute("SET sql_notes = 0; ")
+sql_notes="SET sql_notes = 0; "
+c.execute(sql_notes , multi=True)
 # create db here....
 c.execute("create database IF NOT EXISTS test")
 
@@ -26,6 +27,7 @@ def create_table():
     c.execute('CREATE TABLE IF NOT EXISTS devices ( id varchar(20) not null, type varchar(20) not null,name varchar(20) not null, status int, PRIMARY KEY (id))')
     c.execute('CREATE TABLE IF NOT EXISTS stat_timeline (id varchar(20) not null, status int, TimeStamp TIMESTAMP, FOREIGN KEY (id) REFERENCES devices(id))')
     c.execute('CREATE TABLE IF NOT EXISTS links (id varchar(20) not null, link_id varchar(20) , link int, FOREIGN KEY (id) REFERENCES devices(id))')
+    #c.execute('CREATE TABLE IF NOT EXISTS ircode (id varchar(20) not null, link_id varchar(20) , link int, FOREIGN KEY (id) REFERENCES devices(id))')
 
 
 # data entry
@@ -39,24 +41,25 @@ def data_entry():
             new_id = did + '.' + str(i)
             print(new_id)
             try:
-                c.execute("INSERT IGNORE devices (id,type,name,status) VALUES (%s,%s,%s,%s);",(new_id, dtype, new_id, dstatus))
+                c.execute("LOCK TABLES `devices` WRITE;INSERT IGNORE devices (id,type,name,status) VALUES (%s,%s,%s,%s);UNLOCK TABLES;",(new_id, dtype, new_id, dstatus), multi=True)
             except mariadb.Error as error:
-                print("Error: {}".format(error))
+                print("Error1: {}".format(error))
     else:
         try:
-            c.execute("INSERT IGNORE devices (id,type,name,status) VALUES (%s,%s,%s,%s);", (did, dtype, did, dstatus))
+            c.execute("LOCK TABLES `devices` WRITE;INSERT IGNORE devices (id,type,name,status) VALUES (%s,%s,%s,%s);UNLOCK TABLES;", (did, dtype, did, dstatus), multi=True)
         except mariadb.Error as error:
-            print("Error: {}".format(error))
+            print("Error2: {}".format(error))
 
     conn.commit()
     print("Data entry completed")
+    ack(did)
 
 
     # insert new data in stat_timeline if device status is changed
     try:
         c.execute('SELECT status FROM devices WHERE id=' + did)
     except mariadb.Error as error:
-        print("Error: {}".format(error))
+        print("Error3: {}".format(error))
 
     for row in c.fetchall():
         # print(row)
@@ -75,7 +78,7 @@ def data_entry():
                 set_status(device_id=did, status=dstatus, send=False)
                 link()
             except mariadb.Error as error:
-                print("Error: {}".format(error))
+                print("Error4: {}".format(error))
 
 
 # link
@@ -86,7 +89,7 @@ def link():
         data = c.fetchall()
         # print(data)
     except mariadb.Error as error:
-        print("Error: {}".format(error))
+        print("Error5: {}".format(error))
     for row in data:
         print(row[0])
         # update status change in stat_timeline and devices
@@ -107,17 +110,17 @@ def link():
                     # update status change in stat_timeline and devices
                     set_status(device_id=row[0], status='1',send=True)
             except mariadb.Error as error:
-                print("Error: {}".format(error))
+                print("Error6: {}".format(error))
 
 def set_status(device_id,status,send):
     try:
-        c.execute('INSERT INTO stat_timeline (id,status) VALUES (%s,%s);', (device_id, status))
+        c.execute('LOCK TABLES `stat_timeline` WRITE;INSERT INTO stat_timeline (id,status) VALUES (%s,%s);UNLOCK TABLES;', (device_id, status), multi=True)
     except mariadb.Error as error:
-        print("Error: {}".format(error))
+        print("Error7: {}".format(error))
     try:
-        c.execute('UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id}")
+        c.execute('LOCK TABLES `devices` WRITE;UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id};UNLOCK TABLES;", multi=True)
     except mariadb.Error as error:
-        print("Error: {}".format(error))
+        print("Error8: {}".format(error))
     if send:
         # send linked device status via MQTT [Format : @(relay number)(status)%)]
         temp = device_id.split('.')
@@ -139,7 +142,7 @@ def read_db():
 # initialization
 def initialization():
     print("Start initialization")
-    c.execute("INSERT INTO stat_timeline (id,status) SELECT id, status FROM devices;")
+    c.execute("INSERT INTO stat_timeline (id,status) SELECT id, status FROM devices;", multi=True)
 
 
 create_table()
@@ -160,7 +163,7 @@ def on_message(client, userdata, msg):
     txt = (msg.payload).decode("utf-8")
     print("##########################################")
     # print(len(txt))
-    # print(txt)
+    print(txt)
     # print(txt.find('$'))
     if len(txt) > 10:
         # message format: #(id),(type),(status)$
@@ -172,6 +175,7 @@ def on_message(client, userdata, msg):
             did = s[0]
             dtype = s[1]
             dstatus = s[2]
+
             # print(len(did))
             # print(did)
             # print(dtype)
@@ -186,16 +190,26 @@ def on_message(client, userdata, msg):
 def send_message(dev, msg):
     # trimming
     msg.strip()
-
     # sending to "device/to/(target device)
     dev = "device/to/" + dev
     # print(dev)
     client.publish(dev, msg)
+
     # print("send check")
 
+
+# send acknowledgement
+def ack(dev):
+    # trimming
+    # sending to "device/to/(target device)
+    print("sending acknowledgement  ")
+    dev = "device/to/" + dev
+    # print(dev)
+    client.publish(dev, '&1*')
+    # print("send check")
 
 client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
-client.connect("MQTT.com", 1883, 60)  # change the address to MQTT broker server
+client.connect("192.168.1.27", 1883, 60)  # change the address to MQTT broker server
 client.loop_forever()

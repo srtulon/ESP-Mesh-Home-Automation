@@ -1,8 +1,16 @@
+#include <Arduino.h>
+#include <IRremoteESP8266.h>
+#include <IRac.h>
+#include <IRutils.h>
+
 #include "painlessMesh.h"
 
 #define   MESH_PREFIX     "mesh"
 #define   MESH_PASSWORD   "password"
 #define   MESH_PORT       5555
+
+const uint16_t kIrLed = 4;  // The ESP GPIO pin to use that controls the IR LED.
+IRac ac(kIrLed);  // Create a A/C object using GPIO to sending messages with.
 
 Scheduler userScheduler; // to control your personal task
 painlessMesh  mesh;
@@ -13,15 +21,12 @@ void sendMessage() ; // Prototype so PlatformIO doesn't complain
 Task taskSendMessage( TASK_SECOND * 1 , TASK_FOREVER, &sendMessage );
 
 String devtype="a"; //a=type ac
-int devstatus=0; // 0 =Off , 1= On
+int devstatus=10125; //1=first model, 0= power off(1=power on),1=celsius(0=fahrenheit), 25=temperature
 //long id=ESP.getChipId();
 //long id=mesh.getNodeId();
 
 char charBuf[50];
 
-int pin1=D4;
-int pin2=D5;
-int pin3=D6;
 
 int temp;
 
@@ -58,26 +63,16 @@ void receivedCallback( uint32_t from, String &msg ) {
       temp=HIGH;
     }
     if(msg[1]=='0'){
-      digitalWrite(pin1,temp);
-      digitalWrite(pin2,temp);
-      digitalWrite(pin3,temp);
-      Serial.print(F("All relay status :"));
-      Serial.println(temp); 
+      
     }
     else if(msg[1]=='1'){
-      digitalWrite(pin1,temp);
-      Serial.print(F("Relay 1 status :"));
-      Serial.println(temp); 
+      
     }
     else if(msg[1]=='2'){
-      digitalWrite(pin2,temp);
-      Serial.print(F("Relay 2 status :"));
-      Serial.println(temp); 
+     
     }
     else if(msg[1]=='3'){
-      digitalWrite(pin3,temp);
-      Serial.print(F("Relay 3 status :"));
-      Serial.println(temp); 
+      
     }
   }
 }
@@ -98,6 +93,7 @@ void nodeTimeAdjustedCallback(int32_t offset) {
 
 void setup() {
   Serial.begin(115200);
+  delay(200);
   Serial.println("Start");
 
 //mesh.setDebugMsgTypes( ERROR | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION | GENERAL | MSG_TYPES | REMOTE ); // all types on
@@ -112,10 +108,15 @@ void setup() {
   userScheduler.addTask( taskSendMessage );
   taskSendMessage.enable();
 
-  pinMode(pin1,OUTPUT);
-  pinMode(pin2,OUTPUT);
-  pinMode(pin3,OUTPUT);
   
+  ac.next.protocol = decode_type_t::DAIKIN;  // Set a protocol to use.
+  ac.next.model = 1;  // Some A/Cs have different models. Try just the first.
+  ac.next.power = false;  // Initially start with the unit off.
+  ac.next.mode = stdAc::opmode_t::kCool;  // Run in cool mode initially.
+  ac.next.celsius = true;  // Use Celsius for temp units. False = Fahrenheit
+  ac.next.degrees = 25;  // 25 degrees.
+  ac.next.fanspeed = stdAc::fanspeed_t::kMedium;  // Start the fan at medium.
+
 }
 
 void loop() {

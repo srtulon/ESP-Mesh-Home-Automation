@@ -1,11 +1,12 @@
 # ESP-Mesh-Home-Automation
 Device used: 
   - Raspberry Pi (As MQTT broker server and Database server)
-  - ESP8266 (As controller device , MQTT bridge for mesh nodes)
+  - ESP8266 or ESP32 (As controller device , MQTT bridge for mesh nodes)
   
 Libraries & Services used :
   - [painlessMesh](https://github.com/gmag11/painlessMesh)
   - [pubsubclient](https://github.com/knolleary/pubsubclient)
+  - [IRremoteESP8266](https://github.com/crankyoldgit/IRremoteESP8266)
   - Paho MQTT client for python (pip3 install paho-mqtt)
   - [Mosquitto MQTT server](https://randomnerdtutorials.com/how-to-install-mosquitto-broker-on-raspberry-pi/)
   - Mysql-connector for python (pip3 install mysql-connector-python)

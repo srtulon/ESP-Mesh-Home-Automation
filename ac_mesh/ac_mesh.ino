@@ -21,7 +21,7 @@ void sendMessage() ; // Prototype so PlatformIO doesn't complain
 Task taskSendMessage( TASK_SECOND * 1 , TASK_FOREVER, &sendMessage );
 
 String devtype="a"; //a=type ac
-int devstatus=10125; //1=first model, 0= power off(1=power on),1=celsius(0=fahrenheit), 25=temperature
+int devstatus=110125; //1= protocol(first is AIRWELL) 1=first model, 0= power off(1=power on),1=celsius(0=fahrenheit), 25=temperature
 //long id=ESP.getChipId();
 //long id=mesh.getNodeId();
 

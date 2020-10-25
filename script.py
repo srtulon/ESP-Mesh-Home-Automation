@@ -11,7 +11,7 @@ dstatus = 0  # devie status
 ########################## DATABASE PART ###########################################
 
 # Database connection
-conn = mariadb.connect(host='192.168.1.27', database='test', password='abc123', user='root')
+conn = mariadb.connect(host='192.168.1.24', database='test', password='abc123', user='root')
 c = conn.cursor()
 
 # For creating create db
@@ -211,5 +211,5 @@ def ack(dev):
 client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
-client.connect("192.168.1.27", 1883, 60)  # change the address to MQTT broker server
+client.connect("192.168.1.24", 1883, 60)  # change the address to MQTT broker server
 client.loop_forever()

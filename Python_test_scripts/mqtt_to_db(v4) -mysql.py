@@ -25,7 +25,7 @@ c.execute("create database IF NOT EXISTS test")
 def create_table():
     c.execute('CREATE TABLE IF NOT EXISTS devices ( id varchar(20) not null, type varchar(20) not null,name varchar(20) not null, status int, PRIMARY KEY (id))')
     c.execute('CREATE TABLE IF NOT EXISTS stat_timeline (id varchar(20) not null, status int, TimeStamp TIMESTAMP, FOREIGN KEY (id) REFERENCES devices(id))')
-    c.execute('CREATE TABLE IF NOT EXISTS links (id varchar(20) not null, link_id varchar(20) , link int, FOREIGN KEY (id) REFERENCES devices(id))')
+    c.execute('CREATE TABLE IF NOT EXISTS links (ser int AUTO_INCREMENT,id varchar(20) not null, link_id varchar(20) , link int, FOREIGN KEY (id) REFERENCES devices(id),PRIMARY KEY (ser))')
 
 
 # data entry

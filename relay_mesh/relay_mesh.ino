@@ -12,7 +12,7 @@ void sendMessage() ; // Prototype so PlatformIO doesn't complain
 
 Task taskSendMessage( TASK_SECOND * 1 , TASK_FOREVER, &sendMessage );
 
-String devtype="r3"; //r=type relay, 3= 3 relay
+String devtype="r4"; //r=type relay, 4= 4 relay
 int devstatus=0; //0= Off , 1= On
 int ack=1;  // Acknowledgement 1 = recieved/not needed , 0= pending  
 //long id=ESP.getChipId();
@@ -20,9 +20,10 @@ int ack=1;  // Acknowledgement 1 = recieved/not needed , 0= pending
 
 char charBuf[50];
 
-int pin1=D4;
-int pin2=D5;
-int pin3=D6;
+int pin1=1;
+int pin2=2;
+int pin3=3;
+int pin4=4;
 
 int temp;
 
@@ -63,6 +64,7 @@ void receivedCallback( uint32_t from, String &msg ) {
       digitalWrite(pin1,temp);
       digitalWrite(pin2,temp);
       digitalWrite(pin3,temp);
+      digitalWrite(pin4,temp);
       Serial.print(F("All relay status :"));
       Serial.println(temp); 
     }
@@ -79,6 +81,11 @@ void receivedCallback( uint32_t from, String &msg ) {
     else if(msg[1]=='3'){
       digitalWrite(pin3,temp);
       Serial.print(F("Relay 3 status :"));
+      Serial.println(temp); 
+    }
+    else if(msg[1]=='4'){
+      digitalWrite(pin4,temp);
+      Serial.print(F("Relay 4 status :"));
       Serial.println(temp); 
     }
   }
@@ -122,6 +129,7 @@ void setup() {
   pinMode(pin1,OUTPUT);
   pinMode(pin2,OUTPUT);
   pinMode(pin3,OUTPUT);
+  pinMode(pin4,OUTPUT);
   
 }
 

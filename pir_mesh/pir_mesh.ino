@@ -8,13 +8,13 @@ Scheduler userScheduler; // to control your personal task
 painlessMesh  mesh;
 
 //const int MOTION_PIN = D1; 
-const int LED_PIN = 1;
+const int LED_PIN = 2;
 
 
 
 char charBuf[50];
 String a=""; 
-String devtype='p'; //p=type pir sensor
+String devtype="p"; //p=type pir sensor
 int devstatus=0; // 0 =Off , 1= On
 int prevstatus=0; // Previous status
 int ack=1; // Acknowledgement 1 = recieved/not needed , 0= pending  

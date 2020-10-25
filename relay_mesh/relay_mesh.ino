@@ -20,9 +20,9 @@ int ack=1;  // Acknowledgement 1 = recieved/not needed , 0= pending
 
 char charBuf[50];
 
-int pin1=D4;
-int pin2=D5;
-int pin3=D6;
+int pin1=1;
+int pin2=2;
+int pin3=3;
 
 int temp;
 

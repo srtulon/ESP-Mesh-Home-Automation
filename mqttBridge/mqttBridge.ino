@@ -29,10 +29,15 @@ void mqttCallback(char* topic, byte* payload, unsigned int length);
 IPAddress getlocalIP();
 
 IPAddress myIP(0,0,0,0);
-//IPAddress mqttBroker(192, 168, 0, 102);
+
+int a=192;
+int b=168;
+int c=0;
+int d=145;
+IPAddress mqttBroker(a, b, c, d);
 int mqttport=1883;
 
-const char* mqttBroker = "raspberrypi.local";
+//const char* mqttBroker = "raspberrypi.local";
 /*
 const char* mqttuser = "vvjqiinu";
 const char* mqttpassword = "jemMAT3tJ8xf";
@@ -74,12 +79,11 @@ void loop() {
   if(myIP != getlocalIP()){
     myIP = getlocalIP();
     Serial.println("My IP is " + myIP.toString());
+  }
     if (mqttClient.connect("painlessMeshClient")) {
       mqttClient.publish("device/from/gateway","Ready!");
       mqttClient.subscribe("device/to/#");
     } 
-    
-  }
 }
 
 

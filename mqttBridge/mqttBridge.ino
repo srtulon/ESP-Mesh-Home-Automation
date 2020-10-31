@@ -80,11 +80,14 @@ void loop() {
     myIP = getlocalIP();
     Serial.println("My IP is " + myIP.toString());
   }
-   if (!mqttClient.connected()){
-      mqttClient.connect("painlessMeshClient");
-      mqttClient.publish("device/from/gateway","Ready!");
-      mqttClient.subscribe("device/to/#");
-    } 
+  if (!mqttClient.connected() && myIP == getlocalIP()){
+      Serial.println("Attempting MQTT connection...");
+      if(mqttClient.connect("painlessMeshClient")){
+        Serial.println("connected");
+        mqttClient.publish("device/from/gateway","Ready!");
+        mqttClient.subscribe("device/to/#");
+    }
+  }
 }
 
 

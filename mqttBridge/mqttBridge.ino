@@ -33,7 +33,7 @@ IPAddress myIP(0,0,0,0);
 int a=192;
 int b=168;
 int c=0;
-int d=145;
+int d=103;
 IPAddress mqttBroker(a, b, c, d);
 int mqttport=1883;
 
@@ -80,7 +80,8 @@ void loop() {
     myIP = getlocalIP();
     Serial.println("My IP is " + myIP.toString());
   }
-    if (mqttClient.connect("painlessMeshClient")) {
+   if (!mqttClient.connected()){
+      mqttClient.connect("painlessMeshClient");
       mqttClient.publish("device/from/gateway","Ready!");
       mqttClient.subscribe("device/to/#");
     } 

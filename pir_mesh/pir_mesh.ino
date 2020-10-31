@@ -71,6 +71,7 @@ void nodeTimeAdjustedCallback(int32_t offset) {
 
 
 void setup() {
+  SPIFFS.begin(true);
   Serial.begin(115200);
   Serial.println("Start");
   delay(1000);

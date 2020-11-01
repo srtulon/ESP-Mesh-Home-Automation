@@ -20,9 +20,9 @@ int ack=1;  // Acknowledgement 1 = recieved/not needed , 0= pending
 
 char charBuf[50];
 
-int pin1=D4;
-int pin2=D5;
-int pin3=D6;
+int pin1=1;
+int pin2=2;
+int pin3=3;
 
 int temp;
 
@@ -108,13 +108,23 @@ void setup() {
   Serial.println("Start");
 
 //mesh.setDebugMsgTypes( ERROR | MESH_STATUS | CONNECTION | SYNC | COMMUNICATION | GENERAL | MSG_TYPES | REMOTE ); // all types on
-  mesh.setDebugMsgTypes( ERROR | STARTUP );  // set before init() so that you can see startup messages
+  mesh.setDebugMsgTypes(ERROR | STARTUP | DEBUG); // set before init() so that you can see startup messages
 
   mesh.init( MESH_PREFIX, MESH_PASSWORD, &userScheduler, MESH_PORT );
   mesh.onReceive(&receivedCallback);
   mesh.onNewConnection(&newConnectionCallback);
   mesh.onChangedConnections(&changedConnectionCallback);
   mesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
+  
+  // if you want your node to accept OTA firmware, simply include this line
+  // with whatever role you want your hardware to be. For instance, a
+  // mesh network may have a thermometer, rain detector, and bridge. Each of
+  // those may require different firmware, so different roles are preferrable.
+  //
+  // MAKE SURE YOUR UPLOADED OTA FIRMWARE INCLUDES OTA SUPPORT OR YOU WILL LOSE
+  // THE ABILITY TO UPLOAD MORE FIRMWARE OVER OTA. YOU ALSO WANT TO MAKE SURE
+  // THE ROLES ARE CORRECT
+  mesh.initOTAReceive(devtype);
 
   userScheduler.addTask( taskSendMessage );
   taskSendMessage.enable();

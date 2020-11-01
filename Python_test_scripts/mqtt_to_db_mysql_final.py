@@ -1,8 +1,11 @@
-#!/usr/bin/python3 
+#!/usr/bin/python3
+import time
 import paho.mqtt.client as mqtt
 import re
 
 import mysql.connector as mariadb
+
+time.sleep(20)
 
 # Declaring global variable
 did = 0  # devie id

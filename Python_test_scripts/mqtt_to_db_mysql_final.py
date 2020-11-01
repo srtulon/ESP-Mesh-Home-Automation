@@ -159,11 +159,12 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     global did, dtype, dstatus
     txt = (msg.payload).decode("utf-8")
-    print("##########################################")
+
     # print(len(txt))
     # print(txt)
     # print(txt.find('$'))
     if len(txt) > 10:
+        print("##########################################")
         # message format: #(id),(type),(status)$
         if txt[0] == '#' and txt.find('$') > 0:
             txt = txt.replace("#", "")

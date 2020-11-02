@@ -1,7 +1,11 @@
+#!/usr/bin/python3
+import time
 import paho.mqtt.client as mqtt
 import re
 
 import mysql.connector as mariadb
+
+time.sleep(20)
 
 # Declaring global variable
 did = 0  # devie id
@@ -41,12 +45,12 @@ def data_entry():
             new_id = did + '.' + str(i)
             print(new_id)
             try:
-                c.execute("LOCK TABLES `devices` WRITE;INSERT IGNORE devices (id,type,name,status) VALUES (%s,%s,%s,%s);UNLOCK TABLES;",(new_id, dtype, new_id, dstatus), multi=True)
+                c.execute("INSERT IGNORE devices (id,type,name,status) VALUES (%s,%s,%s,%s);",(new_id, dtype, new_id, dstatus), multi=True)
             except mariadb.Error as error:
                 print("Error1: {}".format(error))
     else:
         try:
-            c.execute("LOCK TABLES `devices` WRITE;INSERT IGNORE devices (id,type,name,status) VALUES (%s,%s,%s,%s);UNLOCK TABLES;", (did, dtype, did, dstatus), multi=True)
+            c.execute("INSERT IGNORE devices (id,type,name,status) VALUES (%s,%s,%s,%s);", (did, dtype, did, dstatus), multi=True)
         except mariadb.Error as error:
             print("Error2: {}".format(error))
 
@@ -114,11 +118,11 @@ def link():
 
 def set_status(device_id,status,send):
     try:
-        c.execute('LOCK TABLES `stat_timeline` WRITE;INSERT INTO stat_timeline (id,status) VALUES (%s,%s);UNLOCK TABLES;', (device_id, status), multi=True)
+        c.execute('INSERT INTO stat_timeline (id,status) VALUES (%s,%s);', (device_id, status), multi=True)
     except mariadb.Error as error:
         print("Error7: {}".format(error))
     try:
-        c.execute('LOCK TABLES `devices` WRITE;UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id};UNLOCK TABLES;", multi=True)
+        c.execute('UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id};", multi=True)
     except mariadb.Error as error:
         print("Error8: {}".format(error))
     if send:
@@ -161,11 +165,12 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     global did, dtype, dstatus
     txt = (msg.payload).decode("utf-8")
-    print("##########################################")
+
     # print(len(txt))
     print(txt)
     # print(txt.find('$'))
     if len(txt) > 10:
+        print("##########################################")
         # message format: #(id),(type),(status)$
         if txt[0] == '#' and txt.find('$') > 0:
             txt = txt.replace("#", "")

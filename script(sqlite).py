@@ -3,7 +3,7 @@ import time
 import paho.mqtt.client as mqtt
 import re
 
-import mysql.connector as mariadb
+import sqlite3
 
 time.sleep(20)
 
@@ -14,16 +14,10 @@ dstatus = 0  # devie status
 
 ########################## DATABASE PART ###########################################
 
-# Database connection
-conn = mariadb.connect(host='raspberrypi.local', database='test', password='abc123', user='root')
+# sqlite3 Database connection
+conn = sqlite3.connect('database.db',check_same_thread=False)
 c = conn.cursor()
 
-# For creating create db
-# Below line  is hide your warning
-sql_notes="SET sql_notes = 0; "
-c.execute(sql_notes , multi=True)
-# create db here....
-c.execute("create database IF NOT EXISTS test")
 
 
 # create table
@@ -45,12 +39,12 @@ def data_entry():
             new_id = did + '.' + str(i)
             print(new_id)
             try:
-                c.execute("INSERT IGNORE devices (id,type,name,status) VALUES (%s,%s,%s,%s);",(new_id, dtype, new_id, dstatus), multi=True)
+                c.execute("INSERT IGNORE devices (id,type,name,status) VALUES (%s,%s,%s,%s);",(new_id, dtype, new_id, dstatus))
             except mariadb.Error as error:
                 print("Error1: {}".format(error))
     else:
         try:
-            c.execute("INSERT IGNORE devices (id,type,name,status) VALUES (%s,%s,%s,%s);", (did, dtype, did, dstatus), multi=True)
+            c.execute("INSERT IGNORE devices (id,type,name,status) VALUES (%s,%s,%s,%s);", (did, dtype, did, dstatus))
         except mariadb.Error as error:
             print("Error2: {}".format(error))
 
@@ -118,11 +112,11 @@ def link():
 
 def set_status(device_id,status,send):
     try:
-        c.execute('INSERT INTO stat_timeline (id,status) VALUES (%s,%s);', (device_id, status), multi=True)
+        c.execute('INSERT INTO stat_timeline (id,status) VALUES (%s,%s);', (device_id, status))
     except mariadb.Error as error:
         print("Error7: {}".format(error))
     try:
-        c.execute('UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id};", multi=True)
+        c.execute('UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id};")
     except mariadb.Error as error:
         print("Error8: {}".format(error))
     if send:
@@ -146,7 +140,7 @@ def read_db():
 # initialization
 def initialization():
     print("Start initialization")
-    c.execute("INSERT INTO stat_timeline (id,status) SELECT id, status FROM devices;", multi=True)
+    c.execute("INSERT INTO stat_timeline (id,status) SELECT id, status FROM devices;")
 
 
 create_table()
@@ -216,5 +210,5 @@ def ack(dev):
 client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
-client.connect('192.168.1.61', 1883, 60)  # change the address to MQTT broker server
+client.connect('192.168.0.102', 1883, 60)  # change the address to MQTT broker server
 client.loop_forever()

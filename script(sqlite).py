@@ -152,7 +152,7 @@ initialization()
 # mqtt connection
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
-    client.subscribe("device/from/#")
+    client.subscribe("device/from/#" ,qos=1 )
 
 
 # new message
@@ -210,5 +210,5 @@ def ack(dev):
 client = mqtt.Client(client_id="script", clean_session=False)
 client.on_connect = on_connect
 client.on_message = on_message
-client.connect('192.168.0.102 ', 1883, 60)  # change the address to MQTT broker server
+client.connect('192.168.0.102', 1883, 60)  # change the address to MQTT broker server
 client.loop_forever()

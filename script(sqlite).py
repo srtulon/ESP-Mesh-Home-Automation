@@ -5,7 +5,7 @@ import re
 
 import sqlite3
 
-time.sleep(20)
+#time.sleep(20)
 
 # Declaring global variable
 did = 0  # devie id
@@ -40,12 +40,12 @@ def data_entry():
             print(new_id)
             try:
                 c.execute("INSERT IGNORE devices (id,type,name,status) VALUES (%s,%s,%s,%s);",(new_id, dtype, new_id, dstatus))
-            except mariadb.Error as error:
+            except sqlite3.Error as error:
                 print("Error1: {}".format(error))
     else:
         try:
             c.execute("INSERT IGNORE devices (id,type,name,status) VALUES (%s,%s,%s,%s);", (did, dtype, did, dstatus))
-        except mariadb.Error as error:
+        except sqlite3.Error as error:
             print("Error2: {}".format(error))
 
     conn.commit()
@@ -56,7 +56,7 @@ def data_entry():
     # insert new data in stat_timeline if device status is changed
     try:
         c.execute('SELECT status FROM devices WHERE id=' + did)
-    except mariadb.Error as error:
+    except sqlite3.Error as error:
         print("Error3: {}".format(error))
 
     for row in c.fetchall():
@@ -75,7 +75,7 @@ def data_entry():
                 # for sensors, no need to send status
                 set_status(device_id=did, status=dstatus, send=False)
                 link()
-            except mariadb.Error as error:
+            except sqlite3.Error as error:
                 print("Error4: {}".format(error))
 
 
@@ -86,7 +86,7 @@ def link():
         c.execute('SELECT link_id FROM links WHERE id=' + did + ' AND link= 1;')
         data = c.fetchall()
         # print(data)
-    except mariadb.Error as error:
+    except sqlite3.Error as error:
         print("Error5: {}".format(error))
     for row in data:
         print(row[0])
@@ -107,17 +107,17 @@ def link():
                 else:
                     # update status change in stat_timeline and devices
                     set_status(device_id=row[0], status='1',send=True)
-            except mariadb.Error as error:
+            except sqlite3.Error as error:
                 print("Error6: {}".format(error))
 
 def set_status(device_id,status,send):
     try:
         c.execute('INSERT INTO stat_timeline (id,status) VALUES (%s,%s);', (device_id, status))
-    except mariadb.Error as error:
+    except sqlite3.Error as error:
         print("Error7: {}".format(error))
     try:
         c.execute('UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id};")
-    except mariadb.Error as error:
+    except sqlite3.Error as error:
         print("Error8: {}".format(error))
     if send:
         # send linked device status via MQTT [Format : @(relay number)(status)%)]
@@ -210,5 +210,5 @@ def ack(dev):
 client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
-client.connect('192.168.0.102', 1883, 60)  # change the address to MQTT broker server
+client.connect('192.168.0.102 ', 1883, 60)  # change the address to MQTT broker server
 client.loop_forever()

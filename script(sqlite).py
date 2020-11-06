@@ -7,6 +7,8 @@ import sqlite3
 
 #time.sleep(20)
 
+
+
 # Declaring global variable
 did = 0  # devie id
 dtype = 0  # device type
@@ -39,12 +41,12 @@ def data_entry():
             new_id = did + '.' + str(i)
             print(new_id)
             try:
-                c.execute("INSERT IGNORE devices (id,type,name,status) VALUES (%s,%s,%s,%s);",(new_id, dtype, new_id, dstatus))
+                c.execute("INSERT OR IGNORE INTO devices (id,type,name,status) VALUES (?,?,?,?);",(new_id, dtype, new_id, dstatus))
             except sqlite3.Error as error:
                 print("Error1: {}".format(error))
     else:
         try:
-            c.execute("INSERT IGNORE devices (id,type,name,status) VALUES (%s,%s,%s,%s);", (did, dtype, did, dstatus))
+            c.execute("INSERT OR IGNORE INTO devices (id,type,name,status) VALUES (?,?,?,?);", (did, dtype, did, dstatus))
         except sqlite3.Error as error:
             print("Error2: {}".format(error))
 
@@ -112,7 +114,7 @@ def link():
 
 def set_status(device_id,status,send):
     try:
-        c.execute('INSERT INTO stat_timeline (id,status) VALUES (%s,%s);', (device_id, status))
+        c.execute('INSERT INTO stat_timeline (id,status) VALUES (?,?);', (device_id, status))
     except sqlite3.Error as error:
         print("Error7: {}".format(error))
     try:
@@ -152,7 +154,7 @@ initialization()
 # mqtt connection
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
-    client.subscribe("device/from/#" ,qos=1 )
+    client.subscribe("device/from/#")
 
 
 # new message
@@ -207,7 +209,7 @@ def ack(dev):
     client.publish(dev, '&1*')
     # print("send check")
 
-client = mqtt.Client(client_id="script", clean_session=False)
+client = mqtt.Client(client_id="script",clean_session=False)
 client.on_connect = on_connect
 client.on_message = on_message
 client.connect('192.168.0.102', 1883, 60)  # change the address to MQTT broker server

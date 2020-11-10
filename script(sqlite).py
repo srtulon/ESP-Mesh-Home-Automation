@@ -3,6 +3,7 @@ import time
 from datetime import datetime
 import paho.mqtt.client as mqtt
 import re
+import schedule
 
 import sqlite3
 
@@ -262,10 +263,16 @@ def ack(dev):
     client.publish(dev, '&1*')
     # print("send check")
 
+def hello():
+    print("hello")
 
+schedule.every(10).seconds.do(hello)
 
 client = mqtt.Client(client_id="script",clean_session=False)
 client.on_connect = on_connect
 client.on_message = on_message
 client.connect('192.168.0.102', 1883, 60)  # change the address to MQTT broker server
 client.loop_start()
+
+while True:
+    schedule.run_pending()

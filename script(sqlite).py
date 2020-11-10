@@ -164,12 +164,37 @@ def read_db():
     for row in c.fetchall():
         print(row)
 
+def read_devices():
+    c.execute('SELECT * FROM devices')
+    for row in c.fetchall():
+        #print(row)
+        #devices_dict[row[0]]=row[1]
+        key=row[0]
+        devices_dict[key] = []
+        devices_dict[key].append(row[1])
+        devices_dict[key].append(row[2])
+        devices_dict[key].append(row[3])
+        print(str(devices_dict[key][1])+" "+str(devices_dict[key][0])+" "+str(devices_dict[key][2]))
 
+def read_links():
+    c.execute('SELECT * FROM links WHERE link=1')
+    for row in c.fetchall():
+        #print(row)
+        #devices_dict[row[0]]=row[1]
+        key=row[0]
+        if key not in links_dict:
+            links_dict[key] = []
+            links_dict[key].append(row[1])
+        else:
+            links_dict[key].append(row[1])
+    for values in links_dict[key]:
+            print(values)
 
 # initialization
 def initialization():
     print("Start initialization")
-
+    #read_devices()
+    #read_links()
 
 
 create_table()

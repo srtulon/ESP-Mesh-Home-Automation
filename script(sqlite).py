@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import time
+from datetime import datetime
 import paho.mqtt.client as mqtt
 import re
 
@@ -24,10 +25,13 @@ c = conn.cursor()
 
 # create table
 def create_table():
-    c.execute('CREATE TABLE IF NOT EXISTS devices ( id varchar(20) not null, type varchar(20) not null,name varchar(20) not null, status int, PRIMARY KEY (id))')
-    c.execute('CREATE TABLE IF NOT EXISTS stat_timeline (id varchar(20) not null, status int, TimeStamp TIMESTAMP, FOREIGN KEY (id) REFERENCES devices(id))')
-    c.execute('CREATE TABLE IF NOT EXISTS links (ser int AUTO_INCREMENT,id varchar(20) not null, link_id varchar(20) , link int, FOREIGN KEY (id) REFERENCES devices(id),PRIMARY KEY (ser))')
-    #c.execute('CREATE TABLE IF NOT EXISTS ircode (id varchar(20) not null, link_id varchar(20) , link int, FOREIGN KEY (id) REFERENCES devices(id))')
+    c.execute('CREATE TABLE IF NOT EXISTS relays ( id varchar(20) not null,name varchar(20) not null, status int, PRIMARY KEY (id))')
+    c.execute('CREATE TABLE IF NOT EXISTS acs ( id varchar(20) not null, name varchar(20) not null, protocol int, model int,power int, temp int, PRIMARY KEY (id))')
+    c.execute('CREATE TABLE IF NOT EXISTS pirs ( id varchar(20) not null,name varchar(20) not null, status int, PRIMARY KEY (id))')
+    c.execute('CREATE TABLE IF NOT EXISTS stat_timeline (id varchar(20) not null, status int, time text, FOREIGN KEY (id) REFERENCES pirs(id),FOREIGN KEY (id) REFERENCES relays(id),FOREIGN KEY (id) REFERENCES acs(id))')
+    c.execute('CREATE TABLE IF NOT EXISTS links_relay (ser int AUTO_INCREMENT,id varchar(20) not null, link_id varchar(20) , link int, FOREIGN KEY (id) REFERENCES pirs(id),FOREIGN KEY (link_id) REFERENCES relays(id),PRIMARY KEY (ser))')
+    c.execute('CREATE TABLE IF NOT EXISTS links_ac (ser int AUTO_INCREMENT,id varchar(20) not null, link_id varchar(20) , link int, FOREIGN KEY (id) REFERENCES pirs(id), FOREIGN KEY (link_id) REFERENCES acs(id),PRIMARY KEY (ser))')
+
 
 
 # data entry
@@ -41,14 +45,31 @@ def data_entry():
             new_id = did + '.' + str(i)
             print(new_id)
             try:
-                c.execute("INSERT OR IGNORE INTO devices (id,type,name,status) VALUES (?,?,?,?);",(new_id, dtype, new_id, dstatus))
+                c.execute("INSERT OR IGNORE INTO relays (id,name,status) VALUES (?,?,?);",(new_id, new_id, dstatus))
             except sqlite3.Error as error:
                 print("Error1: {}".format(error))
-    else:
+                return
+
+    elif dtype[0] == 'a':
+        dstemp=[int(i) for i in str(dstatus)]
+        prot=dstemp[0]
+        mod=dstemp[1]
+        pow=dstemp[2]
+        tem=dstemp[3]*10+dstemp[4]
+
         try:
-            c.execute("INSERT OR IGNORE INTO devices (id,type,name,status) VALUES (?,?,?,?);", (did, dtype, did, dstatus))
+            c.execute("INSERT OR IGNORE INTO acs (id,name,protocol,model,power,temp) VALUES (?,?,?,?,?,?);",(did, did, prot, mod, pow, tem))
+        except sqlite3.Error as error:
+            print("Error1: {}".format(error))
+            return
+
+    elif dtype[0] == 'p':
+        try:
+            c.execute("INSERT OR IGNORE INTO pirs (id,name,status) VALUES (?,?,?);", (did, did, dstatus))
         except sqlite3.Error as error:
             print("Error2: {}".format(error))
+            return
+
 
     conn.commit()
     print("Data entry completed")
@@ -57,7 +78,7 @@ def data_entry():
 
     # insert new data in stat_timeline if device status is changed
     try:
-        c.execute('SELECT status FROM devices WHERE id=' + did)
+        c.execute('SELECT status FROM pirs WHERE id=' + did)
     except sqlite3.Error as error:
         print("Error3: {}".format(error))
 
@@ -76,7 +97,7 @@ def data_entry():
             try:
                 # for sensors, no need to send status
                 set_status(device_id=did, status=dstatus, send=False)
-                link()
+                #link()
             except sqlite3.Error as error:
                 print("Error4: {}".format(error))
 
@@ -114,7 +135,7 @@ def link():
 
 def set_status(device_id,status,send):
     try:
-        c.execute('INSERT INTO stat_timeline (id,status) VALUES (?,?);', (device_id, status))
+        c.execute('INSERT INTO stat_timeline (id,status,time) VALUES (?,?,?);', (device_id, status, datetime.now()))
     except sqlite3.Error as error:
         print("Error7: {}".format(error))
     try:
@@ -133,7 +154,13 @@ conn.commit()
 
 # read database
 def read_db():
-    c.execute('SELECT * FROM devices')
+    c.execute('SELECT * FROM pirs')
+    for row in c.fetchall():
+        print(row)
+    c.execute('SELECT * FROM acs')
+    for row in c.fetchall():
+        print(row)
+    c.execute('SELECT * FROM relays')
     for row in c.fetchall():
         print(row)
 
@@ -142,7 +169,7 @@ def read_db():
 # initialization
 def initialization():
     print("Start initialization")
-    c.execute("INSERT INTO stat_timeline (id,status) SELECT id, status FROM devices;")
+
 
 
 create_table()
@@ -153,8 +180,9 @@ initialization()
 
 # mqtt connection
 def on_connect(client, userdata, flags, rc):
-    print("Connected with result code " + str(rc))
+    #print("Connected with result code " + str(rc))
     client.subscribe("device/from/#")
+
 
 
 # new message
@@ -180,7 +208,7 @@ def on_message(client, userdata, msg):
             # print(len(did))
             # print(did)
             # print(dtype)
-            print(dstatus)
+            print("Device Status: "+dstatus)
 
             # for ignoring garbage data
             if len(did) == 9 or len(did) == 10 or len(did) == 11:
@@ -209,8 +237,10 @@ def ack(dev):
     client.publish(dev, '&1*')
     # print("send check")
 
+
+
 client = mqtt.Client(client_id="script",clean_session=False)
 client.on_connect = on_connect
 client.on_message = on_message
 client.connect('192.168.0.102', 1883, 60)  # change the address to MQTT broker server
-client.loop_forever()
+client.loop_start()

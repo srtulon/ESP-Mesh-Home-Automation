@@ -47,24 +47,14 @@ void sendMessage() {
 
 //Receive message from mesh
 void receivedCallback( uint32_t from, String &msg ) {
-   //message format: @ (ac protocol)(model)(power)(temperature)%
+   //message format: @(ac protocol)(model)(power)(temperature)%
   Serial.printf("startHere: Received from %u msg=%s\n", from, msg.c_str());
   
   //To convert msg into proper String
   msg.trim();
   msg.toCharArray(charBuf, 50);
   String msg1=(String)msg;
-  switch (var) {
-    case label1:
-      // statements
-      break;
-    case label2:
-      // statements
-      break;
-    default:
-      // statements
-      break;
-}
+  
   if(msg1.indexOf('@')>-1){
     Serial.println(msg1[1]); 
     if(msg[2]=='1'){

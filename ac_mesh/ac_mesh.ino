@@ -57,7 +57,7 @@ void receivedCallback( uint32_t from, String &msg ) {
   
   if(msg1.indexOf('@')>-1){
     Serial.println(msg1[1]); 
-    else if(msg1.substring(2,3)=="01"){
+    if(msg1.substring(2,3)=="01"){
         Serial.print("Protocol: AIRWELL");
         ac.next.protocol = decode_type_t::AIRWELL;
      }

@@ -57,25 +57,14 @@ void receivedCallback( uint32_t from, String &msg ) {
   
   if(msg1.indexOf('@')>-1){
     Serial.println(msg1[1]); 
-    if(msg[2]=='1'){
-       temp=LOW;
-    }
-    else{
-      temp=HIGH;
-    }
-    if(msg[1]=='0'){
-      
-    }
-    else if(msg[1]=='1'){
-      
-    }
-    else if(msg[1]=='2'){
-     
-    }
-    else if(msg[1]=='3'){
-      
-    }
-  }
+    else if(msg1.substring(2,3)=="01"){
+        Serial.print("Protocol: AIRWELL");
+        ac.next.protocol = decode_type_t::AIRWELL;
+     }
+    else if(msg1.substring(2,3)=="02"){
+        Serial.print("Protocol: AIWA_RC_T501");
+        ac.next.protocol = decode_type_t::AIWA_RC_T501;
+     }
 }
 
 

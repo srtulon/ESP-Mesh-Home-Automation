@@ -3,7 +3,6 @@ import time
 from datetime import datetime
 import paho.mqtt.client as mqtt
 import re
-import schedule
 
 import sqlite3
 
@@ -26,9 +25,9 @@ c = conn.cursor()
 
 # create table
 def create_table():
-    c.execute('CREATE TABLE IF NOT EXISTS relays ( id varchar(20) not null,name varchar(20) not null, status int,last update text, PRIMARY KEY (id))')
-    c.execute('CREATE TABLE IF NOT EXISTS acs ( id varchar(20) not null, name varchar(20) not null, protocol int, model int,power int, temp int,last update text, PRIMARY KEY (id))')
-    c.execute('CREATE TABLE IF NOT EXISTS pirs ( id varchar(20) not null,name varchar(20) not null,last update text, status int, PRIMARY KEY (id))')
+    c.execute('CREATE TABLE IF NOT EXISTS relays ( id varchar(20) not null,name varchar(20) not null, status int,last_update text, PRIMARY KEY (id))')
+    c.execute('CREATE TABLE IF NOT EXISTS acs ( id varchar(20) not null, name varchar(20) not null, protocol int, model int,power int, temp int,last_update text, PRIMARY KEY (id))')
+    c.execute('CREATE TABLE IF NOT EXISTS pirs ( id varchar(20) not null,name varchar(20) not null,last_update text, status int, PRIMARY KEY (id))')
     c.execute('CREATE TABLE IF NOT EXISTS stat_timeline (id varchar(20) not null, status int, time text, FOREIGN KEY (id) REFERENCES pirs(id),FOREIGN KEY (id) REFERENCES relays(id),FOREIGN KEY (id) REFERENCES acs(id))')
     c.execute('CREATE TABLE IF NOT EXISTS links_relay (ser int AUTO_INCREMENT,id varchar(20) not null, link_id varchar(20) , link int, priority int, FOREIGN KEY (id) REFERENCES pirs(id),FOREIGN KEY (link_id) REFERENCES relays(id),PRIMARY KEY (ser))')
     c.execute('CREATE TABLE IF NOT EXISTS links_ac (ser int AUTO_INCREMENT,id varchar(20) not null, link_id varchar(20) , link int, FOREIGN KEY (id) REFERENCES pirs(id), FOREIGN KEY (link_id) REFERENCES acs(id),PRIMARY KEY (ser))')
@@ -206,7 +205,7 @@ initialization()
 
 # mqtt connection
 def on_connect(client, userdata, flags, rc):
-    #print("Connected with result code " + str(rc))
+    print("Connected with result code " + str(rc))
     client.subscribe("device/from/#")
 
 
@@ -263,16 +262,18 @@ def ack(dev):
     client.publish(dev, '&1*')
     # print("send check")
 
-def hello():
-    print("hello")
+#def hello():
+    #print("hello")
 
-schedule.every(10).seconds.do(hello)
 
-client = mqtt.Client(client_id="script",clean_session=False)
+#schedule.every(10).seconds.do(hello)
+
+#client = mqtt.Client(client_id="script",clean_session=False)
+client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
-client.connect('192.168.1.42', 1883, 60)  # change the address to MQTT broker server
-client.loop_start()
+client.connect("192.168.1.42", 1883, 60)  # change the address to MQTT broker server
+client.loop_forever()
 
-while True:
-    schedule.run_pending()
+#while True:
+    #schedule.run_pending()

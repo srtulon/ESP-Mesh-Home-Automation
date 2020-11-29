@@ -13,17 +13,27 @@ void sendMessage() ; // Prototype so PlatformIO doesn't complain
 Task taskSendMessage( TASK_SECOND * 1 , TASK_FOREVER, &sendMessage );
 
 String devtype="r4"; //r=type relay, 4= 4 relay
-int devstatus=0; //0= Off , 1= On
+//int devstatus="0000"; //0= Off , 1= On
 int ack=1;  // Acknowledgement 1 = recieved/not needed , 0= pending  
 //long id=ESP.getChipId();
 //long id=mesh.getNodeId();
 
 char charBuf[50];
 
-int pin1=D5;
-int pin2=D6;
-int pin3=D7;
-int pin4=D8;
+int pin1=5;
+int pin2=6;
+int pin3=7;
+int pin4=8;
+
+int sw1=22;
+int sw2=21;
+int sw3=19;
+int sw4=18;
+
+int s1=0;
+int s2=0;
+int s3=0;
+int s4=0;
 
 int temp;
 
@@ -36,7 +46,7 @@ void sendMessage() {
   if((millis()<100000) || (ack=0)){
     String id = "";
     id += mesh.getNodeId();
-    String a= '#' + (String)id + ',' + devtype + ',' + devstatus + '$';
+    String a= '#' + (String)id + ',' + devtype + ',' + s1 + s2 + s3 + s4 + '$';
     mesh.sendBroadcast(a);
     taskSendMessage.setInterval(random( TASK_SECOND * 1, TASK_SECOND * 10));
     ack=0; 
@@ -139,10 +149,27 @@ void setup() {
   pinMode(pin2,OUTPUT);
   pinMode(pin3,OUTPUT);
   pinMode(pin4,OUTPUT);
+
+  pinMode(sw1,INPUT);
+  pinMode(sw2,INPUT);
+  pinMode(sw3,INPUT);
+  pinMode(sw4,INPUT);
   
 }
 
 void loop() {
   // it will run the user scheduler as well
   mesh.update();
+  if(digitalRead(sw1)!=s1){
+    s1=digitalRead(sw1);
+  }
+  if(digitalRead(sw2)!=s2){
+    s2=digitalRead(sw2);
+  }
+  if(digitalRead(sw3)!=s3){
+    s3=digitalRead(sw3);
+  }
+  if(digitalRead(sw4)!=s4){
+    s4=digitalRead(sw4);
+  }
 }

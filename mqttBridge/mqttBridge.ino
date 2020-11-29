@@ -36,7 +36,7 @@ IPAddress myIP(0,0,0,0);
 int a=192;
 int b=168;
 int c=1;
-int d=2;
+int d=42;
 IPAddress mqttBroker(a, b, c, d);
 int mqttport=1883;
 

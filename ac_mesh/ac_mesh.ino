@@ -21,7 +21,7 @@ void sendMessage() ; // Prototype so PlatformIO doesn't complain
 Task taskSendMessage( TASK_SECOND * 1 , TASK_FOREVER, &sendMessage );
 
 String devtype="a"; //a=type ac
-int devstatus=11025; //1= protocol(first is AIRWELL) 1=first model, 0= power off(1=power on), 25=temperature
+int devstatus=011025; //01= protocol(first is AIRWELL) 1=first model, 0= power off(1=power on), 25=temperature
 //long id=ESP.getChipId();
 //long id=mesh.getNodeId();
 
@@ -56,7 +56,7 @@ void receivedCallback( uint32_t from, String &msg ) {
   String msg1=(String)msg;
   
   if(msg1.indexOf('@')>-1){
-    Serial.println(msg1[1]); 
+    Serial.println(msg1); 
     if(msg1.substring(2,3)=="01"){
         Serial.print("Protocol: AIRWELL");
         ac.next.protocol = decode_type_t::AIRWELL;
@@ -65,6 +65,18 @@ void receivedCallback( uint32_t from, String &msg ) {
         Serial.print("Protocol: AIWA_RC_T501");
         ac.next.protocol = decode_type_t::AIWA_RC_T501;
      }
+  }
+  if(msg1[4]=='0'){
+    ac.next.power = false;
+  }
+  else if(msg1[4]=='1'){
+    ac.next.power = false;  // Initially start with the unit off.
+    ac.next.model = msg1[3];
+    ac.next.degrees = msg1.substring(6,7);
+  }
+
+  
+  
 }
 
 

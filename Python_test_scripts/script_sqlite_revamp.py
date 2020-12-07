@@ -15,6 +15,15 @@ did = 0  # devie id
 dtype = 0  # device type
 dstatus = 0  # devie status
 
+
+relays_dict=dict()
+acs_dict=dict()
+pirs_dict=dict()
+acs_dict=dict()
+links_relay_dict=dict()
+links_ac_dict=dict()
+ac_list_dict=dict()
+
 ########################## DATABASE PART ###########################################
 
 # sqlite3 Database connection
@@ -35,6 +44,24 @@ def create_table():
 
 
 
+# data entry
+def data_entry():
+    # insert new data in devices
+    if dtype[0] == 'r':
+        range1 = int(dtype[1]) + 1
+        for i in range(range1):
+            new_id = did + '.' + str(i)
+            print(new_id)
+
+    elif dtype[0] == 'a':
+        dstemp=[int(i) for i in str(dstatus)]
+        prot=dstemp[0]
+        mod=dstemp[1]
+        pow=dstemp[2]
+        tem=dstemp[3]*10+dstemp[4]
+
+
+    elif dtype[0] == 'p':
 
 # initialization
 def initialization():

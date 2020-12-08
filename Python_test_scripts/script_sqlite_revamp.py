@@ -27,7 +27,7 @@ ac_list_dict=dict()
 ########################## DATABASE PART ###########################################
 
 # sqlite3 Database connection
-conn = sqlite3.connect('database.db',check_same_thread=False)
+conn = sqlite3.connect('database_revamp.db',check_same_thread=False)
 c = conn.cursor()
 
 
@@ -40,10 +40,23 @@ def create_table():
     c.execute('CREATE TABLE IF NOT EXISTS stat_timeline (id varchar(20) not null, status int, time text, FOREIGN KEY (id) REFERENCES pirs(id),FOREIGN KEY (id) REFERENCES relays(id),FOREIGN KEY (id) REFERENCES acs(id))')
     c.execute('CREATE TABLE IF NOT EXISTS links_relay (id varchar(20) not null, link_id varchar(20) , link int, priority int, FOREIGN KEY (id) REFERENCES pirs(id),FOREIGN KEY (link_id) REFERENCES relays(id),PRIMARY KEY (ser))')
     c.execute('CREATE TABLE IF NOT EXISTS links_ac (id varchar(20) not null, link_id varchar(20) , link int, FOREIGN KEY (id) REFERENCES pirs(id), FOREIGN KEY (link_id) REFERENCES acs(id),PRIMARY KEY (ser))')
-    c.execute('CREATE TABLE IF NOT EXISTS ac_list (protocol varchar(20))')
+    c.execute('CREATE TABLE IF NOT EXISTS ac_list (protocol varchar(20),PRIMARY KEY (protocol))')
 
 
-
+def ac_name_database():
+    f = open("ac_protocol_names.txt", "r")
+    contents = f.readlines()
+    for x in contents:
+         x.rstrip()
+         count=count+1
+         x.strip()
+         print(x)
+         try:
+             c.execute("INSERT OR IGNORE INTO ac_list (protocol) VALUES (?);",(x,))
+         except sqlite3.Error as error:
+            print("Error: {}".format(error))
+            return
+    conn.commit()
 # data entry
 def data_entry():
     # insert new data in devices
@@ -72,7 +85,7 @@ def initialization():
 
 create_table()
 initialization()
-
+ac_name_database()
 
 ########################## MQTT PART ###########################################
 

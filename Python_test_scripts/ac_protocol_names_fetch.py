@@ -5,7 +5,7 @@ import sqlite3
 conn = sqlite3.connect('database.db',check_same_thread=False)
 c = conn.cursor()
 
-c.execute('CREATE TABLE IF NOT EXISTS ac_list (protocol varchar(20))')
+c.execute('CREATE TABLE IF NOT EXISTS ac_list (protocol varchar(20),PRIMARY KEY (protocol))')
 
 f = open("ac_protocol_names.txt", "r")
 contents = f.readlines()

@@ -37,7 +37,7 @@ def create_table():
     c.execute('CREATE TABLE IF NOT EXISTS relays ( id varchar(20) not null,name varchar(20) not null, status int,last_update text, PRIMARY KEY (id))')
     c.execute('CREATE TABLE IF NOT EXISTS acs ( id varchar(20) not null, name varchar(20) not null, protocol int, model int,power int, temp int,last_update text, PRIMARY KEY (id))')
     c.execute('CREATE TABLE IF NOT EXISTS pirs ( id varchar(20) not null,name varchar(20) not null,last_update text, status int, PRIMARY KEY (id))')
-    c.execute('CREATE TABLE IF NOT EXISTS stat_timeline (id varchar(20) not null, status int, time text, FOREIGN KEY (id) REFERENCES pirs(id),FOREIGN KEY (id) REFERENCES relays(id),FOREIGN KEY (id) REFERENCES acs(id))')
+    c.execute('CREATE TABLE IF NOT EXISTS stat_timeline (id varchar(20) not null, status int, time text)')
     c.execute('CREATE TABLE IF NOT EXISTS links_relay (id varchar(20) not null, link_id varchar(20) , link int, priority int, FOREIGN KEY (id) REFERENCES pirs(id),FOREIGN KEY (link_id) REFERENCES relays(id),PRIMARY KEY (ser))')
     c.execute('CREATE TABLE IF NOT EXISTS links_ac (id varchar(20) not null, link_id varchar(20) , link int, FOREIGN KEY (id) REFERENCES pirs(id), FOREIGN KEY (link_id) REFERENCES acs(id),PRIMARY KEY (ser))')
     c.execute('CREATE TABLE IF NOT EXISTS ac_list (protocol varchar(20),PRIMARY KEY (protocol))')
@@ -50,13 +50,15 @@ def ac_name_database():
          x.rstrip()
          count=count+1
          x.strip()
-         print(x)
+         #print(x)
          try:
              c.execute("INSERT OR IGNORE INTO ac_list (protocol) VALUES (?);",(x,))
          except sqlite3.Error as error:
             print("Error: {}".format(error))
             return
     conn.commit()
+
+
 # data entry
 def data_entry():
     # insert new data in devices
@@ -79,13 +81,59 @@ def data_entry():
 # initialization
 def initialization():
     print("Start initialization")
+    ac_name_database()
+    read_database()
     #read_devices()
     #read_links()
 
 
+def read_database():
+    #read database tables and make a dictionary copy
+    c.execute('SELECT * FROM relays')
+    for row in c.fetchall():
+        key=row[0] #read id
+        relays_dict[key] = []
+        relays_dict[key].append(row[2]) #read status
+
+
+    c.execute('SELECT * FROM acs')
+    for row in c.fetchall():
+        key=row[0] #read id
+        acs_dict[key] = []
+        acs_dict[key].append(row[2]) #read protocol
+        acs_dict[key].append(row[3]) #read model
+        acs_dict[key].append(row[4]) #read power state
+        acs_dict[key].append(row[5]) #read temperature
+
+
+    c.execute('SELECT * FROM pirs')
+    for row in c.fetchall():
+        key=row[0] #read id
+        pirs_dict[key] = []
+        pirs_dict[key].append(row[2]) #read status
+
+
+    c.execute('SELECT * FROM links_relay WHERE link=1')
+    for row in c.fetchall():
+        key=row[0]
+        if key not in links_dict:
+            links_relay_dict[key] = []
+            links_relay_dict[key].append(row[1])
+        else:
+            links_relay_dict[key].append(row[1])
+
+    c.execute('SELECT * FROM links_ac WHERE link=1')
+    for row in c.fetchall():
+        key=row[0]
+        if key not in links_dict:
+            links_ac_dict[key] = []
+            links_ac_dict[key].append(row[1])
+        else:
+            links_ac_dict[key].append(row[1])
+
 create_table()
 initialization()
-ac_name_database()
+
 
 ########################## MQTT PART ###########################################
 

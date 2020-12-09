@@ -89,6 +89,7 @@ def initialization():
 
 def read_database():
     #read database tables and make a dictionary copy
+
     c.execute('SELECT * FROM relays')
     for row in c.fetchall():
         key=row[0] #read id
@@ -115,21 +116,21 @@ def read_database():
 
     c.execute('SELECT * FROM links_relay WHERE link=1')
     for row in c.fetchall():
-        key=row[0]
+        key=row[0] #read id
         if key not in links_dict:
             links_relay_dict[key] = []
-            links_relay_dict[key].append(row[1])
+            links_relay_dict[key].append(row[1]) #read link_id
         else:
-            links_relay_dict[key].append(row[1])
+            links_relay_dict[key].append(row[1]) #read link_id
 
     c.execute('SELECT * FROM links_ac WHERE link=1')
     for row in c.fetchall():
-        key=row[0]
+        key=row[0] #read id
         if key not in links_dict:
             links_ac_dict[key] = []
-            links_ac_dict[key].append(row[1])
+            links_ac_dict[key].append(row[1]) #read link_id
         else:
-            links_ac_dict[key].append(row[1])
+            links_ac_dict[key].append(row[1]) #read link_id
 
 create_table()
 initialization()

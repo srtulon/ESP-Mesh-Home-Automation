@@ -169,10 +169,10 @@ def on_message(client, userdata, msg):
             # print(did)
             # print(dtype)
             print("Device Status: "+dstatus)
+            
+            data_entry()
 
-            # for ignoring garbage data
-            if len(did) == 9 or len(did) == 10 or len(did) == 11:
-                data_entry()
+
 
 
 # send message

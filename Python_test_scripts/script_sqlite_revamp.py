@@ -59,33 +59,6 @@ def ac_name_database():
     conn.commit()
 
 
-# data entry
-def data_entry():
-    # insert new data in devices
-    if dtype[0] == 'r':
-        range1 = int(dtype[1]) + 1
-        for i in range(range1):
-            new_id = did + '.' + str(i)
-            print(new_id)
-
-    elif dtype[0] == 'a':
-        dstemp=[int(i) for i in str(dstatus)]
-        prot=dstemp[0]
-        mod=dstemp[1]
-        pow=dstemp[2]
-        tem=dstemp[3]*10+dstemp[4]
-
-
-    elif dtype[0] == 'p':
-
-# initialization
-def initialization():
-    print("Start initialization")
-    ac_name_database()
-    read_database()
-    #read_devices()
-    #read_links()
-
 
 def read_database():
     #read database tables and make a dictionary copy
@@ -132,6 +105,123 @@ def read_database():
         else:
             links_ac_dict[key].append(row[1]) #read link_id
 
+# initialization
+def initialization():
+    print("Start initialization")
+    ac_name_database()
+    read_database()
+
+# data entry
+def data_entry():
+    # insert new data in devices
+    if dtype[0] == 'r':
+        range1 = int(dtype[1]) + 1
+        for i in range(range1):
+            new_id = did + '.' + str(i)
+            print(new_id)
+
+            key=new_id
+            if key not in relays_dict:
+                relays_dict[key] = []
+                relays_dict[key].append(dstatus)
+            else:
+                relays_dict[key]=dstatus#########################################
+            try:
+                c.execute("INSERT OR IGNORE INTO relays (id,name,status) VALUES (?,?,?);",(new_id, new_id, dstatus))
+            except sqlite3.Error as error:
+                print("Error1: {}".format(error))
+                return
+
+
+    elif dtype[0] == 'a':
+        dstemp=[int(i) for i in str(dstatus)]
+        prot=dstemp[0]
+        mod=dstemp[1]
+        pow=dstemp[2]
+        tem=dstemp[3]*10+dstemp[4]
+
+        key=did
+        if key not in acs_dict:
+            acs_dict[key] = []
+            acs_dict[key].append(prot)
+            acs_dict[key].append(mod)
+            acs_dict[key].append(pow)
+            acs_dict[key].append(tem)
+        else:
+            acs_dict[key]=prot#########################################
+            acs_dict[key]=mod#########################################
+            acs_dict[key]=pow#########################################
+            acs_dict[key]=tem#########################################
+        try:
+            c.execute("INSERT OR IGNORE INTO acs (id,name,protocol,model,power,temp) VALUES (?,?,?,?,?,?);",(did, did, prot, mod, pow, tem))
+        except sqlite3.Error as error:
+            print("Error1: {}".format(error))
+            return
+
+
+    elif dtype[0] == 'p':
+        key=did
+        if key not in pirs_dict:
+            pirs_dict[key] = []
+            pirs_dict[key].append(dstatus)
+        else:
+            pirs_dict[key]=dstatus#########################################
+
+        try:
+            c.execute("INSERT OR IGNORE INTO pirs (id,name,status) VALUES (?,?,?);", (did, did, dstatus))
+        except sqlite3.Error as error:
+            print("Error2: {}".format(error))
+            return
+
+
+    conn.commit()
+    print("Data entry completed")
+    ack(did)
+
+
+
+    # insert new data in stat_timeline if device status is changed
+    try:
+        c.execute('SELECT status FROM pirs WHERE id=' + did)
+    except sqlite3.Error as error:
+        print("Error3: {}".format(error))
+
+    for row in c.fetchall():
+        # print(row)
+        data1 = f"{pirs_dict[key]}" ##############################################
+        data2 = f"{dstatus}"
+        # print(data1)
+        # print(data2)
+
+        # matching current status with previous to avoid multiple entry
+        if data1 == data2 and row is not None:
+            print("Matched")
+        else:
+            print("Not matched")
+
+            # for sensors, no need to send status
+            set_status(device_id=did, status=dstatus, send=False)
+            #link()
+
+def set_status(device_id,status,send):
+    try:
+        c.execute('INSERT INTO stat_timeline (id,status,time) VALUES (?,?,?);', (device_id, status, datetime.now()))
+    except sqlite3.Error as error:
+        print("Error7: {}".format(error))
+    try:
+        c.execute('UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id};")
+    except sqlite3.Error as error:
+        print("Error8: {}".format(error))
+
+
+    if send:
+        # send linked device status via MQTT [Format : @(relay number)(status)%)]
+        temp = device_id.split('.')
+        ori_id = temp[0]
+        relay_num = temp[1]
+        send_message(ori_id, '@' + relay_num + status + '%')
+
+
 create_table()
 initialization()
 
@@ -169,7 +259,7 @@ def on_message(client, userdata, msg):
             # print(did)
             # print(dtype)
             print("Device Status: "+dstatus)
-            
+
             data_entry()
 
 

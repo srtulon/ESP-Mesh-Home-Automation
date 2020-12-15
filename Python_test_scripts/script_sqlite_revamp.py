@@ -124,13 +124,12 @@ def data_entry():
             if key not in relays_dict:
                 relays_dict[key] = []
                 relays_dict[key].append(dstatus)
-            else:
-                relays_dict[key]=dstatus#########################################
-            try:
-                c.execute("INSERT OR IGNORE INTO relays (id,name,status) VALUES (?,?,?);",(new_id, new_id, dstatus))
-            except sqlite3.Error as error:
-                print("Error1: {}".format(error))
-                return
+
+                try:
+                    c.execute("INSERT OR IGNORE INTO relays (id,name,status) VALUES (?,?,?);",(new_id, new_id, dstatus))
+                except sqlite3.Error as error:
+                    print("Error1: {}".format(error))
+                    return
 
 
     elif dtype[0] == 'a':
@@ -147,16 +146,12 @@ def data_entry():
             acs_dict[key].append(mod)
             acs_dict[key].append(pow)
             acs_dict[key].append(tem)
-        else:
-            acs_dict[key]=prot#########################################
-            acs_dict[key]=mod#########################################
-            acs_dict[key]=pow#########################################
-            acs_dict[key]=tem#########################################
-        try:
-            c.execute("INSERT OR IGNORE INTO acs (id,name,protocol,model,power,temp) VALUES (?,?,?,?,?,?);",(did, did, prot, mod, pow, tem))
-        except sqlite3.Error as error:
-            print("Error1: {}".format(error))
-            return
+
+            try:
+                c.execute("INSERT OR IGNORE INTO acs (id,name,protocol,model,power,temp) VALUES (?,?,?,?,?,?);",(did, did, prot, mod, pow, tem))
+            except sqlite3.Error as error:
+                print("Error1: {}".format(error))
+                return
 
 
     elif dtype[0] == 'p':
@@ -164,14 +159,12 @@ def data_entry():
         if key not in pirs_dict:
             pirs_dict[key] = []
             pirs_dict[key].append(dstatus)
-        else:
-            pirs_dict[key]=dstatus#########################################
-
-        try:
-            c.execute("INSERT OR IGNORE INTO pirs (id,name,status) VALUES (?,?,?);", (did, did, dstatus))
-        except sqlite3.Error as error:
-            print("Error2: {}".format(error))
-            return
+            
+            try:
+                c.execute("INSERT OR IGNORE INTO pirs (id,name,status) VALUES (?,?,?);", (did, did, dstatus))
+            except sqlite3.Error as error:
+                print("Error2: {}".format(error))
+                return
 
 
     conn.commit()

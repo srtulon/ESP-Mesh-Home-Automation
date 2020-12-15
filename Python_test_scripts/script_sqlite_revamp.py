@@ -159,12 +159,27 @@ def data_entry():
         if key not in pirs_dict:
             pirs_dict[key] = []
             pirs_dict[key].append(dstatus)
-            
+
             try:
                 c.execute("INSERT OR IGNORE INTO pirs (id,name,status) VALUES (?,?,?);", (did, did, dstatus))
             except sqlite3.Error as error:
                 print("Error2: {}".format(error))
                 return
+        else:
+            data1 = f"{pirs_dict[key]}" ##############################################
+            data2 = f"{dstatus}"
+            # print(data1)
+            # print(data2)
+
+            # matching current status with previous to avoid multiple entry
+            if data1 == data2 and row is not None:
+                print("Matched")
+            else:
+                print("Not matched")
+
+                # for sensors, no need to send status
+                set_status(device_id=did, status=dstatus, send=False)
+                #link()
 
 
     conn.commit()
@@ -194,7 +209,7 @@ def data_entry():
 
             # for sensors, no need to send status
             set_status(device_id=did, status=dstatus, send=False)
-            #link()
+            link()
 
 def set_status(device_id,status,send):
     try:

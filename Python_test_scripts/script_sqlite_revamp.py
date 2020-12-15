@@ -178,8 +178,8 @@ def data_entry():
                 print("Not matched")
 
                 # for sensors, no need to send status
-                set_status(device_id=did, status=dstatus, send=False)
-                #link()
+                set_status(device_id=did, status=dstatus, type=dtype[0],send=False)
+                link()
 
 
     conn.commit()
@@ -188,34 +188,17 @@ def data_entry():
 
 
 
-    # insert new data in stat_timeline if device status is changed
-    try:
-        c.execute('SELECT status FROM pirs WHERE id=' + did)
-    except sqlite3.Error as error:
-        print("Error3: {}".format(error))
 
-    for row in c.fetchall():
-        # print(row)
-        data1 = f"{pirs_dict[key]}" ##############################################
-        data2 = f"{dstatus}"
-        # print(data1)
-        # print(data2)
 
-        # matching current status with previous to avoid multiple entry
-        if data1 == data2 and row is not None:
-            print("Matched")
-        else:
-            print("Not matched")
-
-            # for sensors, no need to send status
-            set_status(device_id=did, status=dstatus, send=False)
-            link()
-
-def set_status(device_id,status,send):
+def set_status(device_id,status,type,send):
     try:
         c.execute('INSERT INTO stat_timeline (id,status,time) VALUES (?,?,?);', (device_id, status, datetime.now()))
     except sqlite3.Error as error:
-        print("Error7: {}".format(error))
+        print("Error: {}".format(error))
+
+    if dtype[0] == 'r':
+    
+
     try:
         c.execute('UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id};")
     except sqlite3.Error as error:

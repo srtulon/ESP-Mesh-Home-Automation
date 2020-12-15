@@ -196,14 +196,24 @@ def set_status(device_id,status,type,send):
     except sqlite3.Error as error:
         print("Error: {}".format(error))
 
-    if dtype[0] == 'r':
-    
-
-    try:
-        c.execute('UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id};")
-    except sqlite3.Error as error:
-        print("Error8: {}".format(error))
-
+    if type == 'r':
+        relays_dict[device_id]=status#########################################
+        try:
+            c.execute('UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id};")
+        except sqlite3.Error as error:
+            print("Error8: {}".format(error))
+    elif type == 'a':
+        acs_dict[device_id]=status#########################################
+        try:
+            c.execute('UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id};")
+        except sqlite3.Error as error:
+            print("Error8: {}".format(error))
+    elif type == 'p':
+        pirs_dict[device_id]=status#########################################
+        try:
+            c.execute('UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id};")
+        except sqlite3.Error as error:
+            print("Error8: {}".format(error))
 
     if send:
         # send linked device status via MQTT [Format : @(relay number)(status)%)]

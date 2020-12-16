@@ -42,3 +42,5 @@ read_links()
 print(devices_dict)
 print(links_dict)
 print(links_dict[977122286][0])
+links_dict[977122286][0]=101
+print(links_dict[977122286][0])

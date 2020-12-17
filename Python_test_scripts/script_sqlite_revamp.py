@@ -130,7 +130,21 @@ def data_entry():
                 except sqlite3.Error as error:
                     print("Error1: {}".format(error))
                     return
+            else:
+                data1 = f"{relays_dict[key]}" ##############################################
+                data2 = f"{dstatus}"
+                # print(data1)
+                # print(data2)
 
+                # matching current status with previous to avoid multiple entry
+                if data1 == data2 and row is not None:
+                    print("Relay Value Matched")
+                else:
+                    print("Relay Value Not matched")
+
+                    # for sensors, no need to send status
+                    set_status(device_id=did, status=dstatus, type=dtype[0],send=False)
+                    link()
 
     elif dtype[0] == 'a':
         dstemp=[int(i) for i in str(dstatus)]
@@ -173,9 +187,9 @@ def data_entry():
 
             # matching current status with previous to avoid multiple entry
             if data1 == data2 and row is not None:
-                print("Matched")
+                print("Pir Value Matched")
             else:
-                print("Not matched")
+                print("Pir Value Not matched")
 
                 # for sensors, no need to send status
                 set_status(device_id=did, status=dstatus, type=dtype[0],send=False)

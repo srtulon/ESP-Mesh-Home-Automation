@@ -20,8 +20,7 @@ relays_dict=dict()
 acs_dict=dict()
 pirs_dict=dict()
 acs_dict=dict()
-links_relay_dict=dict()
-links_ac_dict=dict()
+links_dict=dict()
 ac_list_dict=dict()
 
 ########################## DATABASE PART ###########################################
@@ -38,8 +37,7 @@ def create_table():
     c.execute('CREATE TABLE IF NOT EXISTS acs ( id varchar(20) not null, name varchar(20) not null, protocol int, model int,power int, temp int,last_update text, PRIMARY KEY (id))')
     c.execute('CREATE TABLE IF NOT EXISTS pirs ( id varchar(20) not null,name varchar(20) not null,last_update text, status int, PRIMARY KEY (id))')
     c.execute('CREATE TABLE IF NOT EXISTS stat_timeline (id varchar(20) not null, status int, time text)')
-    c.execute('CREATE TABLE IF NOT EXISTS links_relay (id varchar(20) not null, link_id varchar(20) , link int, priority int, FOREIGN KEY (id) REFERENCES pirs(id),FOREIGN KEY (link_id) REFERENCES relays(id),PRIMARY KEY (ser))')
-    c.execute('CREATE TABLE IF NOT EXISTS links_ac (id varchar(20) not null, link_id varchar(20) , link int, FOREIGN KEY (id) REFERENCES pirs(id), FOREIGN KEY (link_id) REFERENCES acs(id),PRIMARY KEY (ser))')
+    c.execute('CREATE TABLE IF NOT EXISTS links (id varchar(20) not null, link_id varchar(20) , link int, FOREIGN KEY (id) REFERENCES pirs(id),FOREIGN KEY (link_id) REFERENCES relays(id),PRIMARY KEY (ser))')
     c.execute('CREATE TABLE IF NOT EXISTS ac_list (protocol varchar(20),PRIMARY KEY (protocol))')
 
 
@@ -87,23 +85,16 @@ def read_database():
         pirs_dict[key].append(row[2]) #read status
 
 
-    c.execute('SELECT * FROM links_relay WHERE link=1')
+    c.execute('SELECT * FROM links WHERE link=1')
     for row in c.fetchall():
         key=row[0] #read id
         if key not in links_dict:
-            links_relay_dict[key] = []
-            links_relay_dict[key].append(row[1]) #read link_id
+            links_dict[key] = []
+            links_dict[key].append(row[1]) #read link_id
         else:
-            links_relay_dict[key].append(row[1]) #read link_id
+            links_dict[key].append(row[1]) #read link_id
 
-    c.execute('SELECT * FROM links_ac WHERE link=1')
-    for row in c.fetchall():
-        key=row[0] #read id
-        if key not in links_dict:
-            links_ac_dict[key] = []
-            links_ac_dict[key].append(row[1]) #read link_id
-        else:
-            links_ac_dict[key].append(row[1]) #read link_id
+
 
 # initialization
 def initialization():

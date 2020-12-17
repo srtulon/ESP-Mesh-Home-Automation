@@ -201,6 +201,36 @@ def data_entry():
     ack(did)
 
 
+# link
+def link():
+    # select linked devices
+    try:
+        c.execute('SELECT link_id FROM links WHERE id=' + did + ' AND link= 1;')
+        data = c.fetchall()
+        # print(data)
+    except sqlite3.Error as error:
+        print("Error5: {}".format(error))
+    for row in data:
+        print(row[0])
+        # update status change in stat_timeline and devices
+        # if any sensor is high then the device status is set to high
+        if (dstatus=='1'):
+            # update status change in stat_timeline and devices
+            set_status(device_id=row[0], status='1',send=True)
+
+        elif (dstatus=='0'):
+            try:
+                c.execute('SELECT d.* FROM devices d INNER JOIN links l ON d.id = l.id WHERE l.link_id=+'+row[0]+' AND  d.status=1;')
+                data = c.fetchall()
+
+                if len(data) == 0:
+                    # update status change in stat_timeline and devices
+                    set_status(device_id=row[0], status='0',send=True)
+                else:
+                    # update status change in stat_timeline and devices
+                    set_status(device_id=row[0], status='1',send=True)
+            except sqlite3.Error as error:
+                print("Error6: {}".format(error))
 
 
 

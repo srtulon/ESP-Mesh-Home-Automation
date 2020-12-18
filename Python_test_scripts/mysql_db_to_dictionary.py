@@ -22,11 +22,10 @@ def read_devices():
         #print(row)
         #devices_dict[row[0]]=row[1]
         key=row[0]
-        devices_dict[key] = []
-        devices_dict[key].append(row[1])
-        devices_dict[key].append(row[2])
-        devices_dict[key].append(row[3])
-        print(str(devices_dict[key][1])+" "+str(devices_dict[key][0])+" "+str(devices_dict[key][2]))
+
+
+        devices_dict[key]=(row[3])
+        #print(str(devices_dict[key][1])+" "+str(devices_dict[key][0])+" "+str(devices_dict[key][2]))
 
 def read_links():
     c.execute('SELECT * FROM links')
@@ -45,3 +44,17 @@ read_devices()
 read_links()
 print(devices_dict)
 print(links_dict)
+print(links_dict['3257182011'][0])
+
+print([k for k,v in links_dict.items() if "3257604729.1" in v])
+
+def check():
+    for i in [k for k,v in links_dict.items() if "3257604729.1" in v]:
+        print(i)
+        print(devices_dict[i])
+        if devices_dict[i]==1:
+            return True
+    return False
+
+
+print(check())

@@ -45,7 +45,8 @@ read_links()
 print(devices_dict)
 print(links_dict)
 print(links_dict['3257182011'])
-
+for d in links_dict['3257182011']:
+    print(d)
 #print([k for k,v in links_dict.items() if "3257604729.1" in v])
 
 def check():

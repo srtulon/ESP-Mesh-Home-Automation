@@ -44,9 +44,9 @@ read_devices()
 read_links()
 print(devices_dict)
 print(links_dict)
-print(links_dict['3257182011'][0])
+print(links_dict['3257182011'])
 
-print([k for k,v in links_dict.items() if "3257604729.1" in v])
+#print([k for k,v in links_dict.items() if "3257604729.1" in v])
 
 def check():
     for i in [k for k,v in links_dict.items() if "3257604729.1" in v]:
@@ -57,4 +57,4 @@ def check():
     return False
 
 
-print(check())
+#print(check())

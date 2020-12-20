@@ -195,30 +195,24 @@ def data_entry():
 # link
 def link():
     # select linked devices
-    try:
-        c.execute('SELECT link_id FROM links WHERE id=' + did + ' AND link= 1;')
-        data = c.fetchall()
-        # print(data)
-    except sqlite3.Error as error:
-        print("Error5: {}".format(error))
-    for row in data:
-        print(row[0])
+
+    for d in links_dict[did]:
+        print(d)
         # update status change in stat_timeline and devices
         # if any sensor is high then the device status is set to high
         if (dstatus=='1'):
             # update status change in stat_timeline and devices
-            set_status(device_id=row[0], status='1',send=True)
+            set_status(device_id=d, status='1',send=True)
 
         elif (dstatus=='0'):
             try:
-                if check(row[0]):
+                if check(d):
                     # update status change in stat_timeline and devices
-                    set_status(device_id=row[0], status='1',send=True)
+                    set_status(device_id=d, status='1',send=True)
                 else:
                     # update status change in stat_timeline and devices
-                    set_status(device_id=row[0], status='0',send=True)
-            except sqlite3.Error as error:
-                print("Error6: {}".format(error))
+                    set_status(device_id=d, status='0',send=True)
+
 
 
 def check(id):

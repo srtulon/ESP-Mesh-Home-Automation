@@ -211,19 +211,23 @@ def link():
 
         elif (dstatus=='0'):
             try:
-                c.execute('SELECT d.* FROM devices d INNER JOIN links l ON d.id = l.id WHERE l.link_id=+'+row[0]+' AND  d.status=1;')
-                data = c.fetchall()
-
-                if len(data) == 0:
-                    # update status change in stat_timeline and devices
-                    set_status(device_id=row[0], status='0',send=True)
-                else:
+                if check(row[0]):
                     # update status change in stat_timeline and devices
                     set_status(device_id=row[0], status='1',send=True)
+                else:
+                    # update status change in stat_timeline and devices
+                    set_status(device_id=row[0], status='0',send=True)
             except sqlite3.Error as error:
                 print("Error6: {}".format(error))
 
 
+def check(id):
+    for i in [k for k,v in links_dict.items() if id in v]:
+        #print(i)
+        #print(devices_dict[i])
+        if pirs_dict[i]==1:
+            return True
+    return False
 
 def set_status(device_id,status,type,send):
     try:

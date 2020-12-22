@@ -116,11 +116,12 @@ def data_entry():
                 relays_dict[key] = []
                 relays_dict[key].append(dstatus)
 
-                try:
-                    c.execute("INSERT OR IGNORE INTO relays (id,name,status) VALUES (?,?,?);",(new_id, new_id, dstatus))
+                #try:
+                    #c.execute("INSERT OR IGNORE INTO relays (id,name,status) VALUES (?,?,?);",(new_id, new_id, dstatus))
                 except sqlite3.Error as error:
-                    print("Error1: {}".format(error))
-                    return
+                    #print("Error1: {}".format(error))
+                    #return
+
             else:
                 data1 = f"{relays_dict[key]}" ##############################################
                 data2 = f"{dstatus}"
@@ -152,11 +153,11 @@ def data_entry():
             acs_dict[key].append(pow)
             acs_dict[key].append(tem)
 
-            try:
-                c.execute("INSERT OR IGNORE INTO acs (id,name,protocol,model,power,temp) VALUES (?,?,?,?,?,?);",(did, did, prot, mod, pow, tem))
-            except sqlite3.Error as error:
-                print("Error1: {}".format(error))
-                return
+            #try:
+                #c.execute("INSERT OR IGNORE INTO acs (id,name,protocol,model,power,temp) VALUES (?,?,?,?,?,?);",(did, did, prot, mod, pow, tem))
+            #except sqlite3.Error as error:
+                #print("Error1: {}".format(error))
+                #return
 
 
     elif dtype[0] == 'p':
@@ -165,11 +166,11 @@ def data_entry():
             pirs_dict[key] = []
             pirs_dict[key].append(dstatus)
 
-            try:
-                c.execute("INSERT OR IGNORE INTO pirs (id,name,status) VALUES (?,?,?);", (did, did, dstatus))
-            except sqlite3.Error as error:
-                print("Error2: {}".format(error))
-                return
+            #try:
+                #c.execute("INSERT OR IGNORE INTO pirs (id,name,status) VALUES (?,?,?);", (did, did, dstatus))
+            #except sqlite3.Error as error:
+                #print("Error2: {}".format(error))
+                #return
         else:
             data1 = f"{pirs_dict[key]}" ##############################################
             data2 = f"{dstatus}"
@@ -224,29 +225,29 @@ def check(id):
     return False
 
 def set_status(device_id,status,type,send):
-    try:
-        c.execute('INSERT INTO stat_timeline (id,status,time) VALUES (?,?,?);', (device_id, status, datetime.now()))
-    except sqlite3.Error as error:
-        print("Error: {}".format(error))
+    #try:
+        #c.execute('INSERT INTO stat_timeline (id,status,time) VALUES (?,?,?);', (device_id, status, datetime.now()))
+    #except sqlite3.Error as error:
+        #print("Error: {}".format(error))
 
     if type == 'r':
         relays_dict[device_id]=status#########################################
-        try:
-            c.execute('UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id};")
-        except sqlite3.Error as error:
-            print("Error: {}".format(error))
+        #try:
+            #c.execute('UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id};")
+        #except sqlite3.Error as error:
+            #print("Error: {}".format(error))
     elif type == 'a':
         acs_dict[device_id]=status#########################################
-        try:
-            c.execute('UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id};")
-        except sqlite3.Error as error:
-            print("Error: {}".format(error))
+        #try:
+            #c.execute('UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id};")
+        #except sqlite3.Error as error:
+            #print("Error: {}".format(error))
     elif type == 'p':
         pirs_dict[device_id]=status#########################################
-        try:
-            c.execute('UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id};")
-        except sqlite3.Error as error:
-            print("Error: {}".format(error))
+        #try:
+            #c.execute('UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id};")
+        #except sqlite3.Error as error:
+            #print("Error: {}".format(error))
 
     if send:
         # send linked device status via MQTT [Format : @(relay number)(status)%)]

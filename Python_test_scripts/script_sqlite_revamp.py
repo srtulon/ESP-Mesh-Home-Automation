@@ -37,7 +37,7 @@ def create_table():
     c.execute('CREATE TABLE IF NOT EXISTS acs ( id varchar(20) not null, name varchar(20) not null, protocol int, model int,power int, temp int,last_update text, PRIMARY KEY (id))')
     c.execute('CREATE TABLE IF NOT EXISTS pirs ( id varchar(20) not null,name varchar(20) not null,last_update text, status int, PRIMARY KEY (id))')
     c.execute('CREATE TABLE IF NOT EXISTS stat_timeline (id varchar(20) not null, status int, time text)')
-    c.execute('CREATE TABLE IF NOT EXISTS links (id varchar(20) not null, link_id varchar(20) , link int, FOREIGN KEY (id) REFERENCES pirs(id),FOREIGN KEY (link_id) REFERENCES relays(id),PRIMARY KEY (ser))')
+    c.execute('CREATE TABLE IF NOT EXISTS links (id varchar(20) not null, link_id varchar(20) , link int,priority int)')
     c.execute('CREATE TABLE IF NOT EXISTS ac_list (protocol varchar(20),PRIMARY KEY (protocol))')
 
 
@@ -113,17 +113,16 @@ def data_entry():
 
             key=new_id
             if key not in relays_dict:
-                relays_dict[key] = []
-                relays_dict[key].append(dstatus)
+                relays_dict[key] = dstatus
 
                 #try:
                     #c.execute("INSERT OR IGNORE INTO relays (id,name,status) VALUES (?,?,?);",(new_id, new_id, dstatus))
-                except sqlite3.Error as error:
+                #except sqlite3.Error as error:
                     #print("Error1: {}".format(error))
                     #return
 
             else:
-                data1 = f"{relays_dict[key]}" ##############################################
+                data1 = f"{relays_dict[key]}"
                 data2 = f"{dstatus}"
                 # print(data1)
                 # print(data2)
@@ -139,19 +138,10 @@ def data_entry():
                     link()
 
     elif dtype[0] == 'a':
-        dstemp=[int(i) for i in str(dstatus)]
-        prot=dstemp[0]
-        mod=dstemp[1]
-        pow=dstemp[2]
-        tem=dstemp[3]*10+dstemp[4]
-
         key=did
         if key not in acs_dict:
-            acs_dict[key] = []
-            acs_dict[key].append(prot)
-            acs_dict[key].append(mod)
-            acs_dict[key].append(pow)
-            acs_dict[key].append(tem)
+            acs_dict[key] = dstatus
+
 
             #try:
                 #c.execute("INSERT OR IGNORE INTO acs (id,name,protocol,model,power,temp) VALUES (?,?,?,?,?,?);",(did, did, prot, mod, pow, tem))
@@ -163,8 +153,8 @@ def data_entry():
     elif dtype[0] == 'p':
         key=did
         if key not in pirs_dict:
-            pirs_dict[key] = []
-            pirs_dict[key].append(dstatus)
+            pirs_dict[key] = dstatus
+
 
             #try:
                 #c.execute("INSERT OR IGNORE INTO pirs (id,name,status) VALUES (?,?,?);", (did, did, dstatus))
@@ -172,7 +162,7 @@ def data_entry():
                 #print("Error2: {}".format(error))
                 #return
         else:
-            data1 = f"{pirs_dict[key]}" ##############################################
+            data1 = f"{pirs_dict[key]}"
             data2 = f"{dstatus}"
             # print(data1)
             # print(data2)
@@ -231,19 +221,19 @@ def set_status(device_id,status,type,send):
         #print("Error: {}".format(error))
 
     if type == 'r':
-        relays_dict[device_id]=status#########################################
+        relays_dict[device_id]=status
         #try:
             #c.execute('UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id};")
         #except sqlite3.Error as error:
             #print("Error: {}".format(error))
     elif type == 'a':
-        acs_dict[device_id]=status#########################################
+        acs_dict[device_id]=status
         #try:
             #c.execute('UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id};")
         #except sqlite3.Error as error:
             #print("Error: {}".format(error))
     elif type == 'p':
-        pirs_dict[device_id]=status#########################################
+        pirs_dict[device_id]=status
         #try:
             #c.execute('UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id};")
         #except sqlite3.Error as error:

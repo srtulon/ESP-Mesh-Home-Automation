@@ -434,9 +434,7 @@ void receivedCallback( uint32_t from, String &msg ) {
     ac.next.model = msg1[3];
     ac.next.degrees = msg1.substring(6,7).toInt();
   }
-
-  
-  
+  ac.sendAc();
 }
 
 

@@ -39,6 +39,7 @@ void sendMessage() {
   if(millis()<100000){
     String id = "";
     id += mesh.getNodeId();
+    Serial.println(id);
     String a= '#' + (String)id + ',' + devtype + ',' + devstatus + '$';
     mesh.sendBroadcast(a);
     taskSendMessage.setInterval(random( TASK_SECOND * 1, TASK_SECOND * 10));
@@ -57,6 +58,13 @@ void receivedCallback( uint32_t from, String &msg ) {
   
   if(msg1.indexOf('@')>-1){
     Serial.println(msg1); 
+    Serial.println(msg1.substring(1,3));
+    Serial.println(msg1[3]);
+    Serial.println(msg1[4]);
+    Serial.println(msg1.substring(5,7));
+    
+
+    
     if(msg1.substring(2,3)=="01"){
         Serial.print("Protocol: AIRWELL");
         ac.next.protocol = decode_type_t::AIRWELL;
@@ -85,7 +93,7 @@ void receivedCallback( uint32_t from, String &msg ) {
         Serial.print("Protocol: CARRIER_AC64");
         ac.next.protocol = decode_type_t::CARRIER_AC64;
      }
-    else if(msg1.substring(2,3)=="08"){
+    else if(msg1.substring(1,3)=="08"){
         Serial.print("Protocol: COOLIX");
         ac.next.protocol = decode_type_t::COOLIX;
      }
@@ -427,12 +435,13 @@ void receivedCallback( uint32_t from, String &msg ) {
      }
   }
   if(msg1[4]=='0'){
+    ac.next.model = msg1[3];
     ac.next.power = false;
   }
   else if(msg1[4]=='1'){
     ac.next.power = true;  // Initially start with the unit off.
     ac.next.model = msg1[3];
-    ac.next.degrees = msg1.substring(6,7).toInt();
+    ac.next.degrees = msg1.substring(5,7).toInt();
   }
   ac.sendAc();
 }

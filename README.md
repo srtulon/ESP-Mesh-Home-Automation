@@ -12,5 +12,3 @@ Libraries & Services used :
   - Mysql-connector for python (For MariaDB)(pip3 install mysql-connector-python) 
   - [MariaDB server](https://medium.com/better-programming/how-to-install-mysql-on-a-raspberry-pi-ad3f69b4a094) or [SQLite3](https://www.sqlite.org/index.html) 
 
-Known Issues:
-  - ~~Error: 1205 (HY000): Lock wait timeout exceeded; try restarting transaction (MYSQL Database)~~

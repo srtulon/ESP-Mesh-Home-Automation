@@ -20,16 +20,19 @@ int ack=1;  // Acknowledgement 1 = recieved/not needed , 0= pending
 
 char charBuf[50];
 
+//Relay
 int pin1=5;
 int pin2=6;
 int pin3=7;
 int pin4=8;
 
+//Switch
 int sw1=22;
 int sw2=21;
 int sw3=19;
 int sw4=18;
 
+//Switch Status
 int s1=0;
 int s2=0;
 int s3=0;
@@ -160,6 +163,7 @@ void setup() {
 void loop() {
   // it will run the user scheduler as well
   mesh.update();
+  
   if(digitalRead(sw1)!=s1){
     s1=digitalRead(sw1);
   }

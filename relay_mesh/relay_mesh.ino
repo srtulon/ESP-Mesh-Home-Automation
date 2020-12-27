@@ -104,6 +104,7 @@ void receivedCallback( uint32_t from, String &msg ) {
   else if(msg1.indexOf('&')>-1){
     if(msg[2]=='1'){
        ack=1;
+       taskSendMessage.disable();
     }
   }
 }
@@ -166,14 +167,18 @@ void loop() {
   
   if(digitalRead(sw1)!=s1){
     s1=digitalRead(sw1);
+    taskSendMessage.enable();
   }
   if(digitalRead(sw2)!=s2){
     s2=digitalRead(sw2);
+    taskSendMessage.enable();
   }
   if(digitalRead(sw3)!=s3){
     s3=digitalRead(sw3);
+    taskSendMessage.enable();
   }
   if(digitalRead(sw4)!=s4){
     s4=digitalRead(sw4);
+    taskSendMessage.enable();
   }
 }

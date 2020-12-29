@@ -50,7 +50,7 @@ void sendMessage() {
     id += mesh.getNodeId();
     String a= '#' + (String)id + ',' + devtype + ',' + s1 + s2 + s3 + s4 + '$';
     mesh.sendBroadcast(a);
-    taskSendMessage.setInterval(random( TASK_SECOND * 1, TASK_SECOND * 3));
+    taskSendMessage.setInterval(random( TASK_SECOND * 1, TASK_SECOND * 5));
     ack=0; 
 }
 

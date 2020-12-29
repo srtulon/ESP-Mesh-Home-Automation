@@ -46,14 +46,12 @@ int temp;
 void sendMessage() {
   //message format: #(id),(type),(status)$ 
   //send for certain amount of time for registering into database
-  if((millis()<100000) || (ack=0)){
     String id = "";
     id += mesh.getNodeId();
     String a= '#' + (String)id + ',' + devtype + ',' + s1 + s2 + s3 + s4 + '$';
     mesh.sendBroadcast(a);
-    taskSendMessage.setInterval(random( TASK_SECOND * 1, TASK_SECOND * 10));
+    taskSendMessage.setInterval(random( TASK_SECOND * 1, TASK_SECOND * 3));
     ack=0; 
-  }
 }
 
 //Receive message from mesh
@@ -77,6 +75,7 @@ void receivedCallback( uint32_t from, String &msg ) {
       digitalWrite(pin1,temp);
       digitalWrite(pin2,temp);
       digitalWrite(pin3,temp);
+      digitalWrite(pin4,temp);
       Serial.print(F("All relay status :"));
       Serial.println(temp); 
     }
@@ -180,5 +179,8 @@ void loop() {
   if(digitalRead(sw4)!=s4){
     s4=digitalRead(sw4);
     taskSendMessage.enable();
+  }
+  if((millis()>100000) || (ack=1)){
+    taskSendMessage.disable();
   }
 }

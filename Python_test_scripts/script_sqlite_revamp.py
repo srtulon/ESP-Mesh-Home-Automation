@@ -90,9 +90,9 @@ def read_database():
         key=row[0] #read id
         if key not in links_dict:
             links_dict[key] = []
-            links_dict[key].append(row[1]) #read link_id
+            links_dict[key].append(row[3]+","+row[1]) #read link_id and priority #########################################
         else:
-            links_dict[key].append(row[1]) #read link_id
+            links_dict[key].append(row[3]+","+row[1]) #read link_id and priority ##########################################
 
 
 
@@ -133,9 +133,9 @@ def data_entry():
                 else:
                     print("Relay Value Not matched")
 
-                    # for sensors, no need to send status
+                    # for incoming status update, no need to send status
                     set_status(device_id=did, status=dstatus, type=dtype[0],send=False)
-                    link()
+
 
     elif dtype[0] == 'a':
         key=did
@@ -148,6 +148,11 @@ def data_entry():
             #except sqlite3.Error as error:
                 #print("Error1: {}".format(error))
                 #return
+        else:
+            print("AC Value Not matched")
+
+            # for incoming status update, no need to send status
+            set_status(device_id=did, status=dstatus, type=dtype[0],send=False)
 
 
     elif dtype[0] == 'p':
@@ -193,16 +198,16 @@ def link():
         # if any sensor is high then the device status is set to high
         if (dstatus=='1'):
             # update status change in stat_timeline and devices
-            set_status(device_id=d, status='1',send=True)
+            set_status(device_id=d, status='1',send=True) #############################
 
         elif (dstatus=='0'):
             try:
                 if check(d):
                     # update status change in stat_timeline and devices
-                    set_status(device_id=d, status='1',send=True)
+                    set_status(device_id=d, status='1',send=True) ############################
                 else:
                     # update status change in stat_timeline and devices
-                    set_status(device_id=d, status='0',send=True)
+                    set_status(device_id=d, status='0',send=True) #############################
 
 
 

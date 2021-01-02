@@ -40,15 +40,6 @@ def read_links():
         for values in links_dict[key]:
             print(values)
 
-read_devices()
-read_links()
-print(devices_dict)
-print(links_dict)
-print(links_dict['3257182011'])
-for d in links_dict['3257182011']:
-    print(d)
-#print([k for k,v in links_dict.items() if "3257604729.1" in v])
-
 def check():
     for i in [k for k,v in links_dict.items() if "3257604729.1" in v]:
         print(i)
@@ -56,6 +47,20 @@ def check():
         if devices_dict[i]==1:
             return True
     return False
+
+def list_in_list():
+    list = [[10,13,17],[3,5,1],[13,11,12]]
+    print(list[1][1])
+
+list_in_list()
+
+#read_devices()
+#read_links()
+#print(devices_dict)
+#print(links_dict)
+
+
+
 
 
 #print(check())

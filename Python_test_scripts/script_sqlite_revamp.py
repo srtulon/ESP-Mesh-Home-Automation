@@ -37,9 +37,9 @@ def create_table():
     c.execute('CREATE TABLE IF NOT EXISTS acs ( id varchar(20) not null, name varchar(20) not null, protocol int, model int,power int, temp int,last_update text, PRIMARY KEY (id))')
     c.execute('CREATE TABLE IF NOT EXISTS pirs ( id varchar(20) not null,name varchar(20) not null,last_update text, status int, PRIMARY KEY (id))')
     c.execute('CREATE TABLE IF NOT EXISTS stat_timeline (id varchar(20) not null, status int, time text)')
-    c.execute('CREATE TABLE IF NOT EXISTS links (id varchar(20) not null, link_id varchar(20) , link int,priority int)')
+    c.execute('CREATE TABLE IF NOT EXISTS links (id varchar(20) not null, link_id varchar(20) , link int,type varchar(5),priority int)')
     c.execute('CREATE TABLE IF NOT EXISTS ac_list (protocol varchar(20),PRIMARY KEY (protocol))')
-
+    c.execute('CREATE TABLE IF NOT EXISTS ac_command (id varchar(20),com int)')
 
 def ac_name_database():
     f = open("ac_protocol_names.txt", "r")
@@ -90,9 +90,9 @@ def read_database():
         key=row[0] #read id
         if key not in links_dict:
             links_dict[key] = []
-            links_dict[key].append([row[1],row[3]) #read link_id and priority #########################################
+            links_dict[key].append([row[1],row[3],row[4]) #read link_id and priority #########################################
         else:
-            links_dict[key].append([row[1],row[3]) #read link_id and priority ##########################################
+            links_dict[key].append([row[1],row[3],row[4]) #read link_id and priority ##########################################
 
 
 
@@ -190,24 +190,24 @@ def data_entry():
 
 # link
 def link():
-    # select linked devices
 
-    for d in links_dict[did]:
-        print(d)
+    # select linked devices
+    for l in links_dict[did]:
+        print(l)
         # update status change in stat_timeline and devices
         # if any sensor is high then the device status is set to high
         if (dstatus=='1'):
             # update status change in stat_timeline and devices
-            set_status(device_id=d, status='1',send=True) #############################
+            set_status(device_id=l[0], status='1',type=l[1],send=True) #############################
 
         elif (dstatus=='0'):
             try:
                 if check(d):
                     # update status change in stat_timeline and devices
-                    set_status(device_id=d, status='1',send=True) ############################
+                    set_status(device_id=l[0], status='1',type=l[1],send=True) ############################
                 else:
                     # update status change in stat_timeline and devices
-                    set_status(device_id=d, status='0',send=True) #############################
+                    set_status(device_id=l[0], status='0',type=l[0],send=True) #############################
 
 
 

@@ -50,7 +50,12 @@ def check():
 
 def list_in_list():
     list = [[10,13,17],[3,5,1],[13,11,12]]
-    print(list[1][1])
+    print(list)
+    list.append([100,99])
+    for l in list:
+        if 13 in l:
+            l[1]=14
+    print(list)
 
 list_in_list()
 

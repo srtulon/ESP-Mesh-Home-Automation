@@ -90,9 +90,9 @@ def read_database():
         key=row[0] #read id
         if key not in links_dict:
             links_dict[key] = []
-            links_dict[key].append(row[3]+","+row[1]) #read link_id and priority #########################################
+            links_dict[key].append([row[1],row[3]) #read link_id and priority #########################################
         else:
-            links_dict[key].append(row[3]+","+row[1]) #read link_id and priority ##########################################
+            links_dict[key].append([row[1],row[3]) #read link_id and priority ##########################################
 
 
 

@@ -23,9 +23,11 @@ void setup() {
 }
 
 void loop() {
+  Serial.println("power off");
   ac.next.power = false;
   ac.sendAc();
   delay(5000);
+  Serial.println("power on");
   ac.next.power = true;
   ac.sendAc();
   delay(5000);

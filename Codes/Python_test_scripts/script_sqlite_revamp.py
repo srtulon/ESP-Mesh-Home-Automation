@@ -20,7 +20,8 @@ relays_dict=dict()
 acs_dict=dict()
 pirs_dict=dict()
 acs_dict=dict()
-links_dict=dict()
+relays_links_dict=dict()
+acs_links_dict=dict()
 ac_list_dict=dict()
 
 ########################## DATABASE PART ###########################################
@@ -37,9 +38,10 @@ def create_table():
     c.execute('CREATE TABLE IF NOT EXISTS acs ( id varchar(20) not null, name varchar(20) not null, protocol int, model int,power int, temp int,last_update text, PRIMARY KEY (id))')
     c.execute('CREATE TABLE IF NOT EXISTS pirs ( id varchar(20) not null,name varchar(20) not null,last_update text, status int, PRIMARY KEY (id))')
     c.execute('CREATE TABLE IF NOT EXISTS stat_timeline (id varchar(20) not null, status int, time text)')
-    c.execute('CREATE TABLE IF NOT EXISTS links (id varchar(20) not null, link_id varchar(20) , link int,type varchar(5),priority int)')
+    c.execute('CREATE TABLE IF NOT EXISTS relays_links (id varchar(20) not null, link_id varchar(20) , link int,priority int)')
+    c.execute('CREATE TABLE IF NOT EXISTS acs_links (id varchar(20) not null, link_id varchar(20) , link int,int com)')
     c.execute('CREATE TABLE IF NOT EXISTS ac_list (protocol varchar(20),PRIMARY KEY (protocol))')
-    c.execute('CREATE TABLE IF NOT EXISTS ac_command (id varchar(20),com int)')
+
 
 def ac_name_database():
     f = open("ac_protocol_names.txt", "r")
@@ -85,15 +87,23 @@ def read_database():
         pirs_dict[key].append(row[2]) #read status
 
 
-    c.execute('SELECT * FROM links WHERE link=1')
+    c.execute('SELECT * FROM relays_links WHERE link=1')
+    for row in c.fetchall():
+        key=row[0] #read id
+        if key not in relays_links_dict:
+            relays_links_dict[key] = []
+            relays_links_dict[key].append([row[1],row[3],row[4]) #read link_id and priority #########################################
+        else:
+            relays_links_dict[key].append([row[1],row[3],row[4]) #read link_id and priority ##########################################
+
+    c.execute('SELECT * FROM acs_links WHERE link=1')
     for row in c.fetchall():
         key=row[0] #read id
         if key not in links_dict:
             links_dict[key] = []
-            links_dict[key].append([row[1],row[3],row[4]) #read link_id and priority #########################################
+            links_dict[key].append([row[1],row[3],row[4]) #read link_id and command #########################################
         else:
-            links_dict[key].append([row[1],row[3],row[4]) #read link_id and priority ##########################################
-
+            links_dict[key].append([row[1],row[3],row[4]) #read link_id and command ##########################################
 
 
 # initialization

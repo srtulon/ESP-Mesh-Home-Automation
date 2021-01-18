@@ -39,7 +39,7 @@ def create_table():
     c.execute('CREATE TABLE IF NOT EXISTS pirs ( id varchar(20) not null,name varchar(20) not null,last_update text, status int, PRIMARY KEY (id))')
     c.execute('CREATE TABLE IF NOT EXISTS stat_timeline (id varchar(20) not null, status int, time text)')
     c.execute('CREATE TABLE IF NOT EXISTS relays_links (id varchar(20) not null, link_id varchar(20) , link int,priority int)')
-    c.execute('CREATE TABLE IF NOT EXISTS acs_links (id varchar(20) not null, link_id varchar(20) , link int,int com)')
+    c.execute('CREATE TABLE IF NOT EXISTS acs_links (id varchar(20) not null, link_id varchar(20) , link int, protocol int, model int,power int, temp int)')
     c.execute('CREATE TABLE IF NOT EXISTS ac_list (protocol varchar(20),PRIMARY KEY (protocol))')
 
 
@@ -100,10 +100,10 @@ def read_database():
     for row in c.fetchall():
         key=row[0] #read id
         if key not in links_dict:
-            links_dict[key] = []
-            links_dict[key].append([row[1],row[3],row[4]) #read link_id and command #########################################
+            acs_links_dict[key] = []
+            acs_links_dict[key].append([row[1],row[3],row[4],row[5],row[6],row[7]) #read link_id and commands #########################################
         else:
-            links_dict[key].append([row[1],row[3],row[4]) #read link_id and command ##########################################
+            acs_links_dict[key].append([row[1],row[3],row[4],row[5],row[6],row[7]) #read link_id and commands ##########################################
 
 
 # initialization
@@ -202,7 +202,24 @@ def data_entry():
 def link():
 
     # select linked devices
-    for l in links_dict[did]:
+    for l in relays_links_dict[did]:
+        print(l)
+        # update status change in stat_timeline and devices
+        # if any sensor is high then the device status is set to high
+        if (dstatus=='1'):
+            # update status change in stat_timeline and devices
+            set_status(device_id=l[0], status='1',type=l[1],send=True) #############################
+
+        elif (dstatus=='0'):
+            try:
+                if check(d):
+                    # update status change in stat_timeline and devices
+                    set_status(device_id=l[0], status='1',type=l[1],send=True) ############################
+                else:
+                    # update status change in stat_timeline and devices
+                    set_status(device_id=l[0], status='0',type=l[0],send=True) #############################
+
+    for l in acs_links_dict[did]:
         print(l)
         # update status change in stat_timeline and devices
         # if any sensor is high then the device status is set to high

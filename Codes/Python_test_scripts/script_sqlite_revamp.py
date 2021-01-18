@@ -92,18 +92,18 @@ def read_database():
         key=row[0] #read id
         if key not in relays_links_dict:
             relays_links_dict[key] = []
-            relays_links_dict[key].append([row[1],row[3],row[4]) #read link_id and priority #########################################
+            relays_links_dict[key].append([row[1],row[3]) #read link_id and priority #########################################
         else:
-            relays_links_dict[key].append([row[1],row[3],row[4]) #read link_id and priority ##########################################
+            relays_links_dict[key].append([row[1],row[3]) #read link_id and priority ##########################################
 
     c.execute('SELECT * FROM acs_links WHERE link=1')
     for row in c.fetchall():
         key=row[0] #read id
         if key not in links_dict:
             acs_links_dict[key] = []
-            acs_links_dict[key].append([row[1],row[3],row[4],row[5],row[6],row[7]) #read link_id and commands #########################################
+            acs_links_dict[key].append([row[1],row[3],row[4],row[5],row[6]) #read link_id and commands #########################################
         else:
-            acs_links_dict[key].append([row[1],row[3],row[4],row[5],row[6],row[7]) #read link_id and commands ##########################################
+            acs_links_dict[key].append([row[1],row[3],row[4],row[5],row[6]) #read link_id and commands ##########################################
 
 
 # initialization

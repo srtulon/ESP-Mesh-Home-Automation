@@ -29,11 +29,6 @@ void loop() {
    acOff();
 }
 
-
-
-
-
-
 void acOn() {
   Serial.println("Ac On");
   ac.sendCOOLIX(0xB21FC8);

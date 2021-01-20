@@ -4,7 +4,7 @@
 #include <IRac.h>
 #include <IRutils.h>
 
-const uint16_t kIrLed = 4;  // The ESP GPIO pin to use that controls the IR LED.
+const uint16_t kIrLed = D2;  // The ESP D2 pin to use that controls the IR LED.
 IRac ac(kIrLed);  // Create a A/C object using GPIO to sending messages with.
 
 void setup() {

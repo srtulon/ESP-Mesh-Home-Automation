@@ -124,6 +124,7 @@ def data_entry():
 
             key=new_id
             if key not in relays_dict:
+                Print("Adding new relay to list")
                 relays_dict[key] = dstatus
 
                 #try:
@@ -151,6 +152,7 @@ def data_entry():
     elif dtype[0] == 'a':
         key=did
         if key not in acs_dict:
+            Print("Adding new ac to list")
             acs_dict[key] = dstatus
 
 
@@ -169,6 +171,7 @@ def data_entry():
     elif dtype[0] == 'p':
         key=did
         if key not in pirs_dict:
+            Print("Adding new pir to list")
             pirs_dict[key] = dstatus
 
 

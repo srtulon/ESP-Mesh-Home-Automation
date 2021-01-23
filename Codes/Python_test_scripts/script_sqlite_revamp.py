@@ -124,7 +124,7 @@ def data_entry():
 
             key=new_id
             if key not in relays_dict:
-                Print("Adding new relay to list")
+                print("Adding new relay to list")
                 relays_dict[key] = dstatus
 
                 #try:
@@ -134,16 +134,16 @@ def data_entry():
                     #return
 
             else:
-                data1 = f"{relays_dict[key]}"
-                data2 = f"{dstatus}"
+                data1 = str(relays_dict[key])
+                data2 = str(dstatus)
                 # print(data1)
                 # print(data2)
 
                 # matching current status with previous to avoid multiple entry
-                if data1 == data2 and row is not None:
-                    print("Relay Value Matched")
+                if data1 == data2:
+                    print("Relay Value Matched. Data1:"+data1+" Data2:"+data2)
                 else:
-                    print("Relay Value Not matched")
+                    print("Relay Value Not matched. Data1:"+data1+" Data2:"+data2)
 
                     # for incoming status update, no need to send status
                     set_status(device_id=did, status=dstatus, type=dtype[0],send=False)
@@ -152,7 +152,7 @@ def data_entry():
     elif dtype[0] == 'a':
         key=did
         if key not in acs_dict:
-            Print("Adding new ac to list")
+            print("Adding new ac to list")
             acs_dict[key] = dstatus
 
 
@@ -171,7 +171,7 @@ def data_entry():
     elif dtype[0] == 'p':
         key=did
         if key not in pirs_dict:
-            Print("Adding new pir to list")
+            print("Adding new pir to list")
             pirs_dict[key] = dstatus
 
 
@@ -181,16 +181,17 @@ def data_entry():
                 #print("Error2: {}".format(error))
                 #return
         else:
-            data1 = f"{pirs_dict[key]}"
-            data2 = f"{dstatus}"
-            # print(data1)
-            # print(data2)
+            data1 = pirs_dict[key]
+            data2 = dstatus
+            print(int(data1))
+            print(int(data2))
 
             # matching current status with previous to avoid multiple entry
-            if data1 == data2 and row is not None:
-                print("Pir Value Matched")
+            if int(data1) == int(data2):
+                print("Pir Value Matched. Data1:"+data1+" Data2:"+data2)
+
             else:
-                print("Pir Value Not matched")
+                print("Pir Value Not matched. Data1:"+data1+" Data2:"+data2)
 
                 # for sensors, no need to send status
                 set_status(device_id=did, status=dstatus, type=dtype[0],send=False)
@@ -205,38 +206,40 @@ def data_entry():
 # link
 def link():
 
-    # select linked devices
-    for l in relays_links_dict[did]:
-        print(l)
-        # update status change in stat_timeline and devices
-        # if any sensor is high then the device status is set to high
-        if (dstatus=='1'):
+    if did in relays_links_dict:
+        # select linked devices
+        for l in relays_links_dict[did]:
+            print(l)
             # update status change in stat_timeline and devices
-            set_status(device_id=l[0], status='1',type='r',send=True) #############################
-
-        elif (dstatus=='0'):
-            if check(d):
+            # if any sensor is high then the device status is set to high
+            if (dstatus=='1'):
                 # update status change in stat_timeline and devices
-                set_status(device_id=l[0], status='1',type='r',send=True) ############################
-            else:
-                # update status change in stat_timeline and devices
-                set_status(device_id=l[0], status='0',type='r',send=True) #############################
+                set_status(device_id=l[0], status='1',type='r',send=True) #############################
 
-    for l in acs_links_dict[did]:
-        print(l)
-        # update status change in stat_timeline and devices
-        # if any sensor is high then the device status is set to high
-        if (dstatus=='1'):
+            elif (dstatus=='0'):
+                if check(d):
+                    # update status change in stat_timeline and devices
+                    set_status(device_id=l[0], status='1',type='r',send=True) ############################
+                else:
+                    # update status change in stat_timeline and devices
+                    set_status(device_id=l[0], status='0',type='r',send=True) #############################
+
+    if did in acs_links_dict:
+        for l in acs_links_dict[did]:
+            print(l)
             # update status change in stat_timeline and devices
-            set_status(device_id=l[0], status=l[1]+l[2]+'1'+l[3],type='a',send=True) #############################
+            # if any sensor is high then the device status is set to high
+            if (dstatus=='1'):
+                # update status change in stat_timeline and devices
+                set_status(device_id=l[0], status=l[1]+l[2]+'1'+l[3],type='a',send=True) #############################
 
-        elif (dstatus=='0'):
-            if check(d):
-                # update status change in stat_timeline and devices
-                set_status(device_id=l[0], status=l[1]+l[2]+'1'+l[3],type='a',send=True) ############################
-            else:
-                # update status change in stat_timeline and devices
-                set_status(device_id=l[0], status=l[1]+l[2]+'0'+l[3],type='a',send=True) #############################
+            elif (dstatus=='0'):
+                if check(d):
+                    # update status change in stat_timeline and devices
+                    set_status(device_id=l[0], status=l[1]+l[2]+'1'+l[3],type='a',send=True) ############################
+                else:
+                    # update status change in stat_timeline and devices
+                    set_status(device_id=l[0], status=l[1]+l[2]+'0'+l[3],type='a',send=True) #############################
 
 
 

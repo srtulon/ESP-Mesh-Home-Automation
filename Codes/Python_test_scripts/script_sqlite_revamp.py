@@ -300,7 +300,7 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     global did, dtype, dstatus
     txt = (msg.payload).decode("utf-8")
-
+    print(txt)
     # print(len(txt))
     print(txt)
     # print(txt.find('$'))
@@ -354,5 +354,5 @@ def ack(dev):
 client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
-client.connect("192.168.1.42", 1883, 60)  # change the address to MQTT broker server
+client.connect("192.168.0.102", 1883, 60)  # change the address to MQTT broker server
 client.loop_forever()

@@ -17,11 +17,11 @@
 #define   MESH_PASSWORD   "password"
 #define   MESH_PORT       5555
 
-//#define   STATION_SSID     "xaneon"
-//#define   STATION_PASSWORD "bmwm3gtr"
+#define   STATION_SSID     "xaneon"
+#define   STATION_PASSWORD "bmwm3gtr"
 
-#define   STATION_SSID     "OfficeWifi"
-#define   STATION_PASSWORD "Secure2G1220"
+//#define   STATION_SSID     "OfficeWifi"
+//#define   STATION_PASSWORD "Secure2G1220"
 
 #define HOSTNAME "MQTT_Bridge"
 
@@ -35,8 +35,8 @@ IPAddress myIP(0,0,0,0);
 
 int a=192;
 int b=168;
-int c=1;
-int d=55;
+int c=0;
+int d=102;
 IPAddress mqttBroker(a, b, c, d);
 int mqttport=1883;
 

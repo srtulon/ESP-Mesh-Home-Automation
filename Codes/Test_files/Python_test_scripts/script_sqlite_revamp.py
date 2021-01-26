@@ -156,11 +156,11 @@ def data_entry():
             acs_dict[key] = dstatus
 
 
-            #try:
-                #c.execute("INSERT OR IGNORE INTO acs (id,name,protocol,model,power,temp) VALUES (?,?,?,?,?,?);",(did, did, prot, mod, pow, tem))
-            #except sqlite3.Error as error:
-                #print("Error1: {}".format(error))
-                #return
+            try:
+                c.execute("INSERT OR IGNORE INTO acs (id,name,protocol,model,power,temp) VALUES (?,?,?,?,?,?);",(did, did, prot, mod, pow, tem))
+            except sqlite3.Error as error:
+                print("Error1: {}".format(error))
+                return
         else:
             print("AC Value Not matched")
 
@@ -175,11 +175,11 @@ def data_entry():
             pirs_dict[key] = dstatus
 
 
-            #try:
-                #c.execute("INSERT OR IGNORE INTO pirs (id,name,status) VALUES (?,?,?);", (did, did, dstatus))
-            #except sqlite3.Error as error:
-                #print("Error2: {}".format(error))
-                #return
+            try:
+                c.execute("INSERT OR IGNORE INTO pirs (id,name,status) VALUES (?,?,?);", (did, did, dstatus))
+            except sqlite3.Error as error:
+                print("Error2: {}".format(error))
+                return
         else:
             data1 = pirs_dict[key]
             data2 = dstatus
@@ -259,10 +259,10 @@ def set_status(device_id,status,type,send):
 
     if (type == 'r'):
         relays_dict[device_id]=status
-        #try:
-            #c.execute('UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id};")
-        #except sqlite3.Error as error:
-            #print("Error: {}".format(error))
+        try:
+            c.execute('UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id};")
+        except sqlite3.Error as error:
+            print("Error: {}".format(error))
         if send:
             # send linked relays status via MQTT [Format : @(relay number)(status)%)]
             temp = device_id.split('.')
@@ -272,10 +272,10 @@ def set_status(device_id,status,type,send):
 
     elif (type == 'a'):
         acs_dict[device_id]=status
-        #try:
-            #c.execute('UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id};")
-        #except sqlite3.Error as error:
-            #print("Error: {}".format(error))
+        try:
+            c.execute('UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id};")
+        except sqlite3.Error as error:
+            print("Error: {}".format(error))
 
         if send:
             # send linked ac status via MQTT [Format : @(status)%)]
@@ -283,10 +283,10 @@ def set_status(device_id,status,type,send):
 
     elif (type == 'p'):
         pirs_dict[device_id]=status
-        #try:
-            #c.execute('UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id};")
-        #except sqlite3.Error as error:
-            #print("Error: {}".format(error))
+        try:
+            c.execute('UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id};")
+        except sqlite3.Error as error:
+            print("Error: {}".format(error))
 
 
 create_table()

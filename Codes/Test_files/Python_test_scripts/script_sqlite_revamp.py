@@ -127,11 +127,11 @@ def data_entry():
                 print("Adding new relay to list")
                 relays_dict[key] = dstatus
 
-                #try:
-                    #c.execute("INSERT OR IGNORE INTO relays (id,name,status) VALUES (?,?,?);",(new_id, new_id, dstatus))
-                #except sqlite3.Error as error:
-                    #print("Error1: {}".format(error))
-                    #return
+                try:
+                    c.execute("INSERT OR IGNORE INTO relays (id,name,status) VALUES (?,?,?);",(new_id, new_id, dstatus))
+                except sqlite3.Error as error:
+                    print("Error1: {}".format(error))
+                    return
 
             else:
                 data1 = str(relays_dict[key])
@@ -153,7 +153,16 @@ def data_entry():
         key=did
         if key not in acs_dict:
             print("Adding new ac to list")
-            acs_dict[key] = dstatus
+            prot=dstatus[0:2]
+            mod=dstatus[2]
+            pow=dstatus[3]
+            tem=dstatus[4:6]
+
+            acs_dict[key][0] = prot
+            acs_dict[key][1] = mod
+            acs_dict[key][2] = pow
+            acs_dict[key][4] = tem
+
 
 
             try:

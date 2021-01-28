@@ -151,12 +151,13 @@ def data_entry():
 
     elif dtype[0] == 'a':
         key=did
+        prot=dstatus[0:2]
+        mod=dstatus[2]
+        pow=dstatus[3]
+        tem=dstatus[4:6]
         if key not in acs_dict:
             print("Adding new ac to list")
-            prot=dstatus[0:2]
-            mod=dstatus[2]
-            pow=dstatus[3]
-            tem=dstatus[4:6]
+
 
             acs_dict[key][0] = prot
             acs_dict[key][1] = mod
@@ -170,6 +171,7 @@ def data_entry():
             except sqlite3.Error as error:
                 print("Error1: {}".format(error))
                 return
+
         else:
             print("AC Value Not matched")
 

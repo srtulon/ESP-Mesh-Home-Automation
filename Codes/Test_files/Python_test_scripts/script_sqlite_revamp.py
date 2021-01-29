@@ -36,7 +36,7 @@ c = conn.cursor()
 def create_table():
     c.execute('CREATE TABLE IF NOT EXISTS relays ( id varchar(20) not null,name varchar(20) not null, status int,last_update text, PRIMARY KEY (id))')
     c.execute('CREATE TABLE IF NOT EXISTS acs ( id varchar(20) not null, name varchar(20) not null, protocol int, model int,power int, temp int,last_update text, PRIMARY KEY (id))')
-    c.execute('CREATE TABLE IF NOT EXISTS pirs ( id varchar(20) not null,name varchar(20) not null,last_update text, status int, PRIMARY KEY (id))')
+    c.execute('CREATE TABLE IF NOT EXISTS pirs ( id varchar(20) not null,name varchar(20) not null, status int, last_update text,PRIMARY KEY (id))')
     c.execute('CREATE TABLE IF NOT EXISTS stat_timeline (id varchar(20) not null, status int, time text)')
     c.execute('CREATE TABLE IF NOT EXISTS relays_links (id varchar(20) not null, link_id varchar(20) , link int,priority int)')
     c.execute('CREATE TABLE IF NOT EXISTS acs_links (id varchar(20) not null, link_id varchar(20) , link int, protocol int, model int,temp int)')
@@ -67,9 +67,9 @@ def read_database():
     c.execute('SELECT * FROM relays')
     for row in c.fetchall():
         key=row[0] #read id
-        relays_dict[key] = []
-        relays_dict[key].append(row[2]) #read status
+        relays_dict[key] = row[2] #read status
 
+    print(relays_dict)
 
     c.execute('SELECT * FROM acs')
     for row in c.fetchall():
@@ -79,14 +79,13 @@ def read_database():
         acs_dict[key].append(row[3]) #read model
         acs_dict[key].append(row[4]) #read power state
         acs_dict[key].append(row[5]) #read temperature
-
+    print(acs_dict)
 
     c.execute('SELECT * FROM pirs')
     for row in c.fetchall():
         key=row[0] #read id
-        pirs_dict[key] = []
-        pirs_dict[key].append(row[2]) #read status
-
+        pirs_dict[key]=row[2] #read status
+    print(pirs_dict)
 
     c.execute('SELECT * FROM relays_links WHERE link=1')
     for row in c.fetchall():

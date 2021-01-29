@@ -271,7 +271,7 @@ def set_status(device_id,status,type,send):
     if (type == 'r'):
         relays_dict[device_id]=status
         try:
-            c.execute('UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id};")
+            c.execute('UPDATE relays SET status = ' + status + ' WHERE id =' + f"{device_id};")
         except sqlite3.Error as error:
             print("Error: {}".format(error))
         if send:
@@ -284,7 +284,7 @@ def set_status(device_id,status,type,send):
     elif (type == 'a'):
         acs_dict[device_id]=status
         try:
-            c.execute('UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id};")
+            c.execute('UPDATE acs SET status = ' + status + ' WHERE id =' + f"{device_id};")
         except sqlite3.Error as error:
             print("Error: {}".format(error))
 
@@ -295,7 +295,7 @@ def set_status(device_id,status,type,send):
     elif (type == 'p'):
         pirs_dict[device_id]=status
         try:
-            c.execute('UPDATE devices SET status = ' + status + ' WHERE id =' + f"{device_id};")
+            c.execute('UPDATE pirs SET status = ' + status + ' WHERE id =' + f"{device_id};")
         except sqlite3.Error as error:
             print("Error: {}".format(error))
 

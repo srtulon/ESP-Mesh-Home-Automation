@@ -318,10 +318,11 @@ def on_message(client, userdata, msg):
     txt = (msg.payload).decode("utf-8")
     print(txt)
     # print(len(txt))
-    print(txt)
     # print(txt.find('$'))
     if len(txt) > 10:
         print("##########################################")
+        localtime = time.asctime( time.localtime(time.time()) )
+        print(localtime)
         # message format: #(id),(type),(status)$
         if txt[0] == '#' and txt.find('$') > 0:
             txt = txt.replace("#", "")

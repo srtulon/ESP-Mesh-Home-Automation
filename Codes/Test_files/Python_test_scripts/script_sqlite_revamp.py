@@ -92,9 +92,12 @@ def read_database():
         key=row[0] #read id
         if key not in relays_links_dict:
             relays_links_dict[key] = []
-            relays_links_dict[key].append(row[1],row[3]) #read link_id and priority #########################################
+            relays_links_dict[key].append([row[1],row[3]]) #read link_id and priority #########################################
+            #relays_links_dict[key].append(row[3]) #read link_id and priority #########################################
         else:
-            relays_links_dict[key].append(row[1],row[3]) #read link_id and priority ##########################################
+            relays_links_dict[key].append([row[1],row[3]]) #read link_id and priority ##########################################
+            #relays_links_dict[key].append(row[3]) #read link_id and priority #########################################
+    print(relays_links_dict)
 
     c.execute('SELECT * FROM acs_links WHERE link=1')
     for row in c.fetchall():
@@ -104,6 +107,7 @@ def read_database():
             acs_links_dict[key].append(row[1],row[3],row[4],row[5]) #read link_id and commands #########################################
         else:
             acs_links_dict[key].append(row[1],row[3],row[4],row[5]) #read link_id and commands ##########################################
+    print(acs_links_dict)
 
 
 # initialization
@@ -219,7 +223,7 @@ def link():
     if did in relays_links_dict:
         # select linked devices
         for l in relays_links_dict[did]:
-            print(l)
+            print("1..."+str(l))
             # update status change in stat_timeline and devices
             # if any sensor is high then the device status is set to high
             if (dstatus=='1'):
@@ -227,7 +231,7 @@ def link():
                 set_status(device_id=l[0], status='1',type='r',send=True) #############################
 
             elif (dstatus=='0'):
-                if check(d):
+                if check(did):
                     # update status change in stat_timeline and devices
                     set_status(device_id=l[0], status='1',type='r',send=True) ############################
                 else:
@@ -254,7 +258,7 @@ def link():
 
 
 def check(id):
-    for i in [k for k,v in links_dict.items() if id in v]:
+    for i in [k for k,v in relays_links_dict.items() if id in v]:
         #print(i)
         #print(devices_dict[i])
         if pirs_dict[i]==1:
@@ -275,7 +279,9 @@ def set_status(device_id,status,type,send):
             print("Error: {}".format(error))
         if send:
             # send linked relays status via MQTT [Format : @(relay number)(status)%)]
-            temp = device_id.split('.')
+            temp = str(device_id).split('.')
+            print(device_id)
+            print(temp)
             ori_id = temp[0]
             relay_num = temp[1]
             send_message(ori_id, '@' + relay_num + status + '%')

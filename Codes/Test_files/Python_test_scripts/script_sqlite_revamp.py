@@ -140,9 +140,9 @@ def data_entry():
 
                 # matching current status with previous to avoid multiple entry
                 if data1 == data2:
-                    print("Relay Value Matched. Data1:"+data1+" Data2:"+data2)
+                    print("Relay Value Matched. Data1:"+str(data1)+" Data2:"+str(data2))
                 else:
-                    print("Relay Value Not matched. Data1:"+data1+" Data2:"+data2)
+                    print("Relay Value Not matched. Data1:"+str(data1)+" Data2:"+str(data2))
 
                     # for incoming status update, no need to send status
                     set_status(device_id=did, status=dstatus, type=dtype[0],send=False)
@@ -198,10 +198,10 @@ def data_entry():
 
             # matching current status with previous to avoid multiple entry
             if int(data1) == int(data2):
-                print("Pir Value Matched. Data1:"+data1+" Data2:"+data2)
+                print("Pir Value Matched. Data1:"+str(data1)+" Data2:"+str(data2))
 
             else:
-                print("Pir Value Not matched. Data1:"+data1+" Data2:"+data2)
+                print("Pir Value Not matched. Data1:"+str(data1)+" Data2:"+str(data2))
 
                 # for sensors, no need to send status
                 set_status(device_id=did, status=dstatus, type=dtype[0],send=False)

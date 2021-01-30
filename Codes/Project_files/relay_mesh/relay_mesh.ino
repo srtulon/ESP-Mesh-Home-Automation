@@ -21,16 +21,16 @@ int ack=1;  // Acknowledgement 1 = recieved/not needed , 0= pending
 char charBuf[50];
 
 //Relay
-int pin1=5;
-int pin2=6;
-int pin3=7;
-int pin4=8;
+int pin1=D5;
+int pin2=D6;
+int pin3=D7;
+int pin4=D8;
 
 //Switch
-int sw1=22;
-int sw2=21;
-int sw3=19;
-int sw4=18;
+int sw1=D0;
+int sw2=D1;
+int sw3=D2;
+int sw4=D3;
 
 //Switch Status
 int s1=0;
@@ -143,7 +143,7 @@ void setup() {
   // MAKE SURE YOUR UPLOADED OTA FIRMWARE INCLUDES OTA SUPPORT OR YOU WILL LOSE
   // THE ABILITY TO UPLOAD MORE FIRMWARE OVER OTA. YOU ALSO WANT TO MAKE SURE
   // THE ROLES ARE CORRECT
-  mesh.initOTAReceive(devtype);
+
 
   userScheduler.addTask( taskSendMessage );
   taskSendMessage.enable();

@@ -223,11 +223,11 @@ def link():
     if did in relays_links_dict:
         # select linked devices
         for l in relays_links_dict[did]:
-            print("1..."+str(l))
+            print(str(l))
             # update status change in stat_timeline and devices
             # if any sensor is high then the device status is set to high
             if (dstatus=='1'):
-                # update status change in stat_timeline and devices
+                # update status change in stat_timel,ine and devices
                 set_status(device_id=l[0], status='1',type='r',send=True) #############################
 
             elif (dstatus=='0'):

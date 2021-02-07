@@ -32,11 +32,15 @@ String a="";
 void sendMessage() {
   //send for certain amount of time for registering into database
   if(a.length()>1){
-    mesh.sendBroadcast(a);
-    taskSendMessage.setInterval(random( TASK_SECOND * 1, TASK_SECOND * 5));
-    //mesh.sendBroadcast(b);
-    //taskSendMessage.setInterval(random( TASK_SECOND * 1, TASK_SECOND * 5));
-
+    int count=0;
+    while( count>5){
+      mesh.sendBroadcast(a);
+      taskSendMessage.setInterval(random( TASK_SECOND * 1, TASK_SECOND * 5));
+      //mesh.sendBroadcast(b);
+      //taskSendMessage.setInterval(random( TASK_SECOND * 1, TASK_SECOND * 5));
+      count++;
+    }
+  a="";
 
   }
 }
@@ -46,15 +50,6 @@ void sendMessage() {
 void receivedCallback( uint32_t from, String &msg ) {
   Serial.printf("startHere: Received from %u msg=%s\n", from, msg.c_str());
   //To convert msg into proper String
-  msg.trim();
-  msg.toCharArray(charBuf, 13);
-  String msg1=(String)msg;
-  if(msg1.indexOf('&')>-1){
-    if(msg[2]=='1'){
-       taskSendMessage.disable();
-       a="";
-    }
-  }
 }
 
 

@@ -41,6 +41,8 @@ def create_table():
     c.execute('CREATE TABLE IF NOT EXISTS relays_links (id varchar(20) not null, link_id varchar(20) , link int,priority int)')
     c.execute('CREATE TABLE IF NOT EXISTS acs_links (id varchar(20) not null, link_id varchar(20) , link int, protocol int, model int,temp int)')
     c.execute('CREATE TABLE IF NOT EXISTS ac_list (protocol varchar(20),PRIMARY KEY (protocol))')
+    c.execute('CREATE TABLE IF NOT EXISTS remote_list (protocol varchar(20),PRIMARY KEY (protocol))')
+
 
 
 def ac_name_database():
@@ -345,6 +347,20 @@ def on_message(client, userdata, msg):
             print("Device Status: "+dstatus)
 
             data_entry()
+
+        else:
+            p=txt.split("\n")
+            p=p[0]
+            if p.find('Protocol')>=0:
+                protocol=p.split(":")[1]
+                print(protocol.strip())
+                try:
+                    c.execute("INSERT OR IGNORE INTO remote_list (protocol) VALUES (?);",(protocol.strip(),))
+                except sqlite3.Error as error:
+                   print("Error: {}".format(error))
+                   return
+            conn.commit()
+
 
 
 

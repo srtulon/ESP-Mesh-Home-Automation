@@ -135,16 +135,6 @@ void setup() {
   mesh.onChangedConnections(&changedConnectionCallback);
   mesh.onNodeTimeAdjusted(&nodeTimeAdjustedCallback);
   
-  // if you want your node to accept OTA firmware, simply include this line
-  // with whatever role you want your hardware to be. For instance, a
-  // mesh network may have a thermometer, rain detector, and bridge. Each of
-  // those may require different firmware, so different roles are preferrable.
-  //
-  // MAKE SURE YOUR UPLOADED OTA FIRMWARE INCLUDES OTA SUPPORT OR YOU WILL LOSE
-  // THE ABILITY TO UPLOAD MORE FIRMWARE OVER OTA. YOU ALSO WANT TO MAKE SURE
-  // THE ROLES ARE CORRECT
-
-
   userScheduler.addTask( taskSendMessage );
   taskSendMessage.enable();
 

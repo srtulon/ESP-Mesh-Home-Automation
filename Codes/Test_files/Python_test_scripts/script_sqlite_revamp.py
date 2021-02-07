@@ -104,7 +104,7 @@ def read_database():
     c.execute('SELECT * FROM acs_links WHERE link=1')
     for row in c.fetchall():
         key=row[0] #read id
-        if key not in links_dict:
+        if key not in acs_links_dict:
             acs_links_dict[key] = []
             acs_links_dict[key].append(row[1],row[3],row[4],row[5]) #read link_id and commands #########################################
         else:
@@ -250,7 +250,7 @@ def link():
                 set_status(device_id=l[0], status=l[1]+l[2]+'1'+l[3],type='a',send=True) #############################
 
             elif (dstatus=='0'):
-                if check(d):
+                if check(l):
                     # update status change in stat_timeline and devices
                     set_status(device_id=l[0], status=l[1]+l[2]+'1'+l[3],type='a',send=True) ############################
                 else:

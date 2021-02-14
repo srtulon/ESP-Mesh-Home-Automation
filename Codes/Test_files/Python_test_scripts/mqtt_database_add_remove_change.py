@@ -42,18 +42,21 @@ def on_message(client, userdata, msg):
             t = txt.split("!")
             s = t[0].split(",")
             dtype=s[0]
-            did = s[1]
-            lid = s[2]
-            link = s[3]
-            msg1=s[4]
+            com= s[1]
+            did = s[2]
+            lid = s[3]
+            link = s[4]
+            msg1=s[5]
+
             print(dtype)
+            print(com)
             print(did)
             print(lid)
             print(link)
             print(msg1)
 
 
-            if dtype[0] == 'rl':
+            if dtype == 'r1':
                 key=did
                 if key not in relays_links_dict:
                     print("Adding new relay_links to list")
@@ -71,7 +74,7 @@ def on_message(client, userdata, msg):
                     print(int(data1))
                     print(int(data2))
     
-                elif dtype[0] == 'al':
+            elif dtype == 'a1':
                     pass
             
 

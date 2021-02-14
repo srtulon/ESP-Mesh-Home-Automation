@@ -1,4 +1,29 @@
 import paho.mqtt.client as mqtt
+import sqlite3
+
+# sqlite3 Database connection
+conn = sqlite3.connect('database.db',check_same_thread=False)
+c = conn.cursor()
+
+relays_dict=dict()
+acs_dict=dict()
+pirs_dict=dict()
+acs_dict=dict()
+relays_links_dict=dict()
+acs_links_dict=dict()
+ac_list_dict=dict()
+
+# create table
+def create_table():
+    c.execute('CREATE TABLE IF NOT EXISTS relays ( id varchar(20) not null,name varchar(20) not null, status int,last_update text, PRIMARY KEY (id))')
+    c.execute('CREATE TABLE IF NOT EXISTS acs ( id varchar(20) not null, name varchar(20) not null, protocol int, model int,power int, temp int,last_update text, PRIMARY KEY (id))')
+    c.execute('CREATE TABLE IF NOT EXISTS pirs ( id varchar(20) not null,name varchar(20) not null, status int, last_update text,PRIMARY KEY (id))')
+    c.execute('CREATE TABLE IF NOT EXISTS stat_timeline (id varchar(20) not null, status int, time text)')
+    c.execute('CREATE TABLE IF NOT EXISTS relays_links (id varchar(20) not null, link_id varchar(20) , link int,priority int)')
+    c.execute('CREATE TABLE IF NOT EXISTS acs_links (id varchar(20) not null, link_id varchar(20) , link int, command int)') 
+    c.execute('CREATE TABLE IF NOT EXISTS ac_list (protocol varchar(20),PRIMARY KEY (protocol))')
+    c.execute('CREATE TABLE IF NOT EXISTS remote_list (protocol varchar(20),PRIMARY KEY (protocol))')
+
 
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
@@ -10,7 +35,29 @@ def on_connect(client, userdata, flags, rc):
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
-    print(msg.topic+" "+(msg.payload).decode("utf-8"))
+    txt=(msg.payload).decode("utf-8")
+
+    if txt[0] == '^' and txt.find('!') > 0:
+            txt = txt.replace("^", "")
+            t = txt.split("!")
+            s = t[0].split(",")
+            dtype=s[0]
+            did = s[1]
+            lid = s[2]
+            link = s[3]
+            command=s[4]
+            print(dtype)
+            print(did)
+            print(lid)
+            print(link)
+            print(command)
+
+
+
+
+
+
+            
 
 client = mqtt.Client()
 client.on_connect = on_connect

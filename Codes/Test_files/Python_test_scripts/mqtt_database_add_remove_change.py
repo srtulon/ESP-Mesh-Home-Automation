@@ -45,12 +45,35 @@ def on_message(client, userdata, msg):
             did = s[1]
             lid = s[2]
             link = s[3]
-            command=s[4]
+            msg1=s[4]
             print(dtype)
             print(did)
             print(lid)
             print(link)
-            print(command)
+            print(msg1)
+
+
+            if dtype[0] == 'rl':
+                key=did
+                if key not in relays_links_dict:
+                    print("Adding new relay_links to list")
+                    relays_links_dict[key] = []
+                    relays_links_dict[key].append([row[1],row[3]])
+
+                    try:
+                        c.execute("INSERT OR IGNORE INTO relays_links (id,link_id,link,priority) VALUES (?,?,?,?);", (did, did, dmsg))
+                    except sqlite3.Error as error:
+                        print("Error2: {}".format(error))
+                        return
+                else:
+                    data1 = pirs_dict[key]
+                    data2 = dmsg
+                    print(int(data1))
+                    print(int(data2))
+    
+                elif dtype[0] == 'al':
+                    pass
+            
 
 
 

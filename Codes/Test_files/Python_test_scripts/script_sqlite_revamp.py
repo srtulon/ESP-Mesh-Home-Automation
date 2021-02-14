@@ -13,7 +13,7 @@ import sqlite3
 # Declaring global variable
 did = 0  # devie id
 dtype = 0  # device type
-dstatus = 0  # devie status
+dmsg = 0  # devie message
 
 
 relays_dict=dict()
@@ -130,17 +130,17 @@ def data_entry():
             key=new_id
             if key not in relays_dict:
                 print("Adding new relay to list")
-                relays_dict[key] = dstatus
+                relays_dict[key] = dmsg
 
                 try:
-                    c.execute("INSERT OR IGNORE INTO relays (id,name,status) VALUES (?,?,?);",(new_id, new_id, dstatus))
+                    c.execute("INSERT OR IGNORE INTO relays (id,name,status) VALUES (?,?,?);",(new_id, new_id, dmsg))
                 except sqlite3.Error as error:
                     print("Error1: {}".format(error))
                     return
 
             else:
                 data1 = str(relays_dict[key])
-                data2 = str(dstatus)
+                data2 = str(dmsg)
                 # print(data1)
                 # print(data2)
 
@@ -151,15 +151,15 @@ def data_entry():
                     print("Relay Value Not matched. Data1:"+str(data1)+" Data2:"+str(data2))
 
                     # for incoming status update, no need to send status
-                    set_status(device_id=did, status=dstatus, type=dtype[0],send=False)
+                    set_status(device_id=did, status=dmsg, type=dtype[0],send=False)
 
 
     elif dtype[0] == 'a':
         key=did
-        prot=dstatus[0:2]
-        mod=dstatus[2]
-        pow=dstatus[3]
-        tem=dstatus[4:6]
+        prot=dmsg[0:2]
+        mod=dmsg[2]
+        pow=dmsg[3]
+        tem=dmsg[4:6]
         if key not in acs_dict:
             print("Adding new ac to list")
 
@@ -181,38 +181,26 @@ def data_entry():
             print("AC Value Not matched")
 
             # for incoming status update, no need to send status
-            set_status(device_id=did, status=dstatus, type=dtype[0],send=False)
+            set_status(device_id=did, status=dmsg, type=dtype[0],send=False)
 
 
     elif dtype[0] == 'p':
         key=did
         if key not in pirs_dict:
             print("Adding new pir to list")
-            pirs_dict[key] = dstatus
+            pirs_dict[key] = dmsg
 
 
             try:
-                c.execute("INSERT OR IGNORE INTO pirs (id,name,status) VALUES (?,?,?);", (did, did, dstatus))
+                c.execute("INSERT OR IGNORE INTO pirs (id,name,status) VALUES (?,?,?);", (did, did, dmsg))
             except sqlite3.Error as error:
                 print("Error2: {}".format(error))
                 return
         else:
             data1 = pirs_dict[key]
-            data2 = dstatus
+            data2 = dmsg
             print(int(data1))
             print(int(data2))
-
-            # matching current status with previous to avoid multiple entry
-            if int(data1) == int(data2):
-                print("Pir Value Matched. Data1:"+str(data1)+" Data2:"+str(data2))
-
-            else:
-                print("Pir Value Not matched. Data1:"+str(data1)+" Data2:"+str(data2))
-
-                # for sensors, no need to send status
-                set_status(device_id=did, status=dstatus, type=dtype[0],send=False)
-                link()
-
 
     conn.commit()
     print("Data entry completed")
@@ -228,11 +216,11 @@ def link():
             print(str(l))
             # update status change in stat_timeline and devices
             # if any sensor is high then the device status is set to high
-            if (dstatus=='1'):
+            if (dmsg=='1'):
                 # update status change in stat_timel,ine and devices
                 set_status(device_id=l[0], status='1',type='r',send=True) #############################
 
-            elif (dstatus=='0'):
+            elif (dmsg=='0'):
                 if check(did):
                     # update status change in stat_timeline and devices
                     set_status(device_id=l[0], status='1',type='r',send=True) ############################
@@ -245,11 +233,11 @@ def link():
             print(l)
             # update status change in stat_timeline and devices
             # if any sensor is high then the device status is set to high
-            if (dstatus=='1'):
+            if (dmsg=='1'):
                 # update status change in stat_timeline and devices
                 set_status(device_id=l[0], status=l[1]+l[2]+'1'+l[3],type='a',send=True) #############################
 
-            elif (dstatus=='0'):
+            elif (dmsg=='0'):
                 if check(l):
                     # update status change in stat_timeline and devices
                     set_status(device_id=l[0], status=l[1]+l[2]+'1'+l[3],type='a',send=True) ############################
@@ -322,7 +310,7 @@ def on_connect(client, userdata, flags, rc):
 
 # new message
 def on_message(client, userdata, msg):
-    global did, dtype, dstatus
+    global did, dtype, dmsg
     txt = (msg.payload).decode("utf-8")
     print(txt)
     # print(len(txt))
@@ -339,14 +327,15 @@ def on_message(client, userdata, msg):
             s = t[0].split(",")
             did = s[0]
             dtype = s[1]
-            dstatus = s[2]
+            dmsg = s[2]
 
             # print(len(did))
             # print(did)
             # print(dtype)
-            print("Device Status: "+dstatus)
+            print("Device Status: "+dmsg)
 
             data_entry()
+
 
         else:
             p=txt.split("\n")

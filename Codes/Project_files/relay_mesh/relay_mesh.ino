@@ -14,23 +14,23 @@ Task taskSendMessage( TASK_SECOND * 1 , TASK_FOREVER, &sendMessage );
 
 String devtype="r4"; //r=type relay, 4= 4 relay
 //int devstatus="0000"; //0= Off , 1= On
-int ack=1;  // Acknowledgement 1 = recieved/not needed , 0= pending  
+int ack=0;  // Acknowledgement 1 = recieved/not needed , 0= pending  
 //long id=ESP.getChipId();
 //long id=mesh.getNodeId();
 
 char charBuf[50];
 
 //Relay
-int pin1=D5;
-int pin2=D6;
-int pin3=D7;
-int pin4=D8;
+int pin1=12;
+int pin2=14;
+int pin3=25;
+int pin4=33;
 
 //Switch
-int sw1=D0;
-int sw2=D1;
-int sw3=D2;
-int sw4=D3;
+int sw1=4;
+int sw2=18;
+int sw3=19;
+int sw4=21;
 
 //Switch Status
 int s1=0;
@@ -50,6 +50,7 @@ void sendMessage() {
     id += mesh.getNodeId();
     String a= '#' + (String)id + ',' + devtype + ',' + s1 + s2 + s3 + s4 + '$';
     mesh.sendBroadcast(a);
+    Serial.println(a);
     taskSendMessage.setInterval(random( TASK_SECOND * 1, TASK_SECOND * 5));
     ack=0; 
 }

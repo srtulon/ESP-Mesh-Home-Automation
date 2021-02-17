@@ -16,7 +16,7 @@ void setup() {
   ac.next.mode = stdAc::opmode_t::kCool;
   ac.next.celsius = true;
   ac.next.degrees = 25;
-  ac.next.light = false; 
+  ac.next.light = true; 
   ac.next.power = false;
 
   

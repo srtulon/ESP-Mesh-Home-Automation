@@ -17,11 +17,11 @@
 #define   MESH_PASSWORD   "password"
 #define   MESH_PORT       5555
 
-#define   STATION_SSID     "xaneon"
-#define   STATION_PASSWORD "bmwm3gtr"
+//#define   STATION_SSID     "xaneon"
+//#define   STATION_PASSWORD "bmwm3gtr"
 
-//#define   STATION_SSID     "OfficeWifi"
-//#define   STATION_PASSWORD "Secure2G1220"
+#define   STATION_SSID     "IOI wifi"
+#define   STATION_PASSWORD "IoI2021@wifi"
 
 #define HOSTNAME "MQTT_Bridge"
 
@@ -35,8 +35,8 @@ IPAddress myIP(0,0,0,0);
 
 int a=192;
 int b=168;
-int c=0;
-int d=102;
+int c=1;
+int d=25;
 IPAddress mqttBroker(a, b, c, d);
 int mqttport=1883;
 
@@ -84,7 +84,7 @@ void loop() {
     Serial.println("My IP is " + myIP.toString());
   }
   if (!mqttClient.connected() && myIP == getlocalIP()){
-      Serial.println("Attempting MQTT connection...");
+      //Serial.println("Attempting MQTT connection...");
       if(mqttClient.connect("painlessMeshClient")){
         Serial.println("connected");
         mqttClient.publish("device/from/gateway","Ready!");

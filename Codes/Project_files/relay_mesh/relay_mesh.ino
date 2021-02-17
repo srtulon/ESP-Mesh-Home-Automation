@@ -20,6 +20,7 @@ int ack=0;  // Acknowledgement 1 = recieved/not needed , 0= pending
 
 char charBuf[50];
 
+/*
 //Relay
 int pin1=12;
 int pin2=14;
@@ -31,6 +32,19 @@ int sw1=4;
 int sw2=18;
 int sw3=19;
 int sw4=21;
+*/
+
+//Relay
+int pin1=D5;
+int pin2=D6;
+int pin3=D7;
+int pin4=D8;
+
+//Switch
+int sw1=D0;
+int sw2=D1;
+int sw3=D2;
+int sw4=D3;
 
 //Switch Status
 int s1=0;
@@ -173,7 +187,7 @@ void loop() {
     s4=digitalRead(sw4);
     taskSendMessage.enable();
   }
-  if((millis()>100000) || (ack=1)){
+  if(ack=1){
     taskSendMessage.disable();
   }
 }

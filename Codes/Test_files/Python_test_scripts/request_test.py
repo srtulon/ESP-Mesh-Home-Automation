@@ -1,9 +1,11 @@
 import requests
+import json
 
+x =  '{ "name":"John", "age":30, "city":"New York"}'
 
-def test_request_response():
-    # Send a request to the API server and store the response.
-    response = requests.get('https://github.com/srtulon/ESP-Mesh-Home-Automation')
+# parse x:
+y = json.loads(x)
 
-    # Confirm that the request-response cycle completed successfully.
-    print(response.text)
+z = requests.get('http://cpiot.cpsdbd.com/api/device-data/'+x)
+
+print(y)

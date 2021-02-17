@@ -11,7 +11,7 @@ void setup() {
   Serial.begin(115200);
   delay(200);
 
-  ac.next.protocol = decode_type_t::COOLIX;  
+  ac.next.protocol = decode_type_t::TCL112AC;  
   ac.next.model = 1;  
   ac.next.mode = stdAc::opmode_t::kCool;
   ac.next.celsius = true;

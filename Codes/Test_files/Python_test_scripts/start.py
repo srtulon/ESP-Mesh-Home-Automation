@@ -1,8 +1,9 @@
 from subprocess import run
 from time import sleep
+import os
 
 # Path and name to the script you are trying to start
-file_path = "script_sqlite_revamp.py" 
+file_path = os.path.dirname(__file__)+"/script_sqlite_revamp.py" 
 
 restart_timer = 2
 def start_script():
@@ -12,6 +13,7 @@ def start_script():
     except:
         # Script crashed, lets restart it!
         handle_crash()
+
 
 def handle_crash():
     sleep(restart_timer)  # Restarts the script after 2 seconds

@@ -25,6 +25,9 @@
 
 #define HOSTNAME "MQTT_Bridge"
 
+#define light 2
+
+
 // Prototypes
 void receivedCallback( const uint32_t &from, const String &msg );
 void mqttCallback(char* topic, byte* payload, unsigned int length);
@@ -32,6 +35,7 @@ void mqttCallback(char* topic, byte* payload, unsigned int length);
 IPAddress getlocalIP();
 
 IPAddress myIP(0,0,0,0);
+
 
 int a=192;
 int b=168;
@@ -76,6 +80,10 @@ void setup() {
 }
 
 void loop() {
+  
+  pinMode(light,OUTPUT);
+  digitalWrite(light,LOW);
+  
   mesh.update();
   mqttClient.loop();
 
@@ -87,6 +95,7 @@ void loop() {
       //Serial.println("Attempting MQTT connection...");
       if(mqttClient.connect("painlessMeshClient")){
         Serial.println("connected");
+        digitalWrite(light,HIGH);
         mqttClient.publish("device/from/gateway","Ready!");
         mqttClient.subscribe("device/to/#");
     }

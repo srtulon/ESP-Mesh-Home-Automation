@@ -3,6 +3,7 @@ import time
 from datetime import datetime
 import paho.mqtt.client as mqtt
 import re
+import os
 
 import sqlite3
 
@@ -26,7 +27,8 @@ ac_list_dict=dict()
 ########################## DATABASE PART ###########################################
 
 # sqlite3 Database connection
-conn = sqlite3.connect('database_revamp.db',check_same_thread=False)
+database=os.path.dirname(__file__)+'/database_revamp.db'
+conn = sqlite3.connect(database,check_same_thread=False)
 c = conn.cursor()
 
 
@@ -114,6 +116,7 @@ def read_database():
 # initialization
 def initialization():
     print("Start initialization")
+    print("Current directory: "+os.path.dirname(__file__))
     #ac_name_database()
     read_database()
 

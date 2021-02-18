@@ -20,7 +20,7 @@ int ack=0;  // Acknowledgement 1 = recieved/not needed , 0= pending
 
 char charBuf[50];
 
-/*
+
 //Relay
 int pin1=12;
 int pin2=14;
@@ -32,8 +32,8 @@ int sw1=4;
 int sw2=18;
 int sw3=19;
 int sw4=21;
-*/
 
+/*
 //Relay
 int pin1=D5;
 int pin2=D6;
@@ -45,6 +45,7 @@ int sw1=D0;
 int sw2=D1;
 int sw3=D2;
 int sw4=D3;
+*/
 
 //Switch Status
 int s1=0;
@@ -65,7 +66,7 @@ void sendMessage() {
     String a= '#' + (String)id + ',' + devtype + ',' + s1 + s2 + s3 + s4 + '$';
     mesh.sendBroadcast(a);
     Serial.println(a);
-    taskSendMessage.setInterval(random( TASK_SECOND * 1, TASK_SECOND * 5));
+    taskSendMessage.setInterval(random( TASK_SECOND * 2, TASK_SECOND * 5));
     ack=0; 
 }
 
@@ -116,9 +117,10 @@ void receivedCallback( uint32_t from, String &msg ) {
     }
   }
   else if(msg1.indexOf('&')>-1){
-    if(msg[2]=='1'){
+    if(msg[1]=='1'){
        ack=1;
        taskSendMessage.disable();
+       Serial.println("Message Off");
     }
   }
 }
@@ -162,6 +164,8 @@ void setup() {
   pinMode(sw2,INPUT);
   pinMode(sw3,INPUT);
   pinMode(sw4,INPUT);
+
+  ack=0;
   
 }
 
@@ -174,20 +178,31 @@ void loop() {
   if(digitalRead(sw1)!=s1){
     s1=digitalRead(sw1);
     taskSendMessage.enable();
+    Serial.println("Message On");
+    ack=0;
   }
   if(digitalRead(sw2)!=s2){
     s2=digitalRead(sw2);
     taskSendMessage.enable();
+    Serial.println("Message On");
+    ack=0;
   }
   if(digitalRead(sw3)!=s3){
     s3=digitalRead(sw3);
     taskSendMessage.enable();
+    Serial.println("Message On");
+    ack=0;
   }
   if(digitalRead(sw4)!=s4){
     s4=digitalRead(sw4);
     taskSendMessage.enable();
+    Serial.println("Message On");
+    ack=0;
   }
-  if(ack=1){
+  if((millis()>100000) || (ack==1)){
     taskSendMessage.disable();
+    //Serial.println("Message Off"); 
+    ack=1;
   }
+  //Serial.println(ack); 
 }

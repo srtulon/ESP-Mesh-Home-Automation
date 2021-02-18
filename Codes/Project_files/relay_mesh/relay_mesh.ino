@@ -199,7 +199,7 @@ void loop() {
     Serial.println("Message On");
     ack=0;
   }
-  if((millis()>100000) || (ack==1)){
+  if(ack==1){
     taskSendMessage.disable();
     //Serial.println("Message Off"); 
     ack=1;

@@ -7,17 +7,19 @@
 Scheduler userScheduler; // to control your personal task
 painlessMesh  mesh;
 
-//const int MOTION_PIN = D1; 
-const int LED_PIN = 2;
+const int p = 4; 
+const int led = 2;
+
 
 
 
 char charBuf[50];
 String a=""; 
 String devtype="p"; //p=type pir sensor
-int devstatus=0; // 0 =Off , 1= On
-int prevstatus=0; // Previous status
-int ack=1; // Acknowledgement 1 = recieved/not needed , 0= pending  
+int ps=0; //Pir Status 0 =Off , 1= On
+
+
+int ack=0; // Acknowledgement 1 = recieved/not needed , 0= pending  
 
 // User stub
 void sendMessage() ; // Prototype so PlatformIO doesn't complain
@@ -29,16 +31,15 @@ Task taskSendMessage( TASK_SECOND * 1 , TASK_FOREVER, &sendMessage );
 void sendMessage() {
   //message format: #(id),(type),(status)$
   //if status changes, send message
-  if((devstatus != prevstatus) || (ack=0)){
+  //if((devstatus != prevstatus) || (ack=0)){
     String id = "";
     id += mesh.getNodeId();
-    a= '#' + id + ',' + devtype + ',' + devstatus + '$'; 
+    a= '#' + id + ',' + devtype + ',' + ps + '$'; 
     mesh.sendBroadcast(a);
     Serial.println(a);
     taskSendMessage.setInterval(random( TASK_SECOND * 1, TASK_SECOND * 3));
-    prevstatus=devstatus;
     ack=0;
-  }
+  //}
 }
 
 //Receive message from mesh
@@ -51,8 +52,10 @@ void receivedCallback( uint32_t from, String &msg ) {
   msg.toCharArray(charBuf, 13);
   String msg1=(String)msg;
   if(msg1.indexOf('&')>-1){
-    if(msg[2]=='1'){
+    if(msg[1]=='1'){
        ack=1;
+       taskSendMessage.disable();
+       Serial.println("Message Off");
     }
   }
 }
@@ -74,9 +77,9 @@ void setup() {
   Serial.begin(115200);
   Serial.println("Start");
   delay(1000);
-  //pinMode(MOTION_PIN,INPUT);
-  pinMode(LED_PIN, OUTPUT);
-  digitalWrite(LED_PIN,LOW);
+  pinMode(p,INPUT);
+  pinMode(led, OUTPUT);
+  digitalWrite(led,LOW);
 
   mesh.setDebugMsgTypes(ERROR | STARTUP | DEBUG);  // set before init() so that you can see startup messages
 
@@ -104,21 +107,24 @@ void setup() {
 void loop() {
   // it will run the user scheduler as well
   mesh.update();
-  test();
-  /*
-  int proximity = digitalRead(MOTION_PIN);  
-  if (proximity == LOW ){ // If the sensor's output goes low, motion is detected
-    digitalWrite(LED_PIN, LOW);
-    //Serial.println(F("Motion detected!"));
-    devstatus=1;
+  
+  //test();
+
+  if(digitalRead(p)!=ps){
+    ps=digitalRead(p);
+    taskSendMessage.enable();
+    Serial.println("Message On");
+    ack=0;
   }
-  else {
-    digitalWrite(LED_PIN, HIGH);
-    //Serial.println(F("No motion detected!"));
-    devstatus=0;
-  } */
+  if(ack==1){
+    taskSendMessage.disable();
+    //Serial.println("Message Off"); 
+    ack=1;
+  }
+  
 }
 
+/*
 
 /////////////////// Test Part /////////////////
 
@@ -135,14 +141,16 @@ void test(){
   }
 }
 void stateChange(){
-  if (devstatus==0){
-    devstatus=1;
-    digitalWrite(LED_PIN, LOW);
+  if (ps==0){
+    ps=1;
+    digitalWrite(led, LOW);
     ack=0;
   }
   else if(devstatus==1){
-    devstatus=0;
-    digitalWrite(LED_PIN, HIGH);
+    ps=0;
+    digitalWrite(led, HIGH);
     ack=0;
   }
 }
+
+*/

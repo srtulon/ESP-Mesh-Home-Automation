@@ -66,7 +66,7 @@ void sendMessage() {
     String a= '#' + (String)id + ',' + devtype + ',' + s1 + s2 + s3 + s4 + '$';
     mesh.sendBroadcast(a);
     Serial.println(a);
-    taskSendMessage.setInterval(random( TASK_SECOND * 2, TASK_SECOND * 5));
+    taskSendMessage.setInterval(random( TASK_SECOND * 1, TASK_SECOND * 10));
     ack=0; 
 }
 

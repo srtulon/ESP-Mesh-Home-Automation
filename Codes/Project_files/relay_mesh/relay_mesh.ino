@@ -20,7 +20,7 @@ int ack=0;  // Acknowledgement 1 = recieved/not needed , 0= pending
 
 char charBuf[50];
 
-
+/*
 //Relay
 int pin1=12;
 int pin2=14;
@@ -32,8 +32,8 @@ int sw1=4;
 int sw2=18;
 int sw3=19;
 int sw4=21;
+*/
 
-/*
 //Relay
 int pin1=D5;
 int pin2=D6;
@@ -45,7 +45,7 @@ int sw1=D0;
 int sw2=D1;
 int sw3=D2;
 int sw4=D3;
-*/
+
 
 //Switch Status
 int s1=0;
@@ -81,7 +81,7 @@ void receivedCallback( uint32_t from, String &msg ) {
   String msg1=(String)msg;
   if(msg1.indexOf('@')>-1){
     Serial.println(msg1[1]); 
-    if(msg[2]=='1'){
+    if(msg[2]=='0'){
        temp=LOW;
     }
     else{
@@ -177,24 +177,28 @@ void loop() {
   
   if(digitalRead(sw1)!=s1){
     s1=digitalRead(sw1);
+    digitalWrite(pin1,s1);
     taskSendMessage.enable();
     Serial.println("Message On");
     ack=0;
   }
   if(digitalRead(sw2)!=s2){
     s2=digitalRead(sw2);
+    digitalWrite(pin2,s2);
     taskSendMessage.enable();
     Serial.println("Message On");
     ack=0;
   }
   if(digitalRead(sw3)!=s3){
     s3=digitalRead(sw3);
+    digitalWrite(pin3,s3);
     taskSendMessage.enable();
     Serial.println("Message On");
     ack=0;
   }
   if(digitalRead(sw4)!=s4){
     s4=digitalRead(sw4);
+    digitalWrite(pin4,s4);
     taskSendMessage.enable();
     Serial.println("Message On");
     ack=0;

@@ -384,5 +384,5 @@ def ack(dev):
 client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
-client.connect("192.168.0.102", 1883, 60)  # change the address to MQTT broker server
+client.connect("172.24.1.1", 1883, 60)  # change the address to MQTT broker server
 client.loop_forever()

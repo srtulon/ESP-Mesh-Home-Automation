@@ -17,7 +17,10 @@
 #define   MESH_PASSWORD   "password"
 #define   MESH_PORT       5555
 
-#define   STATION_SSID     "xaneon"
+//#define   STATION_SSID     "xaneon"
+//#define   STATION_PASSWORD "bmwm3gtr"
+
+#define   STATION_SSID     "raspberry"
 #define   STATION_PASSWORD "bmwm3gtr"
 
 //#define   STATION_SSID     "IOI wifi"
@@ -37,10 +40,10 @@ IPAddress getlocalIP();
 IPAddress myIP(0,0,0,0);
 
 
-int a=192;
-int b=168;
-int c=0;
-int d=102;
+int a=172;
+int b=24;
+int c=1;
+int d=1;
 IPAddress mqttBroker(a, b, c, d);
 int mqttport=1883;
 

@@ -81,7 +81,7 @@ void receivedCallback( uint32_t from, String &msg ) {
   String msg1=(String)msg;
   if(msg1.indexOf('@')>-1){
     Serial.println(msg1[1]); 
-    if(msg[2]=='1'){
+    if(msg[2]=='0'){
        temp=LOW;
     }
     else{
@@ -177,24 +177,28 @@ void loop() {
   
   if(digitalRead(sw1)!=s1){
     s1=digitalRead(sw1);
+    digitalWrite(pin1,s1);
     taskSendMessage.enable();
     Serial.println("Message On");
     ack=0;
   }
   if(digitalRead(sw2)!=s2){
     s2=digitalRead(sw2);
+    digitalWrite(pin2,s2);
     taskSendMessage.enable();
     Serial.println("Message On");
     ack=0;
   }
   if(digitalRead(sw3)!=s3){
     s3=digitalRead(sw3);
+    digitalWrite(pin3,s3);
     taskSendMessage.enable();
     Serial.println("Message On");
     ack=0;
   }
   if(digitalRead(sw4)!=s4){
     s4=digitalRead(sw4);
+    digitalWrite(pin4,s4);
     taskSendMessage.enable();
     Serial.println("Message On");
     ack=0;

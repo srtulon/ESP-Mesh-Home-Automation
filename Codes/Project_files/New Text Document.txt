@@ -1,1 +1,0 @@
-mosquitto_pub -d -t device/to/2883386731 -m @11%

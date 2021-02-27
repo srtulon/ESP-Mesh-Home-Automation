@@ -1,8 +1,10 @@
 import paho.mqtt.client as mqtt
 import sqlite3
+import os
 
 # sqlite3 Database connection
-conn = sqlite3.connect('database.db',check_same_thread=False)
+database=os.path.dirname(__file__)+'/database.db'
+conn = sqlite3.connect(database,check_same_thread=False)
 c = conn.cursor()
 
 relays_dict=dict()
@@ -38,6 +40,7 @@ def on_message(client, userdata, msg):
     txt=(msg.payload).decode("utf-8")
 
     if txt[0] == '^' and txt.find('!') > 0:
+            #Message format ^dtype,com,did,lid,link,msg1!
             txt = txt.replace("^", "")
             t = txt.split("!")
             s = t[0].split(",")
@@ -56,27 +59,56 @@ def on_message(client, userdata, msg):
             print(msg1)
 
 
-            if dtype == 'r1':
+            if dtype == 'rla':
+                print('check')
                 key=did
                 if key not in relays_links_dict:
                     print("Adding new relay_links to list")
                     relays_links_dict[key] = []
-                    relays_links_dict[key].append([row[1],row[3]])
+                    relays_links_dict[key].append([lid,msg1])
 
                     try:
-                        c.execute("INSERT OR IGNORE INTO relays_links (id,link_id,link,priority) VALUES (?,?,?,?);", (did, did, dmsg))
+                        c.execute("INSERT INTO relays_links (id,link_id,link,priority) VALUES (?,?,?,?);", (did, lid, 1,msg1))
                     except sqlite3.Error as error:
-                        print("Error2: {}".format(error))
+                        print("Error: {}".format(error))
                         return
+                
                 else:
-                    data1 = pirs_dict[key]
-                    data2 = dmsg
-                    print(int(data1))
-                    print(int(data2))
+                    print("Updating relay_links")
+                    
+                    for l in relays_links_dict[key]:
+                        if lid in l:
+                            l[1]=msg1
+                            break
+                    try:
+                        c.execute("UPDATE relays_links SET priority = ? WHERE link_id=? AND id=?;", (msg1,lid,did))
+                    except sqlite3.Error as error:
+                        print("Error: {}".format(error))
+                        return
+
     
-            elif dtype == 'a1':
+            elif dtype == 'ala':
+                pass
+            
+            elif dtype == 'rlr':
+                key=did
+                if key in relays_links_dict:
+                    print("Deleting relay_links from list")
+
+                    for l in relays_links_dict[key]:
+                        if lid in l:
+                            relays_links_dict[key].remove(l)
+                            break
+                    try:
+                        c.execute("DELETE FROM relays_links WHERE link_id=? AND id=?;", (lid,did))
+                    except sqlite3.Error as error:
+                        print("Error: {}".format(error))
+                        return
+            
+            elif dtype == 'alr':
                     pass
             
+            conn.commit()
 
 
 

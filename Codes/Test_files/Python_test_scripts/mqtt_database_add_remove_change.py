@@ -45,14 +45,12 @@ def on_message(client, userdata, msg):
             t = txt.split("!")
             s = t[0].split(",")
             dtype=s[0]
-            com= s[1]
-            did = s[2]
-            lid = s[3]
-            link = s[4]
-            msg1=s[5]
+            did = s[1]
+            lid = s[2]
+            link = s[3]
+            msg1=s[4]
 
             print(dtype)
-            print(com)
             print(did)
             print(lid)
             print(link)
@@ -60,55 +58,73 @@ def on_message(client, userdata, msg):
 
 
             if dtype == 'rla':
-                print('check')
                 key=did
                 if key not in relays_links_dict:
                     print("Adding new relay_links to list")
                     relays_links_dict[key] = []
+
+                if any(lid == x[0] for x in relays_links_dict[key]):
+                    print("Link already present")
+                else:
                     relays_links_dict[key].append([lid,msg1])
 
-                    try:
-                        c.execute("INSERT INTO relays_links (id,link_id,link,priority) VALUES (?,?,?,?);", (did, lid, 1,msg1))
-                    except sqlite3.Error as error:
-                        print("Error: {}".format(error))
-                        return
+                try:
+                    c.execute("INSERT INTO relays_links (id,link_id,link,priority) VALUES (?,?,?,?);", (did, lid, 1,msg1))
+                except sqlite3.Error as error:
+                    print("Error: {}".format(error))
+                    return
                 
-                else:
-                    print("Updating relay_links")
-                    
-                    for l in relays_links_dict[key]:
-                        if lid in l:
-                            l[1]=msg1
-                            break
-                    try:
-                        c.execute("UPDATE relays_links SET priority = ? WHERE link_id=? AND id=?;", (msg1,lid,did))
-                    except sqlite3.Error as error:
-                        print("Error: {}".format(error))
-                        return
+                
 
-    
+            elif dtype == 'rlu':
+                print("Updating relay_links")
+                key=did  
+                for l in relays_links_dict[key]:
+                    if lid in l:
+                        l[1]=msg1
+                        break
+                try:
+                    c.execute("UPDATE relays_links SET priority = ? WHERE link_id=? AND id=?;", (msg1,lid,did))
+                except sqlite3.Error as error:
+                    print("Error: {}".format(error))
+                    return
+
             elif dtype == 'ala':
                 pass
             
             elif dtype == 'rlr':
                 key=did
-                if key in relays_links_dict:
+                if key not in relays_links_dict:
+                    print('Id not found')
+                else:
                     print("Deleting relay_links from list")
-
+                    check=False
                     for l in relays_links_dict[key]:
-                        if lid in l:
+                        if lid in l:                            
                             relays_links_dict[key].remove(l)
+                            print("Deleted")
+                            check=True
                             break
+
+                    if not check:
+                        print('Link not found')
+                        
                     try:
                         c.execute("DELETE FROM relays_links WHERE link_id=? AND id=?;", (lid,did))
                     except sqlite3.Error as error:
                         print("Error: {}".format(error))
                         return
+
+            
             
             elif dtype == 'alr':
                     pass
             
             conn.commit()
+
+            print(relays_links_dict)
+            #print(acs_links_dict)
+
 
 
 

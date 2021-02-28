@@ -1,1 +1,3 @@
-mosquitto_pub -d -t device/to/2883386731 -m @11%
+mosquitto_pub -d -t device/to/2883386731 -m @11%                            //Sending devices command
+
+mosquitto_pub -d -t device/from -m "^rlr,21312355,31231233123,1,3!"         //Add remove links 

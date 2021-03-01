@@ -1,5 +1,6 @@
 import sqlite3
-my_conn = sqlite3.connect('database.db')
+database=os.path.dirname(__file__)+'/database.db'
+my_conn = sqlite3.connect(database,check_same_thread=False)
 import paho.mqtt.publish as publish
 ###### end of connection ####
 

@@ -1,9 +1,12 @@
 import sqlite3
-database=os.path.dirname(__file__)+'/database.db'
+import os
+
+database=os.path.dirname(os.path.realpath(__file__))+'/database.db'
 my_conn = sqlite3.connect(database,check_same_thread=False)
 import paho.mqtt.publish as publish
 ###### end of connection ####
-
+root = os.path.dirname(os.path.realpath(__file__))
+print(root)
 
 
 query="SELECT id FROM pirs"

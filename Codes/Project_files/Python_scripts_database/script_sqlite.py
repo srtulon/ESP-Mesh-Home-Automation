@@ -27,7 +27,7 @@ ac_list_dict=dict()
 ########################## DATABASE PART ###########################################
 
 # sqlite3 Database connection
-database=os.path.dirname(__file__)+'/database.db'
+database=os.path.dirname(os.path.realpath(__file__))+'/database.db'
 conn = sqlite3.connect(database,check_same_thread=False)
 c = conn.cursor()
 

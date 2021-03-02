@@ -132,10 +132,10 @@ def data_entry():
             key=new_id
             if key not in relays_dict:
                 print("Adding new relay to list")
-                relays_dict[key] = dmsg[i]
+                relays_dict[key] = dmsg
 
                 try:
-                    c.execute("INSERT OR IGNORE INTO relays (id,name,status) VALUES (?,?,?);",(new_id, new_id, dmsg[i]))
+                    c.execute("INSERT OR IGNORE INTO relays (id,name,status) VALUES (?,?,?);",(new_id, new_id, dmsg))
                 except sqlite3.Error as error:
                     print("Error1: {}".format(error))
                     return
@@ -338,7 +338,90 @@ def on_message(client, userdata, msg):
 
             data_entry()
 
+        elif txt[0] == '^' and txt.find('!') > 0:
+            #Message format ^dtype,com,did,lid,link,msg1!
+            txt = txt.replace("^", "")
+            t = txt.split("!")
+            s = t[0].split(",")
+            dtype=s[0]
+            did = s[1]
+            lid = s[2]
+            link = s[3]
+            msg1=s[4]
 
+            print(dtype)
+            print(did)
+            print(lid)
+            print(link)
+            print(msg1)
+
+
+            if dtype == 'rla':
+                key=did
+                if key not in relays_links_dict:
+                    print("Adding new relay_links to list")
+                    relays_links_dict[key] = []
+
+                if any(lid == x[0] for x in relays_links_dict[key]):
+                    print("Link already present")
+                else:
+                    relays_links_dict[key].append([lid,msg1])
+
+                try:
+                    c.execute("INSERT INTO relays_links (id,link_id,link,priority) VALUES (?,?,?,?);", (did, lid, 1,msg1))
+                except sqlite3.Error as error:
+                    print("Error: {}".format(error))
+                    return
+                
+                
+
+            elif dtype == 'rlu':
+                print("Updating relay_links")
+                key=did  
+                for l in relays_links_dict[key]:
+                    if lid in l:
+                        l[1]=msg1
+                        break
+                try:
+                    c.execute("UPDATE relays_links SET priority = ? WHERE link_id=? AND id=?;", (msg1,lid,did))
+                except sqlite3.Error as error:
+                    print("Error: {}".format(error))
+                    return
+
+            elif dtype == 'ala':
+                pass
+            
+            elif dtype == 'rlr':
+                key=did
+                if key not in relays_links_dict:
+                    print('Id not found')
+                else:
+                    print("Deleting relay_links from list")
+                    check=False
+                    for l in relays_links_dict[key]:
+                        if lid in l:                            
+                            relays_links_dict[key].remove(l)
+                            print("Deleted")
+                            check=True
+                            break
+
+                    if not check:
+                        print('Link not found')
+                        
+                    try:
+                        c.execute("DELETE FROM relays_links WHERE link_id=? AND id=?;", (lid,did))
+                    except sqlite3.Error as error:
+                        print("Error: {}".format(error))
+                        return
+
+            
+            
+            elif dtype == 'alr':
+                    pass
+            
+            conn.commit()
+
+            
         else:
             p=txt.split("\n")
             p=p[0]
@@ -385,5 +468,6 @@ client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
 #client.connect("172.24.1.1", 1883, 60)  # change the address to MQTT broker server
-client.connect("localhost", 1883, 60)  
+#client.connect("localhost", 1883, 60) 
+client.connect("192.168.1.28", 1883, 60)  
 client.loop_forever()

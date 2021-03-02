@@ -132,10 +132,10 @@ def data_entry():
             key=new_id
             if key not in relays_dict:
                 print("Adding new relay to list")
-                relays_dict[key] = dmsg
+                relays_dict[key] = dmsg[i]
 
                 try:
-                    c.execute("INSERT OR IGNORE INTO relays (id,name,status) VALUES (?,?,?);",(new_id, new_id, dmsg))
+                    c.execute("INSERT OR IGNORE INTO relays (id,name,status) VALUES (?,?,?);",(new_id, new_id, dmsg[i]))
                 except sqlite3.Error as error:
                     print("Error1: {}".format(error))
                     return
@@ -143,7 +143,7 @@ def data_entry():
             else:
                 data1 = str(relays_dict[key])
                 data2 = str(dmsg)
-                # print(data1)
+                # print(data1) 
                 # print(data2)
 
                 # matching current status with previous to avoid multiple entry
@@ -384,5 +384,6 @@ def ack(dev):
 client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
-client.connect("172.24.1.1", 1883, 60)  # change the address to MQTT broker server
+#client.connect("172.24.1.1", 1883, 60)  # change the address to MQTT broker server
+client.connect("localhost", 1883, 60)  
 client.loop_forever()

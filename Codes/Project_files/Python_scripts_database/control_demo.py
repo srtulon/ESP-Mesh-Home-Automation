@@ -1,5 +1,6 @@
 import sqlite3
 import os
+from functools import partial
 
 database=os.path.dirname(os.path.realpath(__file__))+'/database.db'
 my_conn = sqlite3.connect(database,check_same_thread=False)
@@ -38,7 +39,7 @@ def function1():
     str='^'+s+','+options1.get()+','+options2.get()+','+options3.get()+','+options4.get()+'!'
 
     print(str)
-    publish.single( "device/from", str, hostname="localhost")
+    publish.single( "device/from", str, hostname="192.168.1.28")
 
 
 def function2():
@@ -50,7 +51,7 @@ def function2():
     status=options8.get()
     str='@' + relay_num + status + '%'
     print(str)
-    publish.single( "device/to/"+ori_id, str, hostname="localhost")
+    publish.single( "device/to/"+ori_id, str, hostname="192.168.1.28")
 
 
 import tkinter as tk
@@ -79,12 +80,12 @@ tk.Label(my_w, text="Option").grid(row = 1, column = 1)
 om6.grid(row=2,column=1)
 
 om1 =tk.OptionMenu(my_w, options1, *id)
-tk.Label(my_w, text="Id").grid(row = 1, column = 2)
+tk.Label(my_w, text="Pir").grid(row = 1, column = 2)
 om1.grid(row=2,column=2)
 
 
 om2 =tk.OptionMenu(my_w, options2, *link1)
-tk.Label(my_w, text="Link_Id").grid(row = 1, column = 3)
+tk.Label(my_w, text="Relay").grid(row = 1, column = 3)
 om2.grid(row=2,column=3)
 
 om3 =tk.OptionMenu(my_w, options3, *zero_one1)
@@ -117,5 +118,19 @@ om8.grid(row=5,column=2)
 
 button2 = tk.Button(my_w, text='Send', width=15, command=function2)
 button2.grid(row=5,column=3)
+
+
+def degis(v,c):
+    print(v)
+    print(c)
+    
+        
+
+action_with_arg = partial(degis, 1)
+action_with_arg2 = partial(degis, 2)
+buton = tk.Scale(orient = tk.HORIZONTAL,length = 50,to = 1,showvalue = False,sliderlength = 25,label = "Off",command = action_with_arg)
+#buton.grid(row=6,column=3)
+buton2 = tk.Scale(orient = tk.HORIZONTAL,length = 50,to = 1,showvalue = False,sliderlength = 25,label = "Off",command = action_with_arg2)
+#buton2.grid(row=7,column=3)
 
 my_w.mainloop()

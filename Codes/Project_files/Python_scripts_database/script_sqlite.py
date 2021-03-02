@@ -203,15 +203,15 @@ def data_entry():
             data2 = dmsg
             print(int(data1))
             print(int(data2))
-
+        link()
     conn.commit()
     print("Data entry completed")
     ack(did)
-
+    
 
 # link
 def link():
-
+    print('Link')
     if did in relays_links_dict:
         # select linked devices
         for l in relays_links_dict[did]:

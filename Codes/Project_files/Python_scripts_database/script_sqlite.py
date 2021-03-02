@@ -372,11 +372,11 @@ def send_message(dev, msg):
 def ack(dev):
     # trimming
     # sending to "device/to/(target device)
-    print("sending acknowledgement  ")
+    print("sending acknowledgement")
     dev = "device/to/" + dev
     # print(dev)
     client.publish(dev, '&1*')
-    # print("send check")
+    print("sent")
 
 
 

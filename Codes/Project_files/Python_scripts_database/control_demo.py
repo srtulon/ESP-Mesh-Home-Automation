@@ -2,6 +2,8 @@ import sqlite3
 import os
 from functools import partial
 
+
+
 database=os.path.dirname(os.path.realpath(__file__))+'/database.db'
 my_conn = sqlite3.connect(database,check_same_thread=False)
 import paho.mqtt.publish as publish
@@ -9,6 +11,8 @@ import paho.mqtt.publish as publish
 root = os.path.dirname(os.path.realpath(__file__))
 print(root)
 
+
+host="192.168.1.28"
 
 query="SELECT id FROM pirs"
 r_set=my_conn.execute(query);
@@ -39,7 +43,7 @@ def function1():
     str='^'+s+','+options1.get()+','+options2.get()+','+options3.get()+','+options4.get()+'!'
 
     print(str)
-    publish.single( "device/from", str, hostname="192.168.1.28")
+    publish.single( "device/from", str, hostname=host)
 
 
 def function2():
@@ -51,7 +55,7 @@ def function2():
     status=options8.get()
     str='@' + relay_num + status + '%'
     print(str)
-    publish.single( "device/to/"+ori_id, str, hostname="192.168.1.28")
+    publish.single( "device/to/"+ori_id, str, hostname=host)
 
 
 import tkinter as tk

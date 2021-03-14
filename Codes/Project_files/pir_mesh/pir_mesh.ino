@@ -7,7 +7,7 @@
 Scheduler userScheduler; // to control your personal task
 painlessMesh  mesh;
 
-const int p = D5; 
+const int p = 32; 
 const int led = 2;
 
 
@@ -77,7 +77,7 @@ void setup() {
   Serial.begin(115200);
   Serial.println("Start");
   delay(1000);
-  pinMode(p,INPUT);
+  pinMode(p,INPUT_PULLUP);
   pinMode(led, OUTPUT);
   digitalWrite(led,LOW);
 

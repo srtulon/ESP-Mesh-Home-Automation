@@ -36,11 +36,11 @@ c = conn.cursor()
 # create table
 def create_table():
     c.execute('CREATE TABLE IF NOT EXISTS relays ( id varchar(20) not null,name varchar(20) not null, status int,last_update text, PRIMARY KEY (id))')
-    c.execute('CREATE TABLE IF NOT EXISTS acs ( id varchar(20) not null, name varchar(20) not null, protocol int, model int,power int, temp int,last_update text, PRIMARY KEY (id))')
+    c.execute('CREATE TABLE IF NOT EXISTS acs ( id varchar(20) not null, name varchar(20) not null, command int,last_update text, PRIMARY KEY (id))')
     c.execute('CREATE TABLE IF NOT EXISTS pirs ( id varchar(20) not null,name varchar(20) not null, status int, last_update text,PRIMARY KEY (id))')
     c.execute('CREATE TABLE IF NOT EXISTS stat_timeline (id varchar(20) not null, status int, time text)')
     c.execute('CREATE TABLE IF NOT EXISTS relays_links (id varchar(20) not null, link_id varchar(20) , link int,priority int)')
-    c.execute('CREATE TABLE IF NOT EXISTS acs_links (id varchar(20) not null, link_id varchar(20) , link int, protocol int, model int,temp int)')
+    c.execute('CREATE TABLE IF NOT EXISTS acs_links (id varchar(20) not null, link_id varchar(20) , link int, command int)')
     c.execute('CREATE TABLE IF NOT EXISTS ac_list (protocol varchar(20),PRIMARY KEY (protocol))')
     c.execute('CREATE TABLE IF NOT EXISTS remote_list (protocol varchar(20),PRIMARY KEY (protocol))')
 
@@ -107,9 +107,9 @@ def read_database():
         key=row[0] #read id
         if key not in acs_links_dict:
             acs_links_dict[key] = []
-            acs_links_dict[key].append(row[1],row[3],row[4],row[5]) #read link_id and commands #########################################
+            acs_links_dict[key].append(row[1],row[3]) #read link_id and commands #########################################
         else:
-            acs_links_dict[key].append(row[1],row[3],row[4],row[5]) #read link_id and commands ##########################################
+            acs_links_dict[key].append(row[1],row[3]) #read link_id and commands ##########################################
     print(acs_links_dict)
 
 
@@ -158,23 +158,19 @@ def data_entry():
 
     elif dtype[0] == 'a':
         key=did
-        prot=dmsg[0:2]
-        mod=dmsg[2]
-        pow=dmsg[3]
-        tem=dmsg[4:6]
+        com=dmsg
+
         if key not in acs_dict:
             print("Adding new ac to list")
 
 
-            acs_dict[key][0] = prot
-            acs_dict[key][1] = mod
-            acs_dict[key][2] = pow
-            acs_dict[key][4] = tem
+            acs_dict[key] = com
+
 
 
 
             try:
-                c.execute("INSERT OR IGNORE INTO acs (id,name,protocol,model,power,temp) VALUES (?,?,?,?,?,?);",(did, did, prot, mod, pow, tem))
+                c.execute("INSERT OR IGNORE INTO acs (id,name,protocol,model,power,temp) VALUES (?,?,?,?,?,?);",(did, did, com))
             except sqlite3.Error as error:
                 print("Error1: {}".format(error))
                 return
@@ -203,15 +199,15 @@ def data_entry():
             data2 = dmsg
             print(int(data1))
             print(int(data2))
-
+        link()
     conn.commit()
     print("Data entry completed")
     ack(did)
-
+    
 
 # link
 def link():
-
+    print('Link')
     if did in relays_links_dict:
         # select linked devices
         for l in relays_links_dict[did]:
@@ -237,16 +233,11 @@ def link():
             # if any sensor is high then the device status is set to high
             if (dmsg=='1'):
                 # update status change in stat_timeline and devices
-                set_status(device_id=l[0], status=l[1]+l[2]+'1'+l[3],type='a',send=True) #############################
+                set_status(device_id=l[0], status=l[1][0]+l[1][1]+'1'+l[1][3],type='a',send=True) #############################
 
             elif (dmsg=='0'):
-                if check(l):
-                    # update status change in stat_timeline and devices
-                    set_status(device_id=l[0], status=l[1]+l[2]+'1'+l[3],type='a',send=True) ############################
-                else:
-                    # update status change in stat_timeline and devices
-                    set_status(device_id=l[0], status=l[1]+l[2]+'0'+l[3],type='a',send=True) #############################
-
+                # update status change in stat_timeline and devices
+                set_status(device_id=l[0], status=l[1][0]+l[1][1]+'0'+l[1][3],type='a',send=True) ############################
 
 
 def check(id):

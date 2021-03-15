@@ -20,11 +20,11 @@
 //#define   STATION_SSID     "xaneon"
 //#define   STATION_PASSWORD "bmwm3gtr"
 
-#define   STATION_SSID     "raspberry"
-#define   STATION_PASSWORD "bmwm3gtr"
+//#define   STATION_SSID     "raspberry"
+//#define   STATION_PASSWORD "bmwm3gtr"
 
-//#define   STATION_SSID     "IOI wifi"
-//#define   STATION_PASSWORD "IoI2021@wifi"
+#define   STATION_SSID     "IOI wifi"
+#define   STATION_PASSWORD "IoI2021@wifi"
 
 #define HOSTNAME "MQTT_Bridge"
 
@@ -40,10 +40,17 @@ IPAddress getlocalIP();
 IPAddress myIP(0,0,0,0);
 
 
+int a=192;
+int b=168;
+int c=1;
+int d=18;
+
+/*
 int a=172;
 int b=24;
 int c=1;
 int d=1;
+*/
 IPAddress mqttBroker(a, b, c, d);
 int mqttport=1883;
 

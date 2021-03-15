@@ -51,13 +51,8 @@ def function1():
 
     s='^'+s+','+options1.get()+','+options2.get()+','+options3.get()+','+options4.get()+'!'
 
-<<<<<<< HEAD
-    print(s)
-    publish.single( "device/from", s, hostname="192.168.1.18")
-=======
     print(str)
     publish.single( "device/from", str, hostname=host)
->>>>>>> 54deefa81e0a904f532c00e6f88c64d117259c59
 
 
 def function2():
@@ -67,11 +62,9 @@ def function2():
     print(ori_id)
     relay_num = temp[1]
     status=options8.get()
-<<<<<<< HEAD
-    s='@' + relay_num + status + '%'
-    print(s)
-    publish.single( "device/to/"+ori_id, s, hostname="192.168.1.18")
-
+    str='@' + relay_num + status + '%'
+    print(str)
+    publish.single( "device/to/"+ori_id, str, hostname=host)
 
 def function3():
 
@@ -87,12 +80,6 @@ def function3():
     s='@'+prot1+'1'+pow+tem+'%'
     print(s)
     publish.single( "device/to/"+id, s, hostname="192.168.1.18")
-
-=======
-    str='@' + relay_num + status + '%'
-    print(str)
-    publish.single( "device/to/"+ori_id, str, hostname=host)
->>>>>>> 54deefa81e0a904f532c00e6f88c64d117259c59
 
 
 import tkinter as tk
@@ -117,28 +104,28 @@ options6.set(add_delete[0]) # default value
 
 
 om6 =tk.OptionMenu(my_w, options6, *add_delete)
-#tk.Label(my_w, text="Option").grid(row = 1, column = 1)
-#om6.grid(row=2,column=1)
+tk.Label(my_w, text="Option").grid(row = 1, column = 1)
+om6.grid(row=2,column=1)
 
 om1 =tk.OptionMenu(my_w, options1, *id)
-#tk.Label(my_w, text="Pir").grid(row = 1, column = 2)
-#om1.grid(row=2,column=2)
+tk.Label(my_w, text="Pir").grid(row = 1, column = 2)
+om1.grid(row=2,column=2)
 
 
 om2 =tk.OptionMenu(my_w, options2, *link1)
-#tk.Label(my_w, text="Relay").grid(row = 1, column = 3)
-#om2.grid(row=2,column=3)
+tk.Label(my_w, text="Relay").grid(row = 1, column = 3)
+om2.grid(row=2,column=3)
 
 om3 =tk.OptionMenu(my_w, options3, *zero_one1)
-#tk.Label(my_w, text="Link").grid(row = 1, column = 4)
-#om3.grid(row=2,column=4)
+tk.Label(my_w, text="Link").grid(row = 1, column = 4)
+om3.grid(row=2,column=4)
 
 om4 =tk.OptionMenu(my_w, options4, *zero_one2)
-#tk.Label(my_w, text="Priority").grid(row = 1, column = 5)
-#om4.grid(row=2,column=5)
+tk.Label(my_w, text="Priority").grid(row = 1, column = 5)
+om4.grid(row=2,column=5)
 
 button1 = tk.Button(my_w, text='Send', width=15, command=function1)
-#button1.grid(row=2,column=7)
+button1.grid(row=2,column=7)
 
 
 

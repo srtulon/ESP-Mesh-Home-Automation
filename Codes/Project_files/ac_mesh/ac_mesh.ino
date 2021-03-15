@@ -9,7 +9,7 @@
 #define   MESH_PASSWORD   "password"
 #define   MESH_PORT       5555
 
-const uint16_t kIrLed = 4;  // The ESP GPIO pin to use that controls the IR LED.
+const uint16_t kIrLed = 21;  // The ESP GPIO pin to use that controls the IR LED.
 IRac ac(kIrLed);  // Create a A/C object using GPIO to sending messages with.
 
 Scheduler userScheduler; // to control your personal task
@@ -56,15 +56,19 @@ void receivedCallback( uint32_t from, String &msg ) {
   msg.toCharArray(charBuf, 50);
   String msg1=(String)msg;
   
-  if(msg1.indexOf('@')>-1){
+  if(msg1.indexOf('!')>-1){
     Serial.println(msg1); 
     Serial.println(msg1.substring(1,3));
     Serial.println(msg1[3]);
     Serial.println(msg1[4]);
     Serial.println(msg1.substring(5,7));
-    
 
     
+    Serial.print("Protocol: CARRIER_AC");
+    ac.next.protocol = decode_type_t::CARRIER_AC;
+     
+    
+    /*
     if(msg1.substring(1,3)=="01"){
         Serial.print("Protocol: AIRWELL");
         ac.next.protocol = decode_type_t::AIRWELL;
@@ -432,7 +436,7 @@ void receivedCallback( uint32_t from, String &msg ) {
     else if(msg1.substring(1,3)=="92"){
         Serial.print("Protocol: ZEPEAL");
         ac.next.protocol = decode_type_t::ZEPEAL;
-     }
+     }*/
   }
   Serial.println();
   if(msg1[4]=='0'){

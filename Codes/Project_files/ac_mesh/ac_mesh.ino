@@ -9,8 +9,8 @@
 #define   MESH_PASSWORD   "password"
 #define   MESH_PORT       5555
 
-//const uint16_t kIrLed = 21;  // The ESP GPIO pin to use that controls the IR LED.
-const uint16_t kIrLed = D2;  // The ESP GPIO pin to use that controls the IR LED.
+const uint16_t kIrLed = 21;  // The ESP GPIO pin to use that controls the IR LED.
+//const uint16_t kIrLed = D2;  // The ESP GPIO pin to use that controls the IR LED.
 IRac ac(kIrLed);  // Create a A/C object using GPIO to sending messages with.
 
 Scheduler userScheduler; // to control your personal task
@@ -440,14 +440,14 @@ void receivedCallback( uint32_t from, String &msg ) {
      }
      Serial.println();
      if(msg1[4]=='0'){
-    ac.next.model = msg1[3];
-    ac.next.power = false;
-  }
-  else if(msg1[4]=='1'){
-    ac.next.power = true;  // Initially start with the unit off.
-    ac.next.model = msg1[3];
-    ac.next.degrees = msg1.substring(5,7).toInt();
-  }
+      ac.next.model = msg1[3];
+      ac.next.power = false;
+    }
+    else if(msg1[4]=='1'){
+      ac.next.power = true;  // Initially start with the unit off.
+      ac.next.model = msg1[3];
+      ac.next.degrees = msg1.substring(5,7).toInt();
+    }
   ac.sendAc();
   }
   
@@ -501,6 +501,7 @@ void setup() {
   ac.next.mode = stdAc::opmode_t::kCool;  // Run in cool mode initially.
   ac.next.celsius = true;  // Use Celsius for temp units. False = Fahrenheit
   ac.next.degrees = 25;  // 25 degrees.
+  ac.next.light = true;  // Turn on any LED/Lights/Display that we can.
   ac.next.fanspeed = stdAc::fanspeed_t::kMedium;  // Start the fan at medium.
 
 }

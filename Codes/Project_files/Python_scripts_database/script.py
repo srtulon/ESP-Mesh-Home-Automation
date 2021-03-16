@@ -460,6 +460,6 @@ client.on_connect = on_connect
 client.on_message = on_message
 #client.connect("172.24.1.1", 1883, 60)  # change the address to MQTT broker server
 #client.connect("localhost", 1883, 60) 
-client.connect("192.168.1.10", 1883, 60)  
+client.connect("192.168.1.17", 1883, 60)  
 #client.connect("0.0.0.0", 1883, 60)  
 client.loop_forever()

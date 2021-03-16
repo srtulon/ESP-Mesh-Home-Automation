@@ -9,7 +9,8 @@
 #define   MESH_PASSWORD   "password"
 #define   MESH_PORT       5555
 
-const uint16_t kIrLed = 21;  // The ESP GPIO pin to use that controls the IR LED.
+//const uint16_t kIrLed = 21;  // The ESP GPIO pin to use that controls the IR LED.
+const uint16_t kIrLed = D2;  // The ESP GPIO pin to use that controls the IR LED.
 IRac ac(kIrLed);  // Create a A/C object using GPIO to sending messages with.
 
 Scheduler userScheduler; // to control your personal task

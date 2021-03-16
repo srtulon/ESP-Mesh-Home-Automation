@@ -157,7 +157,7 @@ tk.Label(my_w, text="Name").grid(row = 6, column = 1)
 om12.grid(row=7,column=1)
 
 options9 = tk.StringVar(my_w)
-options9.set(link3[0]) # default value
+options9.set(link3[81]) # default value
 
 options10 = tk.StringVar(my_w)
 options10.set(zero_one3[1]) # default value

@@ -36,7 +36,7 @@ int temp;
 void sendMessage() {
   //message format: #(id),(type),(status)$ 
   //send to certain amount of time for registering into database
-  if(millis()<100000){
+  if(millis()<1000){
     String id = "";
     id += mesh.getNodeId();
     Serial.println(id);
@@ -437,9 +437,8 @@ void receivedCallback( uint32_t from, String &msg ) {
         Serial.print("Protocol: ZEPEAL");
         ac.next.protocol = decode_type_t::ZEPEAL;
      }
-  }
-  Serial.println();
-  if(msg1[4]=='0'){
+     Serial.println();
+     if(msg1[4]=='0'){
     ac.next.model = msg1[3];
     ac.next.power = false;
   }
@@ -449,6 +448,8 @@ void receivedCallback( uint32_t from, String &msg ) {
     ac.next.degrees = msg1.substring(5,7).toInt();
   }
   ac.sendAc();
+  }
+  
 }
 
 
@@ -461,7 +462,7 @@ void changedConnectionCallback() {
 }
 
 void nodeTimeAdjustedCallback(int32_t offset) {
-    Serial.printf("Adjusted time %u. Offset = %d\n", mesh.getNodeTime(),offset);
+    //Serial.printf("Adjusted time %u. Offset = %d\n", mesh.getNodeTime(),offset);
 }
 
 

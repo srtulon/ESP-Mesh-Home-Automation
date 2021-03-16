@@ -64,11 +64,11 @@ void receivedCallback( uint32_t from, String &msg ) {
     Serial.println(msg1.substring(5,7));
 
     
-    Serial.print("Protocol: CARRIER_AC");
-    ac.next.protocol = decode_type_t::CARRIER_AC;
+    //Serial.print("Protocol: CARRIER_AC");
+    //ac.next.protocol = decode_type_t::CARRIER_AC;
      
     
-    /*
+    
     if(msg1.substring(1,3)=="01"){
         Serial.print("Protocol: AIRWELL");
         ac.next.protocol = decode_type_t::AIRWELL;
@@ -436,7 +436,7 @@ void receivedCallback( uint32_t from, String &msg ) {
     else if(msg1.substring(1,3)=="92"){
         Serial.print("Protocol: ZEPEAL");
         ac.next.protocol = decode_type_t::ZEPEAL;
-     }*/
+     }
   }
   Serial.println();
   if(msg1[4]=='0'){

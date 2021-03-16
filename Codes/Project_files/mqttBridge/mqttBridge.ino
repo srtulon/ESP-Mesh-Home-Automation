@@ -28,8 +28,8 @@
 
 #define HOSTNAME "MQTT_Bridge"
 
-#define light D4
-//#define light 2
+//#define light D4
+#define light 2
 
 
 // Prototypes

@@ -33,6 +33,7 @@ link3 = [r for r, in r_set] # create a  list
 query="SELECT id FROM acs"
 r_set=my_conn.execute(query);
 link4 = [r for r, in r_set] # create a  list
+link5=link4
 
 templist=[16,17,18,19,20,21,22,23,24,25,26,27,28,29,30]
 
@@ -54,6 +55,17 @@ def function1():
     print(str)
     publish.single( "device/from", str, hostname=host)
 
+def function4():
+    s=''
+    if(options6.get()=='Add'):
+        s='rla'
+    elif(options6.get()=='Del'):
+        s='rlr'
+
+    s='^'+s+','+options1.get()+','+options2.get()+','+options3.get()+','+options4.get()+'!'
+
+    print(str)
+    publish.single( "device/from", str, hostname=host)
 
 def function2():
 
@@ -129,6 +141,47 @@ button1.grid(row=2,column=7)
 
 
 
+options15 = tk.StringVar(my_w)
+options15.set(id[0]) # default value
+
+options16 = tk.StringVar(my_w)
+options16.set(link1[0]) # default value
+
+options17 = tk.StringVar(my_w)
+options17.set(zero_one1[1]) # default value
+
+options18 = tk.StringVar(my_w)
+options18.set(zero_one2[1]) # default value
+
+options19 = tk.StringVar(my_w)
+options19.set(add_delete[0]) # default value
+
+
+om19 =tk.OptionMenu(my_w, options19, *add_delete)
+tk.Label(my_w, text="Option").grid(row = 3, column = 1)
+om19.grid(row=4,column=1)
+
+om15 =tk.OptionMenu(my_w, options15, *id)
+tk.Label(my_w, text="AC").grid(row = 3, column = 2)
+om15.grid(row=4,column=2)
+
+
+om16 =tk.OptionMenu(my_w, options16, *link1)
+tk.Label(my_w, text="Relay").grid(row = 3, column = 3)
+om16.grid(row=4,column=3)
+
+om17 =tk.OptionMenu(my_w, options17, *zero_one1)
+tk.Label(my_w, text="Link").grid(row = 3, column = 4)
+om17.grid(row=4,column=4)
+
+om18 =tk.OptionMenu(my_w, options18, *zero_one2)
+tk.Label(my_w, text="Priority").grid(row = 3, column = 5)
+om18.grid(row=4,column=5)
+
+button4 = tk.Button(my_w, text='Send', width=15, command=function4)
+button4.grid(row=4,column=7)
+
+
 ######## device control #########
 options7 = tk.StringVar(my_w)
 options7.set(link2[0]) # default value
@@ -137,15 +190,15 @@ options8 = tk.StringVar(my_w)
 options8.set(zero_one3[1]) # default value
 
 om7 =tk.OptionMenu(my_w, options7, *link2)
-tk.Label(my_w, text="Name").grid(row = 4, column = 1)
-om7.grid(row=5,column=1)
+tk.Label(my_w, text="Name").grid(row = 6, column = 1)
+om7.grid(row=7,column=1)
 
 om8 =tk.OptionMenu(my_w, options8, *zero_one3)
-tk.Label(my_w, text="Command").grid(row = 4, column = 2)
-om8.grid(row=5,column=2)
+tk.Label(my_w, text="Command").grid(row = 6, column = 2)
+om8.grid(row=7,column=2)
 
 button2 = tk.Button(my_w, text='Send', width=15, command=function2)
-button2.grid(row=5,column=3)
+button2.grid(row=7,column=3)
 
 
 ######## ac control #########
@@ -153,8 +206,8 @@ options12 = tk.StringVar(my_w)
 options12.set(link4[0]) # default value
 
 om12 =tk.OptionMenu(my_w, options12, *link4)
-tk.Label(my_w, text="Name").grid(row = 6, column = 1)
-om12.grid(row=7,column=1)
+tk.Label(my_w, text="Name").grid(row = 8, column = 1)
+om12.grid(row=9,column=1)
 
 options9 = tk.StringVar(my_w)
 options9.set(link3[81]) # default value
@@ -163,23 +216,23 @@ options10 = tk.StringVar(my_w)
 options10.set(zero_one3[1]) # default value
 
 om9 =tk.OptionMenu(my_w, options9, *link3)
-tk.Label(my_w, text="Company").grid(row = 6, column = 2)
-om9.grid(row=7,column=2)
+tk.Label(my_w, text="Company").grid(row = 8, column = 2)
+om9.grid(row=9,column=2)
 
 om10 =tk.OptionMenu(my_w, options10, *zero_one4)
-tk.Label(my_w, text="Power").grid(row = 6, column = 3)
-om10.grid(row=7,column=3)
+tk.Label(my_w, text="Power").grid(row = 8, column = 3)
+om10.grid(row=9,column=3)
 
 options11 = tk.StringVar(my_w)
 options11.set(templist[1]) # default value
 
 om11 =tk.OptionMenu(my_w, options11, *templist)
-tk.Label(my_w, text="Temperature").grid(row = 6, column = 4)
-om11.grid(row=7,column=4)
+tk.Label(my_w, text="Temperature").grid(row = 8, column = 4)
+om11.grid(row=9,column=4)
 
 
 button3 = tk.Button(my_w, text='Send', width=15, command=function3)
-button3.grid(row=7,column=5)
+button3.grid(row=9,column=5)
 
 
 

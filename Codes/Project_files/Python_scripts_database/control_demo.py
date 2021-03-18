@@ -17,7 +17,7 @@ host="192.168.1.10"
 query="SELECT id FROM pirs"
 r_set=my_conn.execute(query);
 id = [r for r, in r_set] # create a  list 
-
+id2=id
 
 
 query="SELECT id FROM relays"
@@ -41,7 +41,10 @@ zero_one1=[0,1]
 zero_one2=[0,1]
 zero_one3=[0,1]
 zero_one4=[0,1]
+zero_one5=[0,1]
+zero_one6=[0,1]
 add_delete=['Add','Del']
+add_delete2=['Add','Del']
 
 def function1():
     s=''
@@ -58,9 +61,9 @@ def function1():
 def function4():
     s=''
     if(options6.get()=='Add'):
-        s='rla'
+        s='ala'
     elif(options6.get()=='Del'):
-        s='rlr'
+        s='alr'
 
     s='^'+s+','+options1.get()+','+options2.get()+','+options3.get()+','+options4.get()+'!'
 
@@ -142,39 +145,39 @@ button1.grid(row=2,column=7)
 
 
 options15 = tk.StringVar(my_w)
-options15.set(id[0]) # default value
+options15.set(id2[0]) # default value
 
 options16 = tk.StringVar(my_w)
-options16.set(link1[0]) # default value
+options16.set(link5[0]) # default value
 
 options17 = tk.StringVar(my_w)
-options17.set(zero_one1[1]) # default value
+options17.set(zero_one5[1]) # default value
 
 options18 = tk.StringVar(my_w)
-options18.set(zero_one2[1]) # default value
+options18.set(zero_one6[1]) # default value
 
 options19 = tk.StringVar(my_w)
-options19.set(add_delete[0]) # default value
+options19.set(add_delete2[0]) # default value
 
 
-om19 =tk.OptionMenu(my_w, options19, *add_delete)
+om19 =tk.OptionMenu(my_w, options19, *add_delete2)
 tk.Label(my_w, text="Option").grid(row = 3, column = 1)
 om19.grid(row=4,column=1)
 
-om15 =tk.OptionMenu(my_w, options15, *id)
+om15 =tk.OptionMenu(my_w, options15, *id2)
 tk.Label(my_w, text="AC").grid(row = 3, column = 2)
 om15.grid(row=4,column=2)
 
 
-om16 =tk.OptionMenu(my_w, options16, *link1)
+om16 =tk.OptionMenu(my_w, options16, *link5)
 tk.Label(my_w, text="Relay").grid(row = 3, column = 3)
 om16.grid(row=4,column=3)
 
-om17 =tk.OptionMenu(my_w, options17, *zero_one1)
+om17 =tk.OptionMenu(my_w, options17, *zero_one5)
 tk.Label(my_w, text="Link").grid(row = 3, column = 4)
 om17.grid(row=4,column=4)
 
-om18 =tk.OptionMenu(my_w, options18, *zero_one2)
+om18 =tk.OptionMenu(my_w, options18, *zero_one6)
 tk.Label(my_w, text="Priority").grid(row = 3, column = 5)
 om18.grid(row=4,column=5)
 

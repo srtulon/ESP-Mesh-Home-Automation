@@ -380,7 +380,17 @@ def on_message(client, userdata, msg):
                     return
 
             elif dtype == 'ala':
-                pass
+                print("Updating ac_links")
+                key=did  
+                for l in acs_links_dict[key]:
+                    if lid in l:
+                        l[1]=msg1
+                        break
+                try:
+                    c.execute("UPDATE acs_links SET priority = ? WHERE link_id=? AND id=?;", (msg1,lid,did))
+                except sqlite3.Error as error:
+                    print("Error: {}".format(error))
+                    return
             
             elif dtype == 'rlr':
                 key=did
@@ -403,12 +413,30 @@ def on_message(client, userdata, msg):
                         c.execute("DELETE FROM relays_links WHERE link_id=? AND id=?;", (lid,did))
                     except sqlite3.Error as error:
                         print("Error: {}".format(error))
-                        return
-
-            
+                        return           
             
             elif dtype == 'alr':
-                    pass
+                key=did
+                if key not in acs_links_dict:
+                    print('Id not found')
+                else:
+                    print("Deleting ac_links from list")
+                    check=False
+                    for l in acs_links_dict[key]:
+                        if lid in l:                            
+                            acs_links_dict[key].remove(l)
+                            print("Deleted")
+                            check=True
+                            break
+
+                    if not check:
+                        print('Link not found')
+                        
+                    try:
+                        c.execute("DELETE FROM acs_links WHERE link_id=? AND id=?;", (lid,did))
+                    except sqlite3.Error as error:
+                        print("Error: {}".format(error))
+                        return
             
             conn.commit()
 

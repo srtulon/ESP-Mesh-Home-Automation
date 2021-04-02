@@ -12,10 +12,15 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     print(msg.topic+" "+(msg.payload).decode("utf-8"))
 
-client = mqtt.Client()
+client = mqtt.Client(client_id="", clean_session=True, userdata=None, transport="tcp")
+#client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
 
+#client.tls_set()  # <--- even without arguments
+#client.connect("m24.cloudmqtt.com",12947 ,32947 )
+
+client.username_pw_set(username="srtulon", password="abcde1234")
 client.connect("45.248.149.225", 1883, 60)
 
 # Blocking call that processes network traffic, dispatches callbacks and

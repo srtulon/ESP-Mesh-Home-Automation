@@ -7,7 +7,7 @@ c = conn.cursor()
 
 c.execute('CREATE TABLE IF NOT EXISTS ac_list (protocol varchar(20),PRIMARY KEY (protocol))')
 
-f = open("ac_protocol_names.txt", "r")
+f = open(os.path.dirname(os.path.realpath(__file__))+"/ac_protocol_names.txt", "r")
 contents = f.readlines()
 
 

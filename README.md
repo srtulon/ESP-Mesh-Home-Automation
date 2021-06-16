@@ -8,6 +8,6 @@ Libraries & Services used :
   - [pubsubclient](https://github.com/knolleary/pubsubclient)
   - [IRremoteESP8266](https://github.com/crankyoldgit/IRremoteESP8266)
   - Paho MQTT client for python (pip3 install paho-mqtt)
-  - [Mosquitto MQTT server](https://randomnerdtutorials.com/how-to-install-mosquitto-broker-on-raspberry-pi/)
+  - [Mosquitto MQTT server](https://mosquitto.org/blog/2013/01/mosquitto-debian-repository/)
   - [SQLite3](https://www.sqlite.org/index.html) 
 
